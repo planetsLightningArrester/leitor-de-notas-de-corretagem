@@ -1,0 +1,41 @@
+{
+  "name": "notas",
+  "version": "0.0.1",
+  "description": "",
+  "main": "dist/app.js",
+  "scripts": {
+    "test": "jest --forceExit --runInBand",
+    "build": "tsc",
+    "start": "npm run build && node dist/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "GNU GPLv3",
+  "bugs": {
+    "url": "https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/issues"
+  },
+  "homepage": "https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem#readme",
+  "dependencies": {
+    "axios": "^0.26.1",
+    "pdfjs-dist": "2.7.570",
+    "printaeu": "^0.1.5",
+    "dotenv": "^16.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.0",
+    "@babel/preset-typescript": "^7.16.0",
+    "@types/jest": "^27.0.2",
+    "@types/node": "^17.0.23",
+    "babel-jest": "^27.3.1",
+    "jest": "^27.2.1",
+    "ts-jest": "^27.0.5",
+    "ts-loader": "^9.2.6",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.5.3"
+  }
+}
