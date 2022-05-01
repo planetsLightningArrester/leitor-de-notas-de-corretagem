@@ -1,12 +1,10 @@
 import { print } from "printaeu";
-import axios from 'axios';
 import * as PDFJS from 'pdfjs-dist/es5/build/pdf';
 import fs from 'fs';
 import path from "path";
 import { PDFDocumentProxy } from "pdfjs-dist/types/display/api";
-const envsSet = require('dotenv').config({ path: path.join(__dirname, '..', '.stocks.env') }).parsed;
-
-export type AssetsEvent = 'prediction' | 'negotiation notes';
+import { StockParser } from "./stockParser";
+const envsSet = require('dotenv').config({ path: path.join(__dirname, '..', 'config.env') }).parsed;
 
 /**
  * Deals made in a `NegotiationNote`
@@ -89,9 +87,13 @@ export class Assets {
   /**
    * Path to the JSON data file
    */
-  private stockParser: StockParser = new StockParser();
+  private stockParser: StockParser;
 
   private cachedPasswords: string[] = [];
+
+  constructor(listedStocksFullPath: string) {
+    this.stockParser = new StockParser(listedStocksFullPath);
+  }
 
   /**
    * Read and parse a given PDF negotiation note by its full path
@@ -114,7 +116,7 @@ export class Assets {
       } catch (error) {/** Prevent the  failure and try again with another password */}
     }
     if (!pdf) {
-      throw new Error(`Não foi possível abrir a nota ${noteFullPath}. Verifique se esse PDF possui senha. Caso positivo, adicione a senha em uma nova linha no arquivo ".stocks.env" no formato "PDF_PASSWORD1=123". Você pode adicionar mais de uma senha.`);
+      throw new Error(`Não foi possível abrir a nota ${noteFullPath}. Verifique se esse PDF possui senha. Caso positivo, adicione a senha em uma nova linha no arquivo "config.env" no formato "PDF_PASSWORD1=123". Você pode adicionar mais de uma senha.`);
     }
     try {
       // Patterns
@@ -214,15 +216,15 @@ export class Assets {
 
           while ((match = stockPattern.exec(pageContent)) != null) {
             let op: string = match[1];
-            let market: string = match[2];
-            let stock: string = await this.stockParser.getCodeFromTitle(match[3].replace(/\s+/g, ' '), true);
+            // let market: string = match[2];
+            let stock: string = await this.stockParser.getCodeFromTitle(match[3].replace(/\s+/g, ' '));
             let quantity: number = parseInt(match[4]);
             // let each: number = parseFloat(match[5].replace('.', '').replace(',', '.'));
             let transactionValue: number = parseFloat(match[6].replace('.', '').replace(',', '.'));
 
             if (!stock) print.yellow(`[AS] Can't find ${match[3]}`);
 
-            if (market === 'FRACIONARIO') stock += 'F';
+            // if (market === 'FRACIONARIO') stock += 'F';
             
             // Actually, asset can only be Transaction because of the `filter`. But TS doesn't allow.
             if (op === 'C') {
@@ -313,244 +315,6 @@ export class Assets {
     return parseResults;
   }
 
-}
-
-
-interface Cache {
-  value: string;
-  result: string;
-}
-
-interface InvestingArticles {
-  authorID: string
-  /**
-   * Author name
-   */
-  authorName: string
-  /**
-   * @example "member"
-   */
-  authorType: string
-  isEditorPick: false
-  prioirty: number
-  /**
-   * News content
-   */
-  content: string;
-  dataID: string;
-  /**
-   * News date
-   */
-  date: string;
-  dateTimestamp: string;
-  /**
-   * News title
-   */
-  name: string;
-  priority: number;
-  providerID: string;
-  providerName: string;
-  searchable: string;
-  smlID: string;
-  /**
-   * Info ID
-   */
-  id: number;
-  /**
-   * Relative url path from home page
-   */
-  link: string;
-  /**
-   * Info image url
-   */
-  image: string;
-}
-
-/**
- * Quote news
- */
-interface InvestingNews {
-  /**
-   * News content
-   */
-  content: string;
-  dataID: string;
-  /**
-   * News date
-   */
-  date: string;
-  dateTimestamp: string;
-  /**
-   * News title
-   */
-  name: string;
-  priority: number;
-  providerID: string;
-  providerName: string;
-  searchable: string;
-  smlID: string;
-  /**
-   * Info ID
-   */
-  id: number;
-  /**
-   * Relative url path from home page
-   */
-  link: string;
-  /**
-   * Info image url
-   */
-  image: string;
-}
-
-/**
- * Quote result
- */
-interface InvestingQuote {
-  industry: 165
-  isCrypto: false
-  /**
-   * Quote name
-   */
-  name: string;
-  pairId: number;
-  pair_type: string;
-  pair_type_raw: string
-  region: number;
-  sector: number;
-  id: number;
-  /**
-   * Relative url path from home page
-   */
-  link: string;
-  /**
-   * Quote description
-   */
-  description: string;
-  /**
-   * Quote market symbol
-   */
-  symbol: string;
-  /**
-   * Market
-   * @example "BM&FBovespa"
-   */
-  exchange: string;
-  exchangeID: number
-  /**
-   * Country
-   */
-  flag: string;
-  countryID: number
-  /**
-   * Quote type
-   * @example "Ação - BM&Bovespa"
-   */
-  type: string;
-}
-
-/**
- * Results of a query on Investing.com
- */
-interface InvestingQuery {
-  /**
-   * Articles related to the query
-   */
-  articles: InvestingArticles[];
-  /**
-   * News related to the search
-   */
-  news: InvestingNews[];
-  /**
-   * Info about stocks and funds
-   */
-  quotes: InvestingQuote[];
-}
-
-export class StockParser {
-
-  private cache: Cache[] = [];
-
-  async getCodeFromTitle(name: string, cache?: boolean): Promise<string> {
-    if (cache) {
-      const cached = this.cache.find(el => el.value === name);
-      if (cached) return cached.result;
-    }
-  
-    let legacy: string | undefined = Object.keys(envsSet).find(key => {
-      const envVar = process.env[key];
-      return envVar && name.includes(envVar);
-    });
-    if (legacy) return legacy;
-
-    let result: string = '';
-
-    // If it's a FII, the code is in the name
-    let match = name.match(/FII\s.*?\s([^\s]+?)\sCI/i);
-    if (match && match[1]) return match[1];
-
-    // Otherwise, query on Investing
-    try {
-      let indexOf: number;
-      if (name.indexOf(' ON') !== -1) indexOf = name.indexOf(' ON');
-      else if (name.indexOf(' PN') !== -1) indexOf = name.indexOf(' PN');
-      else if (name.indexOf(' UNT') !== -1) indexOf = name.indexOf(' UNT');
-      else indexOf = name.length;
-      let queryResult = await axios.post(
-        `https://br.investing.com/search/service/searchTopBar`,
-        `search_text=${name.slice(0, indexOf).split(/\s/).join('+').replace('/', '%2F')}`, 
-        { headers: {'domain-id': 'br', "Content-Type": "application/x-www-form-urlencoded", "x-requested-with": "XMLHttpRequest"} });
-
-      // let queryResult = await axios.post('https://www.infomoney.com.br/wp-admin/admin-ajax.php', 
-      // `search%5Bterm%5D=${name.split(/\s/).slice(0, -2).join('+')}&search%5B_type%5D=query&action=archive_cotacoes_by_search&quotes_archive_nonce=f3f1f45ff2`, {
-      //   headers: {
-      //     "Content-Type": "application/x-www-form-urlencoded"
-      //   }
-      // });
-      if (queryResult.data && 'quotes' in queryResult.data && Array.isArray(queryResult.data.quotes) && queryResult.data.quotes.length) {
-        let data: InvestingQuery = queryResult.data;
-        for (let i = 0; i < data.quotes.length; i++) {
-          if (data.quotes[i].flag === "Brazil") {
-            if (name.match(/[ \t]+ON/)) {
-              match = data.quotes[i].symbol.match(/([A-Z0-9]{4}3)(?!.)/i);
-              if (match && match[1]) {
-                result = match[1];
-                break;
-              }
-            } else if (name.match(/[ \t]+PN/)) {
-              match = data.quotes[i].symbol.match(/([A-Z0-9]{4}4)(?!.)/i);
-              if (match && match[1]) {
-                result = match[1];
-                break;
-              }
-            } else if (name.match(/[ \t]+UNT/)) {
-              match = data.quotes[i].symbol.match(/([A-Z0-9]{4}11)(?!.)/i);
-              if (match && match[1]) {
-                result = match[1];
-                break;
-              }
-            } else {
-              match = data.quotes[i].symbol.match(/([A-Z0-9]{4}\d+)(?!.)/i);
-              if (match && match[1]) {
-                result = match[1];
-                break;
-              }
-            }
-          }
-        }
-      }
-      
-    } catch (error) {
-      print.yellow(`[AS] Error querying online for '${name}'`);
-      console.log(error);
-      print.bold.green(`*** Consider adding the code for '${name}' in the '.stock.env' file ***`);
-    }
-
-    if (!this.cache.find(el => el.value === name)) this.cache.push({ value: name, result });
-
-    return result;
-
-  }
 }
 
 /**
