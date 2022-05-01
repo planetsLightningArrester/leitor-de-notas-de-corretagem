@@ -7,7 +7,7 @@ async function main() {
 
   print.green(`Leitor de Notas de Negociação - GNU GPLv3`);
   
-  const assets = new Assets(path.join(__dirname, '..', 'stocks.json'));
+  const assets = new Assets(path.join(__dirname, '..', 'assets.json'));
   
   let parsedResult: NegotiationNote[] = [];
   const dirPath: string = path.join(__dirname, '..', 'adicione_notas_aqui');
@@ -51,10 +51,10 @@ async function main() {
     })
   });
   
-  let result: string = `Código\tData\tC/V\tQuantidade\tPreço+custos\n`;
-  allDeals.forEach(stock => {
-    stock.forEach(deal => {
-      result += `${deal.code}\t${deal.date}\t${deal.type=='buy'?'C':'V'}\t${deal.quantity}\t${deal.price.replace(/\./g, ',')}\n`;
+  let result: string = `Código\tCNPJ\tData\tC/V\tQuantidade\tPreço+custos\n`;
+  allDeals.forEach(asset => {
+    asset.forEach(deal => {
+      result += `${deal.code}\t${deal.cnpj}\t${deal.date}\t${deal.type=='buy'?'C':'V'}\t${deal.quantity}\t${deal.price.replace(/\./g, ',')}\n`;
     })
     result += `\n`;
   });

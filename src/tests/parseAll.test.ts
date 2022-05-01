@@ -13,7 +13,7 @@ afterEach(() => {
   global.console = jestConsole;
 });
 
-const assets = new Assets(path.join(__dirname, '..', '..', 'stocks.json'));
+const assets = new Assets(path.join(__dirname, '..', '..', 'assets.json'));
 
 test('Notes parser', async () => {
   let parsedResult: NegotiationNote[] = [];
@@ -54,10 +54,10 @@ test('Notes parser', async () => {
     })
   });
 
-  let result: string = `Código\tData\tC/V\tQuantidade\tPreço+custos\n`;
-  allDeals.forEach(stock => {
-    stock.forEach(deal => {
-      result += `${deal.code}\t${deal.date}\t${deal.type=='buy'?'C':'V'}\t${deal.quantity}\t${deal.price.replace(/\./g, ',')}\n`;
+  let result: string = `Código\tCNPJ\tData\tC/V\tQuantidade\tPreço+custos\n`;
+  allDeals.forEach(asset => {
+    asset.forEach(deal => {
+      result += `${deal.code}\t${deal.cnpj}\t${deal.date}\t${deal.type=='buy'?'C':'V'}\t${deal.quantity}\t${deal.price.replace(/\./g, ',')}\n`;
     })
     result += `\n`;
   });

@@ -1,9 +1,9 @@
-import { StockParser } from './stockParser';
+import { AssetParser } from './assetParser';
 import path from 'path';
 
 async function main() {
-  const crawler = new StockParser(path.join(__dirname, '..', 'stocks.json'));
-  await crawler.getListedStocks();
+  const crawler = new AssetParser(path.join(__dirname, '..', 'assets.json'));
+  await crawler.getListedAssets();
 }
 
 main();

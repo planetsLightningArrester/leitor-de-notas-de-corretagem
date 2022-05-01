@@ -3,8 +3,8 @@ import fs from 'fs';
 import path from 'path';
 import axios from "axios";
 import https from 'https';
-const httpsAgent = new https.Agent({rejectUnauthorized: false });
-const manuallySetStocks = require('dotenv').config({ path: path.join(__dirname, '..', 'stocks.env') }).parsed;
+const httpsAgent = new https.Agent({ rejectUnauthorized: false });
+const manuallySetAssets = require('dotenv').config({ path: path.join(__dirname, '..', 'assets.env') }).parsed;
 
 /**
  * Request constructor
@@ -82,12 +82,33 @@ interface CrawlerRequestResult {
   "results": StockInfos[];
 }
 
-export class StockParser {
+/**
+ * Assets main infos
+ */
+export interface Asset {
+  /**
+   * Asset's code
+   */
+  code: string;
+  /**
+   * Asset's name
+   */
+  name: string;
+  /**
+   * Asset's cnpj
+   */
+  cnpj?: string;
+}
+
+/**
+ * Assets parser manager
+ */
+export class AssetParser {
 
   /**
-   * Stocks cached
+   * Assets cached
    */
-  protected stocks: StockInfos[] = [];
+  protected assets: StockInfos[] = [];
   /**
    * Auto-update flag
    */
@@ -110,7 +131,7 @@ export class StockParser {
 
   constructor(private outputFullPath: string, autoUpdate: boolean = false) {
     if (!fs.existsSync(outputFullPath)) throw new Error(`[SP] Faltando arquivo ${path.basename(outputFullPath)}`);
-    this.stocks = JSON.parse(fs.readFileSync(outputFullPath, 'utf-8'));
+    this.assets = JSON.parse(fs.readFileSync(outputFullPath, 'utf-8'));
     this.autoUpdate = autoUpdate;
     if (this.autoUpdate) {
       this.updater(0);
@@ -118,14 +139,14 @@ export class StockParser {
   }
 
   /**
-   * Update the listed stocks after a timeout
+   * Update the listed assets after a timeout
    * @param timeout update after `timeout` milliseconds
    */
   updater(timeout: number = this.updaterTimeout) {
     setTimeout(() => {
-      this.getListedStocks()
+      this.getListedAssets()
       .catch(err => {
-        print.yellow(`[AS] Error getting listed stocks. Trying again in 1 min`);
+        print.yellow(`[AS] Error getting listed assets. Trying again in 1 min`);
         if (err instanceof Error) print.log(err.message);
         this.updater(this.updaterTimeoutIfFailed);
       })
@@ -145,10 +166,10 @@ export class StockParser {
   }
 
   /**
-   * Update the current listed stocks
+   * Update the current listed assets
    */
-  async getListedStocks(): Promise<void> {
-    print.cyan(`[CR] Getting listed stocks`);
+  async getListedAssets(): Promise<void> {
+    print.cyan(`[CR] Getting listed assets`);
     print.high.cyan(`[CR] Page 1`);
     const firstResult = await axios.get(this.getUrlByPage(1), { httpsAgent });
     if (!('data' in firstResult)) throw new Error(`Unexpected response: ${firstResult}`);
@@ -168,7 +189,7 @@ export class StockParser {
     
     print.high.cyan(`[CR] Writing file ${path.basename(this.outputFullPath)}`);
     fs.writeFileSync(this.outputFullPath, JSON.stringify(results));
-    this.stocks = results;
+    this.assets = results;
     print.green(`[CR] Done. ${results.length} updates.`);
 
   }
@@ -178,17 +199,17 @@ export class StockParser {
    * @param name title of the stock in the brokerage note
    * @returns the stock code
    */
-  getCodeFromTitle(name: string): string {
+  getCodeFromTitle(name: string): Asset {
     // If the stock was manually set
-    let legacy: string | undefined = Object.keys(manuallySetStocks).find(key => {
+    let predefined: string | undefined = Object.keys(manuallySetAssets).find(key => {
       const envVar = process.env[key];
       return envVar && name.includes(envVar);
     });
-    if (legacy) return legacy;
+    if (predefined) return {code: predefined, name};
 
     // If it's a FII, the code is in the name
     let match = name.match(/FII\s.*?\s([^\s]+?)\sCI/i);
-    if (match && match[1]) return match[1];
+    if (match && match[1]) return {code: match[1], name};
 
     // Else, parse it
     let type: '3'|'4'|'11' = '3';
@@ -198,10 +219,10 @@ export class StockParser {
     else if (name.indexOf(' UNT') !== -1) { indexOf = name.indexOf(' UNT'); type = '11'}
     else indexOf = name.length;
     let justTheName = name.slice(0, indexOf);
-    const stock = this.stocks.find(el => el.tradingName === justTheName);
+    const stock = this.assets.find(el => el.tradingName === justTheName);
     if (!stock) throw new Error(`[SP] No stock found for ${name}`);
 
-    return stock.issuingCompany + type;
+    return {code: stock.issuingCompany + type, name, cnpj: stock.cnpj};
 
   }
 
