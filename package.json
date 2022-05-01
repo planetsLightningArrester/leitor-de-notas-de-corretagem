@@ -1,13 +1,13 @@
 {
   "name": "notas",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "",
   "main": "dist/parse.js",
   "scripts": {
-    "test": "jest --detectOpenHandles --runInBand",
+    "test": "jest --forceExit --runInBand",
     "build": "tsc",
     "parse": "npm run build && node dist/parse.js",
-    "update-stocks": "npm run build && node dist/update.js"
+    "update-assets": "npm run build && node dist/update.js"
   },
   "repository": {
     "type": "git",
