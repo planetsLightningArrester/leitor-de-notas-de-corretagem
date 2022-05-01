@@ -7,7 +7,7 @@ async function main() {
 
   print.green(`Leitor de Notas de Negociação - GNU GPLv3`);
   
-  const assets = new Assets();
+  const assets = new Assets(path.join(__dirname, '..', 'stocks.json'));
   
   let parsedResult: NegotiationNote[] = [];
   const dirPath: string = path.join(__dirname, '..', 'adicione_notas_aqui');

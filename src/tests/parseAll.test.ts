@@ -13,7 +13,7 @@ afterEach(() => {
   global.console = jestConsole;
 });
 
-const assets = new Assets();
+const assets = new Assets(path.join(__dirname, '..', '..', 'stocks.json'));
 
 test('Notes parser', async () => {
   let parsedResult: NegotiationNote[] = [];
@@ -62,7 +62,7 @@ test('Notes parser', async () => {
     result += `\n`;
   });
 
-  fs.writeFileSync(path.join(__dirname, '..', 'Resultado.csv'), result);
+  fs.writeFileSync(path.join(__dirname, '..', '..', 'Resultado.csv'), result);
 
   print.green(`Todas as ${parsedResult.length} notas foram processadas`);
   print.green(`O arquivo "Resultado.csv" foi gerado.`);
