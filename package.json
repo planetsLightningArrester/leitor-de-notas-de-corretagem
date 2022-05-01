@@ -1,12 +1,13 @@
 {
   "name": "notas",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "",
-  "main": "dist/app.js",
+  "main": "dist/parse.js",
   "scripts": {
-    "test": "jest --forceExit --runInBand",
+    "test": "jest --detectOpenHandles --runInBand",
     "build": "tsc",
-    "start": "npm run build && node dist/app.js"
+    "parse": "npm run build && node dist/parse.js",
+    "update-stocks": "npm run build && node dist/update.js"
   },
   "repository": {
     "type": "git",
@@ -20,10 +21,10 @@
   },
   "homepage": "https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem#readme",
   "dependencies": {
-    "axios": "^0.26.1",
+    "axios": "^0.27.2",
+    "dotenv": "^16.0.0",
     "pdfjs-dist": "2.7.570",
-    "printaeu": "^0.1.5",
-    "dotenv": "^16.0.0"
+    "printaeu": "^0.1.5"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -31,8 +32,8 @@
     "@babel/preset-typescript": "^7.16.0",
     "@types/jest": "^27.0.2",
     "@types/node": "^17.0.23",
-    "babel-jest": "^27.3.1",
-    "jest": "^27.2.1",
+    "babel-jest": "27.5.1",
+    "jest": "27.5.1",
     "ts-jest": "^27.0.5",
     "ts-loader": "^9.2.6",
     "ts-node": "^10.4.0",
