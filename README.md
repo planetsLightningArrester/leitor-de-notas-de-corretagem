@@ -9,8 +9,9 @@ Conversor de notas de corretagem para `.csv`. Testado apenas com as notas das co
 3. Faça o download desse repositório
 4. Adicione o PDF das notas de corretagem na pasta `adicione_notas_aqui`. Adicione quantas notas quiser.
 5. Abra um terminal na mesma pasta do arquivo `package.json`. No Windows, basta segurar Shift e clicar com o botão direito na pasta. Selecione a opção "Abrir janela do PowerShell aqui"
-6. Na janela do terminal, rode o comando `npm ci` e aguarde. Caso algum erro ocorra, rode o comando `npm i`
+6. Na janela do terminal, rode o comando `npm ci` e aguarde. Caso algum erro ocorra, rode o comando `npm i`. **Só é necessário fazer essa passo uma vez!** Esse comando instala as dependências. Não precisa rodar sempre que usar o programa
 7. Novamente na janela do termianl, rode o comando `npm run parse` e aguarde. O arquivo `Resultado.csv` será gerado na pasta atual. Ele pode ser importado pelo Excel
+8. É possível abrir o `Resultado.csv` diretamento no Excel, mas é recomendado importar de uma outra maneira para obter-se uma melhor visualização. Abra um novo arquivo do Excel, seleciona a aba `Dados` e clique em `De Text/CSV` (ou digite `csv` na busca do Excel). Então, basta selecionar o arquivo `Resultado.csv`
 
 ## Possíveis problemas
 ### Não foi possível abrir a nota...
