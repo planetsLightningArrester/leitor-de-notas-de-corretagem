@@ -35,7 +35,7 @@ async function main() {
   print.green(`Foram encontrados ${numberOfPdf} PDFs no diretório ${dirPath}. Notas duplicadas serão analisadas e individualmente ignoradas.`);
   
   if (!parsedResult.length) {
-    print.yellow(`Nenhuma nota foi encontrada na pasta src/tests/pdf. As notas devem estar em formato .pdf`);
+    print.yellow(`Nenhuma nota foi encontrada na pasta ${dirPath}. As notas devem estar em formato .pdf`);
     return;
   }
   
