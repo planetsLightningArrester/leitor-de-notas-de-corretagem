@@ -124,10 +124,10 @@ export class Assets {
     }
     try {
       // Patterns
-      let holderPattern = /data.*\n\d{2}\/\d{2}\/\d{4}\n(\w+)/i;
-      let noteNumberPattern = /Nr\. nota\n(\d+)/i;
-      let datePattern = /data.*\n(\d{2}\/\d{2}\/\d{4})/i;
-      let buysAndSellsPattern = /\d[\d,.]*\n(\d[\d,.]*)\n(\d[\d,.]*)\n\d[\d,.]*\n\d[\d,.]*\n\d[\d,.]*\n\d[\d,.]*\n\d[\d,.]*\nResumo dos Negócios/;
+      let holderPattern = /data.*\s+\d{2}\/\d{2}\/\d{4}\s+(\w+)/i;
+      let noteNumberPattern = /Nr\. nota\s+(\d+)/i;
+      let datePattern = /data.*\s+(\d{2}\/\d{2}\/\d{4})/i;
+      let buysAndSellsPattern = /\d[\d,.]*\s+(\d[\d,.]*)\s+(\d[\d,.]*)\s+\d[\d,.]*\s+\d[\d,.]*\s+\d[\d,.]*\s+\d[\d,.]*\s+\d[\d,.]*\nResumo dos Negócios/;
       let feesPattern = [
         /(\d[\d,.]*)\nTaxa de liquidação/,
         /(\d[\d,.]*)\nTaxa de Registro/,
@@ -141,7 +141,7 @@ export class Assets {
         /(\d[\d,.]*)\nI\.R\.R\.F\. s\/ operações, base/,
         /(\d[\d,.]*)\nOutros/
       ];
-      let stockPattern = /1-BOVESPA\n(\w)\n(\w+)\n([\t \n\w\/.]+)\n(?:#\w*\n)?(\d+)\n([\w,]+)\n([\w,.]+)\n/g;
+      let stockPattern = /1-BOVESPA\s+(\w)\s+(\w+)\s+([\t \s+\w\/.]+)\s+(?:#\w*\s+)?(\d+)\s+([\w,]+)\s+([\w,.]+)\s+/g;
       let match: RegExpMatchArray | null;
 
       // Iterate over the pages
