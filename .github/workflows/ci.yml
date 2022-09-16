@@ -2,6 +2,10 @@
 
 name: CI
 
+defaults:
+  run:
+    shell: bash -ieo pipefail {0}
+
 # Controls when the workflow will run
 on:
   # Nightly - running every 00:00 UTC
