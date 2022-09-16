@@ -1,0 +1,57 @@
+# Continuos Integration workflow
+
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Nightly - running every 00:00 UTC
+  schedule:
+    - cron: '0 0 * * *'
+
+  # Main push
+  push:
+    branches: ['main']
+
+  # Allow manual trigger
+  workflow_dispatch:
+
+# Jobs
+jobs:
+
+  rico-compliance:
+    runs-on: [ self-hosted ]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run:  npm ci
+      
+      - name: Run test
+        run:  npm run test rico
+
+  clear-compliance:
+    runs-on: [ self-hosted ]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run:  npm ci
+      
+      - name: Run test
+        run:  npm run test rico
+
+  parser:
+    runs-on: [ self-hosted ]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run:  npm ci
+      
+      - name: Run test
+        run:  npm run test parser
+
+# EOF
