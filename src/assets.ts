@@ -221,7 +221,7 @@ export class Assets {
           while ((match = stockPattern.exec(pageContent)) != null) {
             let op: string = match[1];
             // let market: string = match[2];
-            let stock: Asset = await this.stockParser.getCodeFromTitle(match[3].replace(/\s+/g, ' '));
+            let stock: Asset = this.stockParser.getCodeFromTitle(match[3].replace(/\s+/g, ' '));
             let quantity: number = parseInt(match[4]);
             // let each: number = parseFloat(match[5].replace('.', '').replace(',', '.'));
             let transactionValue: number = parseFloat(match[6].replace('.', '').replace(',', '.'));
@@ -334,6 +334,19 @@ export class Assets {
 
     // console.log(noteResults);
     return parseResults;
+  }
+
+  /**
+   * Add stock definition
+   * @param code stock code
+   * @param name stock name
+   * @param cnpj stock CNPJ
+   */
+  defineStock(code: string, name: string, cnpj?: string): void {
+    // Skip duplicates
+    if (!this.stockParser.customAssets.find(a => a.code === code)) {
+      this.stockParser.customAssets.push({code, name, cnpj});
+    };
   }
 
 }

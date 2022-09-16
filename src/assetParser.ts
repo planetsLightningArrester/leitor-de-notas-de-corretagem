@@ -110,6 +110,10 @@ export class AssetParser {
    */
   protected assets: StockInfos[] = [];
   /**
+   * Assets defined on runtime
+   */
+  customAssets: Asset[] = [];
+  /**
    * Auto-update flag
    */
   autoUpdate: boolean = false;
@@ -206,6 +210,8 @@ export class AssetParser {
       return envVar && name.includes(envVar);
     });
     if (predefined) return {code: predefined, name};
+    let customDefined: Asset | undefined = this.customAssets.find(c => name.includes(c.name));
+    if (customDefined) return customDefined
 
     // If it's a FII, the code is in the name
     let match = name.match(/FII\s.*?\s([^\s]+?)\sCI/i);
