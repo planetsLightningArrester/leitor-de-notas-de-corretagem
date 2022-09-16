@@ -1,16 +1,16 @@
 import { print } from 'printaeu';
 import fs from 'fs';
 import path from 'path';
-import { Assets, NegotiationNote, Deal } from './assets';
+import { Assets, NegotiationNote, Deal } from '../assets';
 
 async function main() {
 
   print.green(`Leitor de Notas de Negociação - GNU GPLv3`);
   
-  const assets = new Assets(path.join(__dirname, '..', 'assets.json'));
+  const assets = new Assets(path.join(__dirname, '..', '..', 'assets.json'));
   
   let parsedResult: NegotiationNote[] = [];
-  const dirPath: string = path.join(__dirname, '..', 'adicione_notas_aqui');
+  const dirPath: string = path.join(__dirname, '..', '..', 'adicione_notas_aqui');
   print.dim.magenta(`Lendo diretório ${dirPath}`);
   if (!fs.existsSync(dirPath)) throw new Error(`Path ${dirPath} doesn't exist`);
   
@@ -59,7 +59,7 @@ async function main() {
     result += `\n`;
   });
   
-  fs.writeFileSync(path.join(__dirname, '..', 'Resultado.csv'), result);
+  fs.writeFileSync(path.join(__dirname, '..', '..', 'Resultado.csv'), result);
   
   print.green(`Todas as ${parsedResult.length} notas foram processadas`);
   print.green(`O arquivo "Resultado.csv" foi gerado no diretório atual.`);

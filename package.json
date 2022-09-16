@@ -6,8 +6,8 @@
   "scripts": {
     "test": "jest --forceExit --runInBand",
     "build": "tsc",
-    "parse": "npm run build && node dist/parse.js",
-    "update-assets": "npm run build && node dist/update.js"
+    "parse": "npm run build && node dist/scripts/parse.js",
+    "update-assets": "npm run build && node dist/scripts/update.js"
   },
   "repository": {
     "type": "git",

@@ -26,6 +26,9 @@ Para resolver esse problema, abra o arquivo `assets.env` e, em uma nova linha, a
 Ex.:
 > CSAN3=COSAN LOG ON
 
+### Nada disso funcinou, e agora?
+Tente usar um otimizador de PDF. Alguns PDFs ficam com espaços "escondidos" que não conseguimos ver, mas atrapalha o script. Esses espaços são removidos quando usamos otimizadores de PDFs.
+
 ## Considerações
 * Os valores totais já incluem os custos totais das notas distribuídos ponderadamente
 * Os valores podem desviar na casa dos centavos. Por favor, sempre verifique se o resultado está de acordo com o esperado.
@@ -34,6 +37,9 @@ Ex.:
 * Caso encontre problemas na conversão, pode-se tentar atualizar a lista de ações rodando no terminal o comando `npm run update-assets`
 * Se encontrar algum outro problema, considere reportar na aba `Issues`
 * Os FIIs não possuem CNPJ na tabela gerada
+
+## Contribuidores
+Obrigado à quem me enviou notas de negociação para os testes ❤️. Os dados pessoais não são armazenados nem são usados em testes, apenas o conteúdo das notas.
 
 ## Obrigado? De nada
 Se te ajudei, manda um "Valeu!" 👋 pelo pix 😊
