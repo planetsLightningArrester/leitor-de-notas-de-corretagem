@@ -1,0 +1,46 @@
+# Release workflow
+
+name: Create release
+
+# Controls when the workflow will run
+on: 
+  # Triggers the workflow on push or pull request event but only for the main branch
+  push:
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+
+  # Call CI
+  ci-check:
+    uses: ./.github/workflows/ci.yml
+    secrets: inherit
+
+  # Create the release if CI success
+  create-release:
+    # The type of runner that the job will run on
+    runs-on: [ self-hosted ]
+    needs: ci-check
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set Release version
+        runs: echo "RELEASE_VERSION=$(echo ${{ github.ref_name }} | cut -c 2-)" >> $GITHUB_ENV
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_TOKEN }} # Created a "personal token" and added as a "secret" in the repo settings
+        with:
+          tag_name: v${{ env.RELEASE_VERSION }}
+          release_name: v${{ env.RELEASE_VERSION }}
+          body_path: ./CHANGELOG.md
+
+      # TODO Upload binaries in the future?
+
+# EOF
