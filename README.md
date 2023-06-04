@@ -1,7 +1,9 @@
 # Leitor de notas de corretagem
 
 ## Introdução
-Conversor de notas de corretagem para `.csv`. Testado apenas com as notas das corretoras Rico e Clear. Automaticamente ignora notas duplicadas, mesmo que em PDFs diferentes.
+Conversor de notas de corretagem para `.csv`. Testado majoritariamento com as notas das corretoras Rico e Clear. Automaticamente ignora notas duplicadas, mesmo que em PDFs diferentes.
+
+> Notas do Inter também parecem funcionar, mas não há muitos testes disponíveis
 
 ## Modo de usar
 1. Instale o [NodeJS](https://nodejs.org/en/). Qualquer versão acima do 14.0 serve.

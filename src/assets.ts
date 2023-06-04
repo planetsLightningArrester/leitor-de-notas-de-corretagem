@@ -1,8 +1,7 @@
-import { print } from "printaeu";
-import * as PDFJS from 'pdfjs-dist/es5/build/pdf';
 import fs from 'fs';
 import path from "path";
-import { PDFDocumentProxy } from "pdfjs-dist/types/display/api";
+import { print } from "printaeu";
+import * as pdfjs from 'pdfjs-dist';
 import { Asset, AssetParser } from "./assetParser";
 const envsSet = require('dotenv').config({ path: path.join(__dirname, '..', 'config.env') }).parsed;
 
@@ -110,25 +109,46 @@ export class Assets {
     
     let parseResults: NegotiationNote[] = []
     const noteName: string = path.basename(noteFullPath);
-    let pdf: PDFDocumentProxy | undefined;
+    let pdf: pdfjs.PDFDocumentProxy | undefined;
     const possiblePasswords: string[] = [...this.cachedPasswords, ...Object.keys(envsSet)];
     for await (const key of possiblePasswords) {
       try {
-        pdf = await PDFJS.getDocument({url: noteFullPath, password: envsSet[key]}).promise;
+        pdf = await pdfjs.getDocument({url: noteFullPath, password: envsSet[key], useSystemFonts: true}).promise;
         if (!this.cachedPasswords.includes(envsSet[key])) this.cachedPasswords.push(envsSet[key]);
         break;
       } catch (error) {/** Prevent the  failure and try again with another password */}
     }
-    if (!pdf) {
-      throw new Error(`Não foi possível abrir a nota ${noteFullPath}. Verifique se esse PDF possui senha. Caso positivo, adicione a senha em uma nova linha no arquivo "config.env" no formato "PDF_PASSWORD1=123". Você pode adicionar mais de uma senha.`);
-    }
+    
+    // Check if PDF was loaded
+    if (!pdf) throw new Error(`Não foi possível abrir a nota ${noteFullPath}. Verifique se esse PDF possui senha. Caso positivo, adicione a senha em uma nova linha no arquivo "config.env" no formato "PDF_PASSWORD1=123". Você pode adicionar mais de uma senha.`);
+    
     try {
       // Patterns
       let holderPattern = /data.*\s+\d{2}\/\d{2}\/\d{4}\s+(\w+)/i;
       let noteNumberPattern = /Nr\. nota\s+(\d+)/i;
       let datePattern = /data.*\s+(\d{2}\/\d{2}\/\d{4})/i;
-      let buysAndSellsPattern = /\d[\d,.]*\s+(\d[\d,.]*)\s+(\d[\d,.]*)\s+\d[\d,.]*\s+\d[\d,.]*\s+\d[\d,.]*\s+\d[\d,.]*\s+\d[\d,.]*\nResumo dos Negócios/;
-      let feesPattern = [
+      // ?* Clear and Rico summary pattern
+      // ? Debentures
+      // ? Vendas a vista
+      // ? Compras a vista
+      // ? Opções - compras
+      // ? Opções - vendas
+      // ? Operações a termo
+      // ? Valor das oper/ c/títulos públ. (v. nom.)
+      // ? Valor das operações
+      let buysAndSellsClearRicoPattern = /\d[\d,.]*\s+(\d[\d,.]*)\s+(\d[\d,.]*)\s+\d[\d,.]*\s+\d[\d,.]*\s+\d[\d,.]*\s+\d[\d,.]*\s+\d[\d,.]*\n\nResumo dos Negócios/;
+      // ?* Inter summary pattern
+      // ? Valor das oper/ c/títulos públ. (v. nom.)
+      // ? Valor das operações
+      // ? Opções - compras
+      // ? Debentures
+      // ? Operações a termo
+      // ? Opções - vendas
+      // ? Compras a vista
+      // ? Vendas a vista
+      let buysAndSellsInterPattern = /Debêntures\n\d[\d,.]*\s+\d[\d,.]*\s+\d[\d,.]*\s+\d[\d,.]*\s+\d[\d,.]*\s+\d[\d,.]*\s+(\d[\d,.]*)\s+(\d[\d,.]*)/;
+      // ?* Clear and Rico fees pattern
+      let feesClearRicoPattern = [
         /(\d[\d,.]*)\nTaxa de liquidação/,
         /(\d[\d,.]*)\nTaxa de Registro/,
         /(\d[\d,.]*)\nTaxa de termo\/opções/,
@@ -141,7 +161,35 @@ export class Assets {
         /(\d[\d,.]*)\nI\.R\.R\.F\. s\/ operações, base/,
         /(\d[\d,.]*)\nOutros/
       ];
-      let stockPattern = /1-BOVESPA\s+(\w)\s+(\w+)\s+([\t \s+\w\/.]+)\s+(?:#\w*\s+)?(\d+)\s+([\w,]+)\s+([\w,.]+)\s+/g;
+      // ?* Inter fees pattern
+      let feesInterPattern = [
+        // Taxa de Liquidação
+        /Taxa de Registro\s+\w+\s+\w+\s+\w+\s+Total\s+\d[\d,.]*\s+\w+\s+\d[\d,.]*\s+(\d[\d,.]*)\s+\d[\d,.]*/,
+        // Taxa de Registro
+        /Taxa de Registro\s+\w+\s+\w+\s+\w+\s+Total\s+\d[\d,.]*\s+\w+\s+\d[\d,.]*\s+\d[\d,.]*\s+(\d[\d,.]*)/,
+        // Emolumentos
+        /Emolumentos\s+\w+\s+\w+\s+\w+\s+(\d[\d,.]*)\s+\d[\d,.]*\s+\d[\d,.]*/,
+        // Taxa A.N.A.
+        /Emolumentos\s+\w+\s+\w+\s+\w+\s+\d[\d,.]*\s+(\d[\d,.]*)\s+\d[\d,.]*/,
+        // Taxa de opções/futuro
+        /Emolumentos\s+\w+\s+\w+\s+\w+\s+\d[\d,.]*\s+\d[\d,.]*\s+(\d[\d,.]*)/,
+        // Clearing
+        /Clearing\s+(\d[\d,.]*)\s+\d[\d,.]*\s+\d[\d,.]*\s+\d[\d,.]*\s+\d[\d,.]*\s+\d[\d,.]*/,
+        // Execução
+        /Clearing\s+\d[\d,.]*\s+(\d[\d,.]*)\s+\d[\d,.]*\s+\d[\d,.]*\s+\d[\d,.]*\s+\d[\d,.]*/,
+        // Execução casa
+        /Clearing\s+\d[\d,.]*\s+\d[\d,.]*\s+(\d[\d,.]*)\s+\d[\d,.]*\s+\d[\d,.]*\s+\d[\d,.]*/,
+        // Impostos
+        /Clearing\s+\d[\d,.]*\s+\d[\d,.]*\s+\d[\d,.]*\s+(\d[\d,.]*)\s+\d[\d,.]*\s+\d[\d,.]*/,
+        // IRRF s/ operações
+        /Clearing\s+\d[\d,.]*\s+\d[\d,.]*\s+\d[\d,.]*\s+\d[\d,.]*\s+(\d[\d,.]*)\s+\d[\d,.]*/,
+        // Outras
+        /Clearing\s+\d[\d,.]*\s+\d[\d,.]*\s+\d[\d,.]*\s+\d[\d,.]*\s+\d[\d,.]*\s+(\d[\d,.]*)/,
+      ];
+      // ?* Clear and Rico stock pattern
+      let stockClearRicoPattern = /1-BOVESPA\s+(\w)\s+(\w+)\s+([\t \s+\w\/.]+)\s+(?:#\w*\s+)?(\d+)\s+([\w,]+)\s+([\w,.]+)\s+/g;
+      // ?* Inter stock pattern
+      let stockInterPattern = /Bovespa\s+(\w+)\s+(\w+)\s+(\d+)\s+(\d+[\d,.]*)\s+(\d+[\d,.]*)\s+\w+\s(\w+\s+[\w \t]+)/g;
       let match: RegExpMatchArray | null;
 
       // Iterate over the pages
@@ -157,7 +205,7 @@ export class Assets {
             pageContent += `${item.str}\n`;
           }
         }
-        if (pageContent.match(buysAndSellsPattern) && pageContent.match(noteNumberPattern)) {
+        if ((pageContent.match(buysAndSellsClearRicoPattern) || pageContent.match(buysAndSellsInterPattern)) && pageContent.match(noteNumberPattern)) {
           // fs.writeFileSync(path.join(__dirname, 'content.txt'), pageContent, {encoding: 'utf-8', flag: 'a+'});
 
           // Get note's number
@@ -189,42 +237,64 @@ export class Assets {
           // Note total
           let buyTotal: number = 0;
           let sellTotal: number = 0;
-          if ((match = pageContent.match(buysAndSellsPattern)) !== null) {
+          if ((match = pageContent.match(buysAndSellsClearRicoPattern)) !== null) {
             sellTotal = parseFloat(match[1].replace(/\./g, '').replace(',', '.'));
             buyTotal = parseFloat(match[2].replace(/\./g, '').replace(',', '.'));
-          } else {
-            print.yellow(`[AS] Error parsing note '${noteName}'. Couldn't get note buys and sells values`);
-          }
+          } else if ((match = pageContent.match(buysAndSellsInterPattern)) !== null) {
+            buyTotal = parseFloat(match[1].replace(/\./g, '').replace(',', '.'));
+            sellTotal = parseFloat(match[2].replace(/\./g, '').replace(',', '.'));
+          } else print.yellow(`[AS] Error parsing note '${noteName}'. Couldn't get note buys and sells values`);
 
           // Get the fees
           let fees: number = 0;
-          feesPattern.forEach(fee => {
-            let match = pageContent.match(fee);
-            if (match && match[1]) {
-              fees += parseFloat(match[1].replace(/\./g, '').replace(',', '.')); 
-            }
-          });
-          if (fees) {
-            parseResult.fees = (parseFloat(parseResult.fees) + fees).toFixed(2);
+          if (parseResult.holder.toLowerCase() === 'inter') {
+            feesInterPattern.forEach(fee => {
+              let match = pageContent.match(fee);
+              if (match && match[1]) {
+                fees += parseFloat(match[1].replace(/\./g, '').replace(',', '.')); 
+              }
+            });
+          } else {
+            feesClearRicoPattern.forEach(fee => {
+              let match = pageContent.match(fee);
+              if (match && match[1]) {
+                fees += parseFloat(match[1].replace(/\./g, '').replace(',', '.')); 
+              }
+            });
           }
-
+          if (fees) parseResult.fees = (parseFloat(parseResult.fees) + fees).toFixed(2);
+          
           // Generate the CheckOut for the value bought
-          if (buyTotal) {
-            parseResult.buyTotal = buyTotal.toFixed(2);
-          } 
+          if (buyTotal) parseResult.buyTotal = buyTotal.toFixed(2);
           
           // Generate the CheckIn for the value sold
-          if (sellTotal) {
-            parseResult.sellTotal = sellTotal.toFixed(2);
-          }
+          if (sellTotal) parseResult.sellTotal = sellTotal.toFixed(2);
+
+          let stockPattern = parseResult.holder.toLowerCase() === 'inter'?stockInterPattern:stockClearRicoPattern;
 
           while ((match = stockPattern.exec(pageContent)) != null) {
-            let op: string = match[1];
-            // let market: string = match[2];
-            let stock: Asset = this.stockParser.getCodeFromTitle(match[3].replace(/\s+/g, ' '));
-            let quantity: number = parseInt(match[4]);
-            // let each: number = parseFloat(match[5].replace('.', '').replace(',', '.'));
-            let transactionValue: number = parseFloat(match[6].replace('.', '').replace(',', '.'));
+            let op: string;
+            // let market: string;
+            let stock: Asset;
+            let quantity: number;
+            // let each: number;
+            let transactionValue: number;
+
+            if (parseResult.holder.toLowerCase() === 'inter') {
+              op = match[2] || '';
+              // market = match[1] || '';
+              stock = this.stockParser.getCodeFromTitle(match[6].replace(/\s+/g, ' '));
+              quantity = parseInt(match[3] || '');
+              // each = parseFloat(match[4].replace('.', '').replace(',', '.'));
+              transactionValue = parseFloat(match[5].replace('.', '').replace(',', '.'));
+            } else {
+              op = match[1];
+              // market = match[2];
+              stock = this.stockParser.getCodeFromTitle(match[3].replace(/\s+/g, ' '));
+              quantity = parseInt(match[4]);
+              // each = parseFloat(match[5].replace('.', '').replace(',', '.'));
+              transactionValue = parseFloat(match[6].replace('.', '').replace(',', '.'));
+            }
 
             if (!stock) print.yellow(`[AS] Can't find ${match[3]}`);
 

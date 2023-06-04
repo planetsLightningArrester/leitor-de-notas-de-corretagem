@@ -25,8 +25,8 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - name: Checkout code 📥
+        uses: actions/checkout@v3
 
       - name: Set Release version
         runs: echo "RELEASE_VERSION=$(echo ${{ github.ref_name }} | cut -c 2-)" >> $GITHUB_ENV

@@ -12,7 +12,7 @@
         "<node_internals>/**"
       ],
       "preLaunchTask": "tsc: build - tsconfig.json",
-      "program": "${workspaceFolder}/dist/parse.js",
+      "program": "${workspaceFolder}/dist/scripts/parse.js",
       "args": [
         "C:\\Users\\franc\\repos\\notas\\src\\tests\\notes"
       ],
@@ -28,8 +28,7 @@
         "--inspect-brk",
         "${workspaceRoot}/node_modules/jest/bin/jest.js",
         "--runInBand",
-        "clear.test.ts",
-        "--t='without'"
+        "inter.test.ts"
       ],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
