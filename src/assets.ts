@@ -3,93 +3,54 @@ import path from "path";
 import { print } from "printaeu";
 import * as pdfjs from 'pdfjs-dist';
 import { Asset, AssetParser } from "./assetParser";
+/** Manually set passwords */
 const envsSet = require('dotenv').config({ path: path.join(__dirname, '..', 'config.env') }).parsed;
 
-/**
- * Deals made in a `NegotiationNote`
- */
+/** Deals made in a `NegotiationNote` */
 export interface Deal {
-  /**
-   * Deal type
-   */
+  /** Deal type */
   type: 'buy' | 'sell'
-  /**
-   * Stock/FII code
-   */
+  /** Stock/FII code */
   code: string
-  /**
-   * Amount bought/sold
-   */
+  /** Amount bought/sold */
   quantity: number
-  /**
-   * Average value bought/sold with fees applied
-   */
+  /** Average value bought/sold with fees applied */
   average: string
-  /**
-   * Total amount bought/sold with fees applied
-   */
+  /** Total amount bought/sold with fees applied */
   price: string
-  /**
-   * Deal date in format yyyy-MM-dd
-   */
+  /** Deal date in format yyyy-MM-dd */
   date: string
-  /**
-   * Asset's CNPJ
-   */
+  /** Asset's CNPJ */
   cnpj: string
 }
 
-/**
- * A parsed Negotiation Note
- */
+/** A parsed Negotiation Note */
 export class NegotiationNote {
-  /**
-   * Negotiation note number
-   */
+  /** Negotiation note number */
   number: string = '';
-  /**
-   * The total amount bought with fees applied
-   */
+  /** The total amount bought with fees applied */
   buyTotal: string = '0'
-  /**
-   * The total amount sold with fees applied
-   */
+  /** The total amount sold with fees applied */
   sellTotal: string = '0'
-  /**
-   * The total amount of buy fees
-   */
+  /** The total amount of buy fees */
   buyFees: string = '0'
-  /**
-   * The total amount of sell fees
-   */
+  /** The total amount of sell fees */
   sellFees: string = '0'
-  /**
-   * The total amount of fees
-   */
+  /** The total amount of fees */
   fees: string = '0'
-  /**
-   * Negotiation note date in format yyyy-MM-dd
-   */
+  /** Negotiation note date in format yyyy-MM-dd */
   date: string = ''
-  /**
-   * Negotiation note holder
-   */
+  /** Negotiation note holder */
   holder: string = ''
-  /**
-   * Array of deals with buys and sells
-   */
+  /** Array of deals with buys and sells */
   deals: Deal[] = []
 }
 
-/**
- * Assets handler
- */
+/** Assets handler */
 export class Assets {
 
   recordData: boolean = false;
-  /**
-   * Path to the JSON data file
-   */
+  /** Path to the JSON data file */
   private stockParser: AssetParser;
 
   private cachedPasswords: string[] = [];
