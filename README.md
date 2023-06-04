@@ -26,7 +26,16 @@ Para as ações que não conseguiram ser automaticamente identificadas, ocorrer�
 
 Para resolver esse problema, abra o arquivo `assets.env` e, em uma nova linha, adicione manualmente o código da ação e o nome dela (conforme nota) seguido do seu tipo
 Ex.:
-> CSAN3=COSAN LOG ON
+```Bash
+CSAN3=COSAN LOG ON
+```
+
+Se uma ação tiver mudado o nome, mas mantido o código, você pode associar o mesmo código a dois nomes usando um underscore seguido de um incremento
+Ex.:
+```Bash
+KDIF11=FIDC KINEA INFRAF
+KDIF11_2=FIDC FDC KINEAINF
+```
 
 ### Nada disso funcinou, e agora?
 Tente usar um otimizador de PDF. Alguns PDFs ficam com espaços "escondidos" que não conseguimos ver, mas atrapalha o script. Esses espaços são removidos quando usamos otimizadores de PDFs.

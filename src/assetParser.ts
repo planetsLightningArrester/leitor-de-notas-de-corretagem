@@ -209,7 +209,11 @@ export class AssetParser {
       const envVar = process.env[key];
       return envVar && name.includes(envVar);
     });
-    if (predefined) return {code: predefined, name};
+    // ? Some pre-defined stocks can refer to multiple names
+    // ? KDIF11=FIDC KINEA INFRAF
+    // ? KDIF11_2=FIDC FDC KINEAINF
+    // ? In that case, consider the same stock by removing the _
+    if (predefined) return {code: predefined.replace(/(.*)_.*/, "$1"), name};
     let customDefined: Asset | undefined = this.customAssets.find(c => name.includes(c.name));
     if (customDefined) return customDefined
 
