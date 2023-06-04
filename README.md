@@ -6,7 +6,7 @@ Conversor de notas de corretagem para `.csv`. Testado majoritariamento com as no
 > Notas do Inter também parecem funcionar, mas não há muitos testes disponíveis
 
 ## Modo de usar
-1. Instale o [NodeJS](https://nodejs.org/en/). Qualquer versão acima do 14.0 serve.
+1. Instale o [NodeJS](https://nodejs.org/en/). Requer a versão 18 ou acima.
 2. Na hora da instalação, tenha certeza de marcar a opção de "Adicionar ao PATH", caso seja perguntado (Windows)
 3. Faça o download desse repositório
 4. Adicione o PDF das notas de corretagem na pasta `adicione_notas_aqui`. Adicione quantas notas quiser.

@@ -27,9 +27,6 @@ jobs:
 
   inter-compliance:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node: [14, 16, 18]
     steps:
       - name: Checkout code 📥
         uses: actions/checkout@v3
@@ -37,7 +34,7 @@ jobs:
       - name: NodeJS setup 🛠️
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node }}
+          node-version: 18
 
       - name: Install dependencies and build 🔧
         run:  npm ci

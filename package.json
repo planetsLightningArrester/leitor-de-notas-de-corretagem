@@ -1,10 +1,13 @@
 {
-  "name": "notas",
-  "version": "0.1.2",
+  "name": "leitor-de-notas-de-corretagem",
+  "version": "0.2.0",
   "description": "Parse Brazilian PDF brokerage notes to CSV",
   "main": "dist/parse.js",
+  "engines": {
+    "node": "^18.x"
+  },
   "scripts": {
-    "test": "jest --forceExit --runInBand",
+    "test": "jest --forceExit --runInBand --detectOpenHandles",
     "build": "tsc",
     "parse": "npm run build && node dist/scripts/parse.js",
     "update-assets": "npm run build && node dist/scripts/update.js"
