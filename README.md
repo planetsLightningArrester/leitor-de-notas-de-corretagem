@@ -33,8 +33,8 @@ CSAN3=COSAN LOG ON
 Se uma ação tiver mudado o nome, mas mantido o código, você pode associar o mesmo código a dois nomes usando um underscore seguido de um incremento
 Ex.:
 ```Bash
-KDIF11=FIDC KINEA INFRAF
-KDIF11_2=FIDC FDC KINEAINF
+KDIF11=KINEA INFRAF FIDC
+KDIF11_2=FDC KINEAINF FIDC
 ```
 
 ### Nada disso funcinou, e agora?

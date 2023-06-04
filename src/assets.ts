@@ -147,10 +147,10 @@ export class Assets {
         // Outras
         /Clearing\s+\d[\d,.]*\s+\d[\d,.]*\s+\d[\d,.]*\s+\d[\d,.]*\s+\d[\d,.]*\s+(\d[\d,.]*)/,
       ];
-      // ?* Clear and Rico stock pattern
+      // ?* Clear and Rico stock pattern. This is also the default in case the holder isn't defined
       let stockClearRicoPattern = /1-BOVESPA\s+(\w)\s+(\w+)\s+([\t \s+\w\/.]+)\s+(?:#\w*\s+)?(\d+)\s+([\w,]+)\s+([\w,.]+)\s+/g;
       // ?* Inter stock pattern
-      let stockInterPattern = /Bovespa\s+(\w+)\s+(\w+)\s+(\d+)\s+(\d+[\d,.]*)\s+(\d+[\d,.]*)\s+\w+\s(\w+\s+[\w \t]+)/g;
+      let stockInterPattern = /Bovespa\s+(\w+)\s+(\w+)\s+(\d+)\s+(\d+[\d,.]*)\s+(\d+[\d,.]*)\s+\w+\s(\w+\s+)([ \t\w\/.]+)/g;
       let match: RegExpMatchArray | null;
 
       // Iterate over the pages
@@ -208,15 +208,15 @@ export class Assets {
 
           // Get the fees
           let fees: number = 0;
-          if (parseResult.holder.toLowerCase() === 'inter') {
-            feesInterPattern.forEach(fee => {
+          if (parseResult.holder.toLowerCase() !== 'inter') {
+            feesClearRicoPattern.forEach(fee => {
               let match = pageContent.match(fee);
               if (match && match[1]) {
                 fees += parseFloat(match[1].replace(/\./g, '').replace(',', '.')); 
               }
             });
           } else {
-            feesClearRicoPattern.forEach(fee => {
+            feesInterPattern.forEach(fee => {
               let match = pageContent.match(fee);
               if (match && match[1]) {
                 fees += parseFloat(match[1].replace(/\./g, '').replace(',', '.')); 
@@ -231,7 +231,8 @@ export class Assets {
           // Generate the CheckIn for the value sold
           if (sellTotal) parseResult.sellTotal = sellTotal.toFixed(2);
 
-          let stockPattern = parseResult.holder.toLowerCase() === 'inter'?stockInterPattern:stockClearRicoPattern;
+          // Use the stock pattern based on the holder
+          let stockPattern = parseResult.holder.toLowerCase() !== 'inter'?stockClearRicoPattern:stockInterPattern;
 
           while ((match = stockPattern.exec(pageContent)) != null) {
             let op: string;
@@ -241,20 +242,22 @@ export class Assets {
             // let each: number;
             let transactionValue: number;
 
-            if (parseResult.holder.toLowerCase() === 'inter') {
-              op = match[2] || '';
-              // market = match[1] || '';
-              stock = this.stockParser.getCodeFromTitle(match[6].replace(/\s+/g, ' '));
-              quantity = parseInt(match[3] || '');
-              // each = parseFloat(match[4].replace('.', '').replace(',', '.'));
-              transactionValue = parseFloat(match[5].replace('.', '').replace(',', '.'));
-            } else {
+            if (parseResult.holder.toLowerCase() !== 'inter') {
               op = match[1];
               // market = match[2];
               stock = this.stockParser.getCodeFromTitle(match[3].replace(/\s+/g, ' '));
               quantity = parseInt(match[4]);
               // each = parseFloat(match[5].replace('.', '').replace(',', '.'));
               transactionValue = parseFloat(match[6].replace('.', '').replace(',', '.'));
+            } else {
+              op = match[2] || '';
+              // market = match[1] || '';
+              // ? Inter gives ON AMBEV S/A instead of AMBEV S/A ON
+              const stockTitle = `${match[7].trim()} ${match[6].trim()}`;
+              stock = this.stockParser.getCodeFromTitle(stockTitle);
+              quantity = parseInt(match[3] || '');
+              // each = parseFloat(match[4].replace('.', '').replace(',', '.'));
+              transactionValue = parseFloat(match[5].replace('.', '').replace(',', '.'));
             }
 
             if (!stock) print.yellow(`[AS] Can't find ${match[3]}`);
