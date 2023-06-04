@@ -1,7 +1,7 @@
 {
   "name": "notas",
-  "version": "0.1.1",
-  "description": "",
+  "version": "0.1.2",
+  "description": "Parse Brazilian PDF brokerage notes to CSV",
   "main": "dist/parse.js",
   "scripts": {
     "test": "jest --forceExit --runInBand",
@@ -21,22 +21,22 @@
   },
   "homepage": "https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem#readme",
   "dependencies": {
-    "axios": "^0.27.2",
-    "dotenv": "^16.0.0",
-    "pdfjs-dist": "2.7.570",
-    "printaeu": "^0.1.5"
+    "axios": "^1.4.0",
+    "dotenv": "^16.1.3",
+    "pdfjs-dist": "^3.7.107",
+    "printaeu": "^0.1.11"
   },
   "devDependencies": {
-    "@babel/core": "^7.16.0",
-    "@babel/preset-env": "^7.16.0",
-    "@babel/preset-typescript": "^7.16.0",
-    "@types/jest": "^27.0.2",
-    "@types/node": "^17.0.23",
-    "babel-jest": "27.5.1",
-    "jest": "27.5.1",
-    "ts-jest": "^27.0.5",
-    "ts-loader": "^9.2.6",
-    "ts-node": "^10.4.0",
-    "typescript": "^4.5.3"
+    "@babel/core": "^7.22.1",
+    "@babel/preset-env": "^7.22.4",
+    "@babel/preset-typescript": "^7.21.5",
+    "@types/jest": "^29.5.2",
+    "@types/node": "^20.2.5",
+    "babel-jest": "^29.5.0",
+    "jest": "^29.5.0",
+    "ts-jest": "^29.1.0",
+    "ts-loader": "^9.4.3",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.3"
   }
 }
