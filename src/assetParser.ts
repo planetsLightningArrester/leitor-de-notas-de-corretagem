@@ -222,11 +222,14 @@ export class AssetParser {
     if (match && match[1]) return {code: match[1], name};
 
     // Else, parse it
-    let type: '3'|'4'|'11' = '3';
+    let type: '3'|'4'|'11'|'31'|'32'|'33' = '3';
     let indexOf: number;
-    if (name.indexOf(' ON') !== -1) { indexOf = name.indexOf(' ON'); type = '3'}
-    else if (name.indexOf(' PN') !== -1) { indexOf = name.indexOf(' PN'); type = '4'}
-    else if (name.indexOf(' UNT') !== -1) { indexOf = name.indexOf(' UNT'); type = '11'}
+    if (name.indexOf(' ON') !== -1) { indexOf = name.indexOf(' ON'); type = '3' }
+    else if (name.indexOf(' PN') !== -1) { indexOf = name.indexOf(' PN'); type = '4' }
+    else if (name.indexOf(' UNT') !== -1) { indexOf = name.indexOf(' UNT'); type = '11' }
+    else if (name.indexOf(' DR1') !== -1) { indexOf = name.indexOf(' DR1'); type = '31' }
+    else if (name.indexOf(' DR2') !== -1) { indexOf = name.indexOf(' DR2'); type = '32' }
+    else if (name.indexOf(' DR3') !== -1) { indexOf = name.indexOf(' DR3'); type = '33' }
     else indexOf = name.length;
     let justTheName = name.slice(0, indexOf);
     const stock = this.assets.find(el => el.tradingName === justTheName);
