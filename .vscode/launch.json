@@ -5,20 +5,10 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "node",
+      "command": "npm start",
       "name": "Parse",
       "request": "launch",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
-      "preLaunchTask": "tsc: build - tsconfig.json",
-      "program": "${workspaceFolder}/dist/scripts/parse.js",
-      "args": [
-        "C:\\Users\\franc\\repos\\notas\\src\\tests\\notes"
-      ],
-      "outFiles": [
-        "${workspaceFolder}/dist/**/*.js"
-      ]
+      "type": "node-terminal"
     },
     {
       "name": "Jest",
