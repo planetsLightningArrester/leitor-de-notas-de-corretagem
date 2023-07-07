@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2023-07-06
+### Added
+- Add CNPJ to FIIs
+
+### Changed
+- Use [parser-de-notas-de-corretagem](https://www.npmjs.com/package/parser-de-notas-de-corretagem) to parse the notes
+
+### Removed
+- No assets parser is exported anymore. Don't use this as a package, instead use [parser-de-notas-de-corretagem](https://www.npmjs.com/package/parser-de-notas-de-corretagem)
+
 ## [0.2.0] - 2023-06-04
 ### Added
 - Add support to Inter notes, but with very few tests
