@@ -7,11 +7,12 @@
     "node": "^18.x"
   },
   "scripts": {
-    "build": "rimraf dist && tsc",
+    "build": "rimraf dist && npm run lint && tsc",
     "parse": "npm run start",
     "start": "npm run build && node dist/parse.js",
     "test": "jest --forceExit --runInBand --detectOpenHandles",
-    "update-assets": "npm i parser-de-notas-de-corretagem@latest"
+    "update-assets": "npm i parser-de-notas-de-corretagem@latest",
+    "lint": "eslint --fix"
   },
   "repository": {
     "type": "git",
