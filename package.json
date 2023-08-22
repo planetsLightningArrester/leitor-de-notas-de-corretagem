@@ -1,6 +1,6 @@
 {
   "name": "leitor-de-notas-de-corretagem",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Parse Brazilian PDF brokerage notes to CSV",
   "main": "dist/parse.js",
   "engines": {
