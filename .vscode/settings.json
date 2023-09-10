@@ -1,5 +1,9 @@
 {
   "debug.allowBreakpointsEverywhere": true,
   "editor.formatOnSave": true,
-  "editor.formatOnPaste": true
+  "editor.formatOnPaste": true,
+  "cSpell.words": [
+    "pdfs",
+    "sveltestrap"
+  ]
 }

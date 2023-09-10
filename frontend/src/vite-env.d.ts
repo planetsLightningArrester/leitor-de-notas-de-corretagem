@@ -3,7 +3,6 @@
 
 interface Window {
   api: {
-    getCounterResponseFromServer: (func: (event: Electron.IpcRendererEvent, counter: number) => void) => void,
-    updateServerCounter: (counter: number) => void
+    processNotes: (callback: (event: Electron.IpcRendererEvent, counter: number) => void) => void
   }
 }
