@@ -7,6 +7,7 @@ dist
 
 *.png
 !**/src/**/*.png
+!frontend/**/*.png
 backend/src/client/**
 
 # Playwright

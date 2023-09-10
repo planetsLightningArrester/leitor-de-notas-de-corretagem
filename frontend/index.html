@@ -1,13 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + Svelte + Electron + TS</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+
+  <!-- Bootstrap -->
+  <link href="./style/bootstrap.min.css" rel="stylesheet">
+  <script src="./js/bootstrap.bundle.min.js"></script>
+
+  <!-- Google Fonts -->
+  <link href="style/RobotoSlab.css" rel="stylesheet">
+
+  <title>Leitor de notas de corretagem</title>
+
+  <!-- Local styles -->
+  <link href="style/footer.css" rel="stylesheet">
+  <link href="style/title.css" rel="stylesheet">
+  <link href="style/drop-zone.css" rel="stylesheet">
+
+  <style>
+    body {
+      background-image: url("./images/bg.png");
+    }
+
+    .w-80 {
+      width: 80%;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app"></div>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+
 </html>
