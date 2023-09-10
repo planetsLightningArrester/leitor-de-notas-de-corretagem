@@ -1,0 +1,26 @@
+{
+  "name": "leitor-de-notas-de-corretagem-frontend",
+  "version": "0.0.1",
+  "description": "Svelte app for the frontend of the leitor de notas de corretagem",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && node scripts/parsePath.js dist/index.html && rimraf ../backend/src/client/ && npm run copy-client",
+    "preview": "vite preview",
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "copy-client": "run-script-os",
+    "copy-client:default": "mkdir -p ../backend/src/client && cp -rf dist/* ../backend/src/client/",
+    "copy-client:win32": "xcopy dist\\* ..\\backend\\src\\client\\ /e /i /h"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^2.0.2",
+    "@tsconfig/svelte": "^4.0.1",
+    "rimraf": "^5.0.1",
+    "run-script-os": "^1.1.6",
+    "svelte": "^3.55.1",
+    "svelte-check": "^3.4.3",
+    "tslib": "^2.5.0",
+    "typescript": "^5.1.3",
+    "vite": "^4.1.0"
+  }
+}

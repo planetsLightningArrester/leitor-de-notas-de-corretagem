@@ -1,6 +1,7 @@
 {
   "recommendations": [
-    "streetsidesoftware.code-spell-checker-portuguese-brazilian",
-    "streetsidesoftware.code-spell-checker"
+    "ms-playwright.playwright",
+    "svelte.svelte-vscode",
+    "dbaeumer.vscode-eslint"
   ]
 }

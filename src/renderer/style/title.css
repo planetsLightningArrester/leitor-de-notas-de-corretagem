@@ -1,0 +1,11 @@
+.title-container {
+  margin-top: 100px;
+}
+
+.title-text {
+  font-family: 'Roboto Slab', serif;
+  text-align: center;
+  color: #D6D6D6;
+  font-size: 50px;
+  text-shadow: 0 0 6px #000000, 0 0 10px #000000;
+}

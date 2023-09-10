@@ -1,3 +1,5 @@
 {
-  "cSpell.language": "en,pt-BR"
+  "debug.allowBreakpointsEverywhere": true,
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true
 }

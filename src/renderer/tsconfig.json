@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "lib": [
+      "ES2015",
+      "DOM"
+    ],
+    "module": "UMD",
+    "outDir": "dist",
+    "strict": true,
+    "target": "ES2015",
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  }
+}

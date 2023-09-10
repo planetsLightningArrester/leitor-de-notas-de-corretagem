@@ -6,6 +6,11 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   plugins: ['@typescript-eslint'],
   root: true,
+  env: {
+    browser: true,
+    node: true,
+    jasmine: true
+  },
   rules: {
     "@typescript-eslint/no-var-requires": 'off',
     "@typescript-eslint/naming-convention": 'error',
@@ -16,5 +21,5 @@ module.exports = {
     "semi": 'error',
     "no-unused-vars": 'error',
     "no-loop-func": 'error',
-  }
+  },
 };

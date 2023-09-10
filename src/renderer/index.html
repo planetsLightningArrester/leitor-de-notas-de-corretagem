@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Bootstrap -->
+  <link href="./style/bootstrap.min.css" rel="stylesheet">
+  <script src="./js/bootstrap.bundle.min.js"></script>
+
+  <!-- Google Fonts -->
+  <link href="style/RobotoSlab.css" rel="stylesheet">
+
+  <title>Leitor de notas de corretagem</title>
+
+  <!-- Local styles -->
+  <link href="style/footer.css" rel="stylesheet">
+  <link href="style/title.css" rel="stylesheet">
+  <link href="style/drop-zone.css" rel="stylesheet">
+
+  <style>
+    body {
+      background-image: url("./images/bg.png");
+    }
+
+    .w-80 {
+      width: 80%;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Title -->
+  <div class="container">
+    <div class="container title-container">
+      <div class="row">
+        <div class="col">
+          <p class="title-text"><b>Leitor de notas de corretagem</b></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Drop zone -->
+  <div id="drop-zone-div" class="container d-flex justify-content-center" ondrop="filePickerOnDrop(event);"
+    ondragover="event.preventDefault()">
+    <div id="drop-zone" class="align-items-center">
+      <span class="drop-zone-text">Arraste as notas ou clique para carregar 📤</span>
+    </div>
+  </div>
+
+  <!-- Bottom bar -->
+  <div class="footer fixed-bottom m-auto w-80">
+    <footer class="d-flex flex-wrap justify-content-center align-items-center py-3 border-top">
+      <span id="footer-text-left" class="footer-text"></span>
+      <span class="footer-text">|</span>
+      <a style="display: flex;" data-bs-toggle="tooltip" data-bs-title="Página do GitHub"
+        href="https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem">
+        <img class="github-cat" src="./github.svg" alt="GitHub" height="20px">
+      </a>
+    </footer>
+  </div>
+  <script src="./dist/client.js"></script>
+
+</body>
+
+</html>

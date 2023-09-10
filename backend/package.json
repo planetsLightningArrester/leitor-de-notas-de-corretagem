@@ -1,0 +1,52 @@
+{
+  "name": "leitor-de-notas-de-corretagem-backend",
+  "version": "0.0.1",
+  "description": "Electron app and server for the leitor de notas de corretagem",
+  "main": "dist/main.js",
+  "scripts": {
+    "compile": "rimraf dist && tsc -b && npm run copy-client",
+    "compile:dev": "rimraf dist && tsc -b",
+    "start": "npm run compile && electron-forge start",
+    "start:dev": "run-script-os",
+    "start:dev:default": "NODE_ENV=development && nodemon -L",
+    "start:dev:win32": "set NODE_ENV=development && nodemon -L",
+    "copy-client": "run-script-os",
+    "copy-client:default": "cp -r src/client dist && cp -r src/images dist",
+    "copy-client:win32": "xcopy src\\client dist\\client /e /i /h && xcopy src\\images dist\\images /e /i /h",
+    "move-output": "run-script-os",
+    "move-output:default": "rimraf ../dist && mv out ../dist",
+    "move-output:win32": "rimraf ../dist && move out ..\\dist",
+    "test": "run-script-os",
+    "test:default": "NODE_ENV=development nodemon --config nodemon.test.json",
+    "test:win32": "set NODE_ENV=development && nodemon --config nodemon.test.json",
+    "test-ui": "run-script-os",
+    "test-ui:default": "NODE_ENV=development playwright test --ui",
+    "test-ui:win32": "set NODE_ENV=development && playwright test --ui",
+    "package": "npm run compile && electron-forge package && npm run move-output",
+    "make": "npm run compile && electron-forge make && npm run move-output"
+  },
+  "keywords": [],
+  "author": "planetsLightningArrester",
+  "license": "MIT",
+  "devDependencies": {
+    "@electron-forge/cli": "^6.2.1",
+    "@electron-forge/maker-deb": "^6.2.1",
+    "@electron-forge/maker-rpm": "^6.2.1",
+    "@electron-forge/maker-squirrel": "^6.2.1",
+    "@electron-forge/maker-zip": "^6.2.1",
+    "@electron-forge/plugin-auto-unpack-natives": "^6.2.1",
+    "@playwright/test": "^1.35.1",
+    "@types/node": "^20.3.1",
+    "electron": "^25.1.1",
+    "nodemon": "^2.0.22",
+    "rimraf": "^5.0.1",
+    "run-script-os": "^1.1.6",
+    "typescript": "^5.1.3"
+  },
+  "dependencies": {
+    "electron-squirrel-startup": "^1.0.0",
+    "dotenv": "^16.1.3",
+    "parser-de-notas-de-corretagem": "^0.8.24",
+    "printaeu": "^0.1.11"
+  }
+}
