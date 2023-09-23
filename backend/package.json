@@ -44,9 +44,9 @@
     "typescript": "^5.1.3"
   },
   "dependencies": {
-    "electron-squirrel-startup": "^1.0.0",
     "dotenv": "^16.1.3",
-    "parser-de-notas-de-corretagem": "^0.8.24",
+    "electron-squirrel-startup": "^1.0.0",
+    "parser-de-notas-de-corretagem": "^0.8.66",
     "printaeu": "^0.1.11"
   }
 }

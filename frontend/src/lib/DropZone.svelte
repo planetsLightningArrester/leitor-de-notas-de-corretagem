@@ -27,8 +27,20 @@
       return;
     }
 
-    // window.api.processNotes(pdfs)
-    console.log(pdfs);
+    const notes: NoteToBeParsed[] = [];
+    for await (const pdf of pdfs) {
+      notes.push({
+        name: pdf.name,
+        content: await pdf.arrayBuffer(),
+      });
+    }
+    window.api.processNotes(notes, (event, result) => {
+      console.log(event);
+      console.log(result);
+    });
+
+    mainText = "Arraste as notas ou clique para carregar 📤";
+    loading = false;
   }
 
   function onclick() {

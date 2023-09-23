@@ -1,4 +1,6 @@
+import { NoteToBeParsed } from './types';
 import { ipcRenderer, contextBridge } from 'electron';
+import { NegotiationNote } from 'parser-de-notas-de-corretagem';
 
 window.addEventListener('DOMContentLoaded', () => {
 
@@ -18,12 +20,15 @@ window.addEventListener('DOMContentLoaded', () => {
 
 /** Context bridge. Map the IPC communication between the client and the server */
 contextBridge.exposeInMainWorld("api", {
-  updateServerCounter: function (counter: number) {
-    ipcRenderer.send("Counter", counter);
-  },
-  getCounterResponseFromServer: function (func: (event: Electron.IpcRendererEvent, counter: number) => void) {
-    ipcRenderer.on("Counter", (event, ...args) => {
-      func(event, args[0]);
+  /**
+   * Send a request to the server to parse brokerage notes
+   * @param notes an `Array` of `NoteToBeParsed`
+   * @param callback a callback with an `event` and a `result` of the parser
+   */
+  processNotes: (notes: NoteToBeParsed[], callback: (event: Electron.IpcRendererEvent, result: NegotiationNote[]) => void) => {
+    ipcRenderer.send("process-notes", notes);
+    ipcRenderer.on("notes-results", (event, ...args) => {
+      callback(event, args[0]);
     });
   }
 });
