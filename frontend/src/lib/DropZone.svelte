@@ -1,8 +1,14 @@
 <script lang="ts">
-  import { Container, Row, Spinner } from "sveltestrap";
+  import type { Deal, NegotiationNote } from "parser-de-notas-de-corretagem";
+  import { Container, Row, Spinner, Col } from "sveltestrap";
 
   let mainText = "Arraste as notas ou clique para carregar 📤";
   let loading = false;
+  /** Note results*/
+  let notes: NegotiationNote[] = [];
+  /** Note results for the tab "all"*/
+  let flatDeals: Deal[] = [];
+  export let onUpdate: (notes: NegotiationNote[], flatDeals: Deal[]) => void;
 
   async function processNotes(files: Array<File>) {
     mainText = "Processando";
@@ -27,16 +33,22 @@
       return;
     }
 
-    const notes: NoteToBeParsed[] = [];
+    const toParse: NoteToBeParsed[] = [];
     for await (const pdf of pdfs) {
-      notes.push({
+      toParse.push({
         name: pdf.name,
         content: await pdf.arrayBuffer(),
       });
     }
-    window.api.processNotes(notes, (event, result) => {
+    window.api.processNotes(toParse, (event, result) => {
+      result.forEach((n: NegotiationNote) =>
+        n.deals.sort((p, c) => (p.code < c.code ? -1 : 1))
+      );
+      notes = result;
+      flatDeals = result.flatMap((n: NegotiationNote) => n.deals);
       console.log(event);
       console.log(result);
+      onUpdate(notes, flatDeals);
     });
 
     mainText = "Arraste as notas ou clique para carregar 📤";
@@ -69,16 +81,6 @@
     event.preventDefault();
     mainText = "Arraste as notas ou clique para carregar 📤";
   }
-
-  // // Listen to server requests
-  // window.api.getCounterResponseFromServer((_, data) => {
-  //   console.log(`Received ${JSON.stringify(data)} from main process`);
-  // });
-
-  // $: {
-  //   // Send a message to the main process every time the counter is updated
-  //   window.api.updateServerCounter(count);
-  // }
 </script>
 
 <!-- Drop zone -->
@@ -99,8 +101,10 @@
   </button>
 </div>
 <Container>
-  <Row>
-    <span class="info-text">Nenhum dado sai do seu computador</span>
+  <Row class="justify-content-center">
+    <Col xs="4" style="text-align: center;">
+      <p class="info-text">Nenhum dado é coletado</p>
+    </Col>
   </Row>
 </Container>
 
@@ -149,7 +153,7 @@
     text-align: center;
     user-select: none;
     text-shadow: 0 0 6px #000000, 0 0 10px #000000;
-    background-color: #00000009;
+    background-color: #0000006b;
     border-radius: 10px;
   }
 </style>

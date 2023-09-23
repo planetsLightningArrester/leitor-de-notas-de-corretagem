@@ -19,6 +19,6 @@ interface Window {
      * @param notes an `Array` of `NoteToBeParsed`
      * @param callback a callback with an `event` and a `result` of the parser
      */
-    processNotes: (notes: NoteToBeParsed[], callback: (event: Electron.IpcRendererEvent, result: NegotiationNote) => void) => void
+    processNotes: (notes: NoteToBeParsed[], callback: (event: Electron.IpcRendererEvent, result: NegotiationNote[]) => void) => void
   }
 }
