@@ -50,7 +50,7 @@
     {#each notes as note}
       <TabPane tabId={note.number}>
         <span slot="tab">
-          N {note.number}
+          Nº {note.number}
         </span>
         <Table responsive>
           <thead>
@@ -78,3 +78,16 @@
     {/each}
   </TabContent>
 </Container>
+
+<style>
+  th {
+    padding: 8px;
+    color: white;
+    text-align: center;
+  }
+  td {
+    background-color: #353944;
+    color: white;
+    text-align: center;
+  }
+</style>
