@@ -5,10 +5,8 @@ import { app, BrowserWindow } from 'electron';
 /** Creates a new window and starts the server. Called by `app.whenReady()` */
 function createWindow() {
   const win = new BrowserWindow({
-    width: 1280,
-    height: 600,
-    maxWidth: 1600,
-    maxHeight: 900,
+    width: 1600,
+    height: 900,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
