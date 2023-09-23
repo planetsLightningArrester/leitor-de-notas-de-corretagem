@@ -6,9 +6,9 @@
 </script>
 
 <!-- Bottom bar -->
-<div class="footer fixed-bottom m-auto w-80">
+<div class="footer fixed-bottom justify-content-center">
   <footer
-    class="d-flex flex-wrap justify-content-center align-items-center py-3 border-top"
+    class="d-flex flex-wrap justify-content-center align-items-center py-3 border-top w-80 m-auto"
   >
     <span
       id="footer-text-left"
@@ -29,6 +29,10 @@
 </div>
 
 <style>
+  .footer {
+    background-color: #171b26;
+  }
+
   .footer-text {
     color: #d6d6d6;
     font-size: 15px;
