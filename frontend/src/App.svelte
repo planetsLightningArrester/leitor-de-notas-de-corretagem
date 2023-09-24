@@ -64,7 +64,7 @@
             >
               <Button
                 color="secondary"
-                style="margin-bottom: 15px; background: none"
+                style="margin-bottom: 75px; background: none"
                 on:click={() => {
                   activeIndex = 1;
                   clickedBack = false;

@@ -102,7 +102,10 @@
 </div>
 <Container>
   <Row class="justify-content-center">
-    <Col xs="4" style="text-align: center;">
+    <Col
+      xs="8"
+      style="text-align: center; margin-bottom: 20px; max-width: 350px"
+    >
       <p class="info-text">Nenhum dado é coletado</p>
     </Col>
   </Row>
