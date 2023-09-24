@@ -157,5 +157,6 @@
     text-shadow: 0 0 6px #000000, 0 0 10px #000000;
     background-color: #0000006b;
     border-radius: 10px;
+    margin-top: 10px;
   }
 </style>
