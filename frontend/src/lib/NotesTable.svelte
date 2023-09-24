@@ -86,8 +86,8 @@
     text-align: center;
   }
   td {
-    background-color: #353944;
-    color: white;
+    background-color: #353944 !important;
+    color: white !important;
     text-align: center;
   }
 </style>

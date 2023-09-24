@@ -13,6 +13,7 @@
   } from "sveltestrap";
   import NotesTable from "./lib/NotesTable.svelte";
   import { NegotiationNote, type Deal } from "parser-de-notas-de-corretagem";
+  import Find from "./lib/Find.svelte";
 
   let notes: NegotiationNote[] = [];
   let flatDeals: Deal[] = [];
@@ -33,6 +34,7 @@
 <Styles />
 
 <main>
+  <Find />
   <Carousel items={[]} bind:activeIndex interval={false}>
     <CarouselItem bind:activeIndex itemIndex={0} class="fade-in">
       <!-- Title -->
