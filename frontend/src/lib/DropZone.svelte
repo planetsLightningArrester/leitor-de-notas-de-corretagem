@@ -1,6 +1,7 @@
 <script lang="ts">
-  import type { Deal, NegotiationNote } from "parser-de-notas-de-corretagem";
+  import { sortDeals } from "./common";
   import { Container, Row, Spinner, Col } from "sveltestrap";
+  import type { Deal, NegotiationNote } from "parser-de-notas-de-corretagem";
 
   let mainText = "Arraste as notas ou clique para carregar 📤";
   let loading = false;
@@ -41,28 +42,11 @@
       });
     }
 
-    /**
-     * Sort `Deal`s using the `Array.sort` function
-     * @param a a `Deal`
-     * @param b a `Deal`
-     */
-    function sort(a: Deal, b: Deal): number {
-      if (a.code < b.code) return -1;
-      else if (a.code > b.code) return 1;
-      else {
-        if (
-          a.date.split("").reverse().join() < b.date.split("").reverse().join()
-        )
-          return -1;
-        else return 1;
-      }
-    }
-
     window.api.processNotes(toParse, (_, result) => {
-      result.forEach((n: NegotiationNote) => n.deals.sort(sort));
+      result.forEach((n) => n.deals.sort(sortDeals));
       notes = result;
-      flatDeals = result.flatMap((n: NegotiationNote) => n.deals);
-      flatDeals.sort(sort);
+      flatDeals = result.flatMap((n) => n.deals);
+      flatDeals.sort(sortDeals);
       onUpdate(notes, flatDeals);
     });
 

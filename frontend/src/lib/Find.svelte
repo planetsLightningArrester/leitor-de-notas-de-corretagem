@@ -1,20 +1,33 @@
-<script lang="ts">
-  let search: string = "";
+<script context="module" lang="ts">
   interface Matches {
     element: HTMLElement;
     originalColor: string;
   }
   let lastMatches: Matches[] = [];
-  function clearMatches() {
+  /**
+   * Clear the Find search
+   * @param clearInput whether to clear also the text input. Default is `false`
+   */
+  export function clearMatches(clearInput = false) {
     try {
       let match: Matches | undefined;
       while ((match = lastMatches.shift()) !== undefined) {
         match.element.style.color = match.originalColor;
       }
+      if (clearInput) {
+        const find = document.getElementById(
+          "find"
+        ) as unknown as HTMLInputElement;
+        if (find) find.value = "";
+      }
     } catch (error) {
       console.log(error);
     }
   }
+</script>
+
+<script lang="ts">
+  let search: string = "";
 
   // Listen to Ctrl + F
   document.addEventListener(
@@ -26,8 +39,7 @@
       } else if (e.key === "Escape") {
         const find = document.getElementById("find");
         if (find) find.blur();
-        clearMatches();
-        search = "";
+        clearMatches(true);
       }
     },
     false

@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { clearMatches } from "./Find.svelte";
+  import { type TableHeader, sortDeals } from "./common";
   import { Container, Table, TabContent, TabPane, Icon } from "sveltestrap";
   import { NegotiationNote, type Deal } from "parser-de-notas-de-corretagem";
 
@@ -27,7 +29,36 @@
       .join("");
   }
 
-  $: {
+  /** Current table sort order */
+  let currentSortOrder: {
+    header: TableHeader;
+    direction: "up" | "down";
+  } = {
+    header: "code",
+    direction: "down",
+  };
+
+  /**
+   * Handle clicks on the headers to define the sort order
+   * @param header the `TableHeader` clicked
+   */
+  function sortTable(header: TableHeader) {
+    // ? This is required to prevent highlights to keep selecting a row that was re-arranged
+    clearMatches(true);
+    let direction: "up" | "down";
+    if (header === currentSortOrder.header) {
+      direction = currentSortOrder.direction === "up" ? "down" : "up";
+      currentSortOrder.direction = direction;
+    } else {
+      direction = "down";
+      currentSortOrder = { header, direction };
+    }
+
+    notes.forEach((n) =>
+      n.deals.sort((p, c) => sortDeals(p, c, header, direction))
+    );
+    flatDeals.sort((p, c) => sortDeals(p, c, header, direction));
+    // ? Force re-rendering
     notes = notes;
     flatDeals = flatDeals;
   }
@@ -51,12 +82,48 @@
       </span>
       <Table responsive>
         <thead>
-          <th>Código</th>
-          <th>CNPJ</th>
-          <th>Data</th>
-          <th>Compra/Venda</th>
-          <th>Quantidade</th>
-          <th>Preços+custos</th>
+          <th on:click={() => sortTable("code")}
+            >Código{currentSortOrder.header === "code"
+              ? currentSortOrder.direction === "down"
+                ? "▼"
+                : "▲"
+              : ""}</th
+          >
+          <th on:click={() => sortTable("cnpj")}
+            >CNPJ{currentSortOrder.header === "cnpj"
+              ? currentSortOrder.direction === "down"
+                ? "▼"
+                : "▲"
+              : ""}</th
+          >
+          <th on:click={() => sortTable("date")}
+            >Data{currentSortOrder.header === "date"
+              ? currentSortOrder.direction === "down"
+                ? "▼"
+                : "▲"
+              : ""}</th
+          >
+          <th on:click={() => sortTable("type")}
+            >Compra/Venda{currentSortOrder.header === "type"
+              ? currentSortOrder.direction === "down"
+                ? "▼"
+                : "▲"
+              : ""}</th
+          >
+          <th on:click={() => sortTable("quantity")}
+            >Quantidade{currentSortOrder.header === "quantity"
+              ? currentSortOrder.direction === "down"
+                ? "▼"
+                : "▲"
+              : ""}</th
+          >
+          <th on:click={() => sortTable("price")}
+            >Preços+custos{currentSortOrder.header === "price"
+              ? currentSortOrder.direction === "down"
+                ? "▼"
+                : "▲"
+              : ""}</th
+          >
         </thead>
         <tbody>
           {#each flatDeals as deal}
@@ -78,14 +145,48 @@
           Nº {note.number}
         </span>
         <Table responsive>
-          <thead>
-            <th>Código</th>
-            <th>CNPJ</th>
-            <th>Data</th>
-            <th>Compra/Venda</th>
-            <th>Quantidade</th>
-            <th>Preços+custos</th>
-          </thead>
+          <th on:click={() => sortTable("code")}
+            >Código{currentSortOrder.header === "code"
+              ? currentSortOrder.direction === "down"
+                ? "▼"
+                : "▲"
+              : ""}</th
+          >
+          <th on:click={() => sortTable("cnpj")}
+            >CNPJ{currentSortOrder.header === "cnpj"
+              ? currentSortOrder.direction === "down"
+                ? "▼"
+                : "▲"
+              : ""}</th
+          >
+          <th on:click={() => sortTable("date")}
+            >Data{currentSortOrder.header === "date"
+              ? currentSortOrder.direction === "down"
+                ? "▼"
+                : "▲"
+              : ""}</th
+          >
+          <th on:click={() => sortTable("type")}
+            >Compra/Venda{currentSortOrder.header === "type"
+              ? currentSortOrder.direction === "down"
+                ? "▼"
+                : "▲"
+              : ""}</th
+          >
+          <th on:click={() => sortTable("quantity")}
+            >Quantidade{currentSortOrder.header === "quantity"
+              ? currentSortOrder.direction === "down"
+                ? "▼"
+                : "▲"
+              : ""}</th
+          >
+          <th on:click={() => sortTable("price")}
+            >Preços+custos{currentSortOrder.header === "price"
+              ? currentSortOrder.direction === "down"
+                ? "▼"
+                : "▲"
+              : ""}</th
+          >
           <tbody>
             {#each note.deals as deal}
               <tr>
@@ -111,6 +212,7 @@
     padding: 8px;
     color: white;
     text-align: center;
+    cursor: pointer;
   }
   td {
     background-color: #353944 !important;
