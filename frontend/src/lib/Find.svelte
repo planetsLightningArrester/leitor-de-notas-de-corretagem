@@ -73,4 +73,8 @@
     top: 10px;
     right: 10px;
   }
+  #find {
+    border-radius: 12px;
+    padding: 3px 6px 3px 6px;
+  }
 </style>
