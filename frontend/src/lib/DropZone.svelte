@@ -40,14 +40,29 @@
         content: await pdf.arrayBuffer(),
       });
     }
-    window.api.processNotes(toParse, (event, result) => {
-      result.forEach((n: NegotiationNote) =>
-        n.deals.sort((p, c) => (p.code < c.code ? -1 : 1))
-      );
+
+    /**
+     * Sort `Deal`s using the `Array.sort` function
+     * @param a a `Deal`
+     * @param b a `Deal`
+     */
+    function sort(a: Deal, b: Deal): number {
+      if (a.code < b.code) return -1;
+      else if (a.code > b.code) return 1;
+      else {
+        if (
+          a.date.split("").reverse().join() < b.date.split("").reverse().join()
+        )
+          return -1;
+        else return 1;
+      }
+    }
+
+    window.api.processNotes(toParse, (_, result) => {
+      result.forEach((n: NegotiationNote) => n.deals.sort(sort));
       notes = result;
       flatDeals = result.flatMap((n: NegotiationNote) => n.deals);
-      console.log(event);
-      console.log(result);
+      flatDeals.sort(sort);
       onUpdate(notes, flatDeals);
     });
 
