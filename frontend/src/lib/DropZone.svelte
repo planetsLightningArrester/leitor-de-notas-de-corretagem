@@ -1,16 +1,65 @@
 <script lang="ts">
   import { sortDeals } from "./common";
-  import { Container, Row, Spinner, Col } from "sveltestrap";
-  import type { Deal, NegotiationNote } from "parser-de-notas-de-corretagem";
+  import {
+    Container,
+    Row,
+    Spinner,
+    Col,
+    Modal,
+    ModalBody,
+    ModalFooter,
+    Button,
+  } from "sveltestrap";
+  import type {
+    Deal,
+    NegotiationNote,
+    WrongPassword,
+  } from "parser-de-notas-de-corretagem";
 
   let mainText = "Arraste as notas ou clique para carregar 📤";
   let loading = false;
   /** Note results*/
   let notes: NegotiationNote[] = [];
+  /** List of possible passwords */
+  let passwords: string[] = [];
   /** Note results for the tab "all"*/
   let flatDeals: Deal[] = [];
+  let errors: NoteToBeParsed[] = [];
+  /**
+   * Callback when the parsed notes are updated
+   * @param notes `NegotiationNote`s parsed
+   * @param flatDeals all `Deal`s in a flat `Array`
+   */
   export let onUpdate: (notes: NegotiationNote[], flatDeals: Deal[]) => void;
 
+  /**
+   * Handle server response of a parse request
+   * @param request the requested `NoteToBeParsed[]`
+   * @param response an `Array` with the server response, where the first
+   * position are possible password errors, and the second position are the
+   * successfully parsed `NegotiationNote[]` results
+   */
+  function handleServerResponse(
+    request: NoteToBeParsed[],
+    response: [WrongPassword[], NegotiationNote[]]
+  ) {
+    const [_errors, result] = response;
+    errors = _errors.flatMap((e) => request.find((p) => p.name === e.message));
+    result.forEach((n) => n.deals.sort(sortDeals));
+    notes.push(
+      ...result.filter((r) => !notes.some((n) => n.number === r.number))
+    );
+    notes = notes;
+    flatDeals = notes.flatMap((n) => n.deals);
+    flatDeals.sort(sortDeals);
+    onUpdate(notes, flatDeals);
+  }
+
+  /**
+   * Get input files from drag-and-drop or file picker, send the request to the server,
+   * and process the response
+   * @param files files picked or dragged-and-dropped
+   */
   async function processNotes(files: Array<File>) {
     mainText = "Processando";
     loading = true;
@@ -42,13 +91,10 @@
       });
     }
 
-    window.api.processNotes(toParse, (_, result) => {
-      result.forEach((n) => n.deals.sort(sortDeals));
-      notes = result;
-      flatDeals = result.flatMap((n) => n.deals);
-      flatDeals.sort(sortDeals);
-      onUpdate(notes, flatDeals);
-    });
+    // Send the request to the server
+    window.api
+      .processNotes(toParse, passwords)
+      .then((response) => handleServerResponse(toParse, response));
 
     mainText = "Arraste as notas ou clique para carregar 📤";
     loading = false;
@@ -109,6 +155,58 @@
     </Col>
   </Row>
 </Container>
+<!-- Modal with errors -->
+<Modal
+  header="⚠️ PDFs com senha"
+  isOpen={!!errors.length}
+  toggle={() => (errors = [])}
+>
+  <ModalBody>
+    <p>
+      Os PDFs abaixo precisam de senha. Você pode inserir mais de uma
+      possibilidade de senha para os PDFs
+    </p>
+    {#each errors as error}
+      <p>🔑 <b>{error.name}</b></p>
+    {/each}
+    <Row class="justify-content-center">
+      <input
+        class="password-input"
+        type="password"
+        placeholder="Possibilidade 1"
+        bind:value={passwords[0]}
+      />
+    </Row>
+    <Row class="justify-content-center">
+      <input
+        class="password-input"
+        type="password"
+        placeholder="Possibilidade 2"
+        bind:value={passwords[1]}
+      />
+    </Row>
+    <Row class="justify-content-center">
+      <input
+        class="password-input"
+        type="password"
+        placeholder="Possibilidade 3"
+        bind:value={passwords[2]}
+      />
+    </Row>
+  </ModalBody>
+  <ModalFooter>
+    <button
+      class="btn btn-primary"
+      on:click={() =>
+        window.api
+          .processNotes(errors, passwords)
+          .then((response) => handleServerResponse(errors, response))}
+    >
+      Tentar novamente
+    </button>
+    <Button on:click={() => (errors = [])}>Ignorar</Button>
+  </ModalFooter>
+</Modal>
 
 <style>
   #drop-zone {
@@ -158,5 +256,11 @@
     background-color: #0000006b;
     border-radius: 10px;
     margin-top: 10px;
+  }
+
+  .password-input {
+    border-radius: 12px;
+    padding: 3px 6px 3px 6px;
+    max-width: 200px;
   }
 </style>

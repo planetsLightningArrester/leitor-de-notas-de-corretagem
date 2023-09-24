@@ -1,6 +1,6 @@
 import { NoteToBeParsed } from './types';
 import { ipcRenderer, contextBridge } from 'electron';
-import { NegotiationNote } from 'parser-de-notas-de-corretagem';
+import { NegotiationNote, WrongPassword } from 'parser-de-notas-de-corretagem';
 
 window.addEventListener('DOMContentLoaded', () => {
 
@@ -25,10 +25,14 @@ contextBridge.exposeInMainWorld("api", {
    * @param notes an `Array` of `NoteToBeParsed`
    * @param callback a callback with an `event` and a `result` of the parser
    */
-  processNotes: (notes: NoteToBeParsed[], callback: (event: Electron.IpcRendererEvent, result: NegotiationNote[]) => void) => {
-    ipcRenderer.send("process-notes", notes);
-    ipcRenderer.on("notes-results", (event, ...args) => {
-      callback(event, args[0]);
+  processNotes: async (notes: NoteToBeParsed[], passwords: string[]): Promise<[WrongPassword[], NegotiationNote[]]> => {
+    ipcRenderer.send("process-notes", notes, passwords);
+    return await new Promise<[WrongPassword[], NegotiationNote[]]>(resolve => {
+      ipcRenderer.on("notes-results", (_, ...args) => {
+        const errors: WrongPassword[] = args[0][0];
+        const results: NegotiationNote[] = args[0][1];
+        resolve([errors, results]);
+      });
     });
   }
 });
