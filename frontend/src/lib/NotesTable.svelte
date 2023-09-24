@@ -6,6 +6,27 @@
   export let flatDeals: Deal[] = [];
   export let onClickBack: () => void;
 
+  /**
+   * Format money to display
+   * @param value a string value formatted as `AAAAAA.BB`
+   * @returns the `value` formatted as `AAA.AAA,BB`
+   */
+  function formatMoneyToDisplay(value: string): string {
+    return value
+      .replace(".", "")
+      .split("")
+      .reverse()
+      .flatMap((c, i, arr) =>
+        i - 2 > 0 && i < arr.length - 1 && (i - 1) % 3 === 0
+          ? `.${c}`
+          : i === 1
+          ? `,${c}`
+          : c
+      )
+      .reverse()
+      .join("");
+  }
+
   $: {
     notes = notes;
     flatDeals = flatDeals;
@@ -20,7 +41,11 @@
     name="arrow-left"
   />
   <TabContent>
-    <TabPane tabId="all" active>
+    <TabPane
+      tabId="all"
+      style="overflow: auto!important; max-height: 70vh!important"
+      active
+    >
       <span slot="tab">
         Tudo <Icon name="clipboard-data" />
       </span>
@@ -41,7 +66,7 @@
               <td>{deal.date}</td>
               <td>{deal.type === "buy" ? "Compra" : "Venda"}</td>
               <td>{deal.quantity}</td>
-              <td>R$ {deal.price.replace(".", ",")}</td>
+              <td>R$ {formatMoneyToDisplay(deal.price)}</td>
             </tr>
           {/each}
         </tbody>
@@ -69,7 +94,9 @@
                 <td>{deal.date}</td>
                 <td>{deal.type === "buy" ? "Compra" : "Venda"}</td>
                 <td>{deal.quantity}</td>
-                <td>R$ {deal.price.replace(".", ",")}</td>
+                <td>
+                  R$ {formatMoneyToDisplay(deal.price)}
+                </td>
               </tr>
             {/each}
           </tbody>
