@@ -13,6 +13,7 @@
     <span
       id="footer-text-left"
       class="footer-text"
+      spellcheck="false"
       contenteditable
       bind:textContent={footerTextLeftTextContent}
     />
