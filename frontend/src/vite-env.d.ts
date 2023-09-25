@@ -17,7 +17,7 @@ interface Window {
      * @param callback a callback with an `event` and a `result` of the parser
      */
     processNotes: (notes: NoteToBeParsed[], passwords: string[]) => Promise<[
-      import("parser-de-notas-de-corretagem").WrongPassword[],
+      Array<import("parser-de-notas-de-corretagem").WrongPassword | import("parser-de-notas-de-corretagem").UnknownAsset>,
       import("parser-de-notas-de-corretagem").NegotiationNote[]
     ]>
   }

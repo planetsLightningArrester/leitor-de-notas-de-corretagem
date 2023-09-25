@@ -12,13 +12,60 @@
     Styles,
   } from "sveltestrap";
   import NotesTable from "./lib/NotesTable.svelte";
-  import { NegotiationNote, type Deal } from "parser-de-notas-de-corretagem";
+  import {
+    type NegotiationNote,
+    type Deal,
+    type WrongPassword,
+    type UnknownAsset,
+  } from "parser-de-notas-de-corretagem";
   import Find from "./lib/Find.svelte";
+  import PasswordModal from "./lib/PasswordModal.svelte";
+  import { sortDeals } from "./lib/common";
 
+  /** List of possible passwords */
+  let passwords: string[] = [];
+  /** Parsed notes */
   let notes: NegotiationNote[] = [];
+  /** Note results for the tab "all"*/
   let flatDeals: Deal[] = [];
+  /** Notes that issued a wrong password error*/
+  let notesWithWrongPassword: NoteToBeParsed[] = [];
+  /** Notes that issued a unknown asset error*/
+  let notesWithUnknownAssets: NoteToBeParsed[] = [];
+
+  // Page index control
   let activeIndex = 0;
   let clickedBack = false;
+
+  /**
+   * Handle server response of a parse request
+   * @param request the requested `NoteToBeParsed[]`
+   * @param response an `Array` with the server response, where the first
+   * position are possible password errors, and the second position are the
+   * successfully parsed `NegotiationNote[]` results
+   */
+  function handleServerResponse(
+    request: NoteToBeParsed[],
+    response: [Array<WrongPassword | UnknownAsset>, NegotiationNote[]]
+  ) {
+    const [_errors, result] = response;
+    notesWithWrongPassword = _errors.flatMap(
+      (e) =>
+        e.name === "WrongPassword" && request.find((p) => p.name === e.file)
+    );
+    notesWithUnknownAssets = _errors.flatMap(
+      (e) => e.name === "UnknownAsset" && request.find((p) => p.name === e.file)
+    );
+    result.forEach((n) => n.deals.sort(sortDeals));
+    notes.push(
+      ...result.filter((r) => !notes.some((n) => n.number === r.number))
+    );
+    notes = notes;
+    flatDeals = notes.flatMap((n) => n.deals);
+    flatDeals.sort(sortDeals);
+    clickedBack = false;
+  }
+
   $: {
     activeIndex =
       !clickedBack &&
@@ -49,10 +96,11 @@
       </Container>
       <!-- Drop zone -->
       <DropZone
-        onUpdate={(_notes, _flatDeals) => {
-          clickedBack = false;
-          notes = _notes;
-          flatDeals = _flatDeals;
+        onUpdate={(notesToParse) => {
+          // Send the request to the server
+          window.api
+            .processNotes(notesToParse, passwords)
+            .then((response) => handleServerResponse(notesToParse, response));
         }}
       />
       {#if clickedBack}
@@ -99,6 +147,22 @@
   </Carousel>
   <!-- Footer -->
   <Footer />
+
+  <!-- Hidden items -->
+  <PasswordModal
+    {passwords}
+    {notesWithWrongPassword}
+    onRetry={() => {
+      window.api
+        .processNotes(notesWithWrongPassword, passwords)
+        .then((response) =>
+          handleServerResponse(notesWithWrongPassword, response)
+        );
+    }}
+    onDismiss={() => {
+      notesWithWrongPassword = [];
+    }}
+  />
 </main>
 
 <style global>
