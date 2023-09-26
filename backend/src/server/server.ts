@@ -1,5 +1,5 @@
 import { Print, color } from "printaeu";
-import { NoteToBeParsed } from "../types";
+import { CustomAsset, NoteToBeParsed } from "../types";
 import { BrowserWindow, ipcMain } from "electron";
 import { NegotiationNote, NoteParser, WrongPassword as _WrongPassword, UnknownAsset as _UnknownAsset } from "parser-de-notas-de-corretagem";
 
@@ -59,7 +59,7 @@ class UnknownAsset extends BasicError {
    * @param asset the unknown asset name in the note
    */
   constructor(message: string, file: string, asset: string) {
-    super("UnknownError", message);
+    super("UnknownAsset", message);
     this.file = file;
     this.asset = asset;
   }
@@ -78,6 +78,10 @@ export async function server(win: BrowserWindow) {
   ipcMain.on("process-notes", async (_, ...args) => {
     const pdfs: NoteToBeParsed[] = args[0];
     const _passwords: string[] = args[1];
+    const customAssets: CustomAsset[] = args[2];
+    customAssets.forEach(a => {
+      noteParser.defineStock(a.code, a.name, a.cnpj, a.isFII);
+    });
     passwords.push(..._passwords.filter(i => !passwords.includes(i)));
     info.log(`Got ${pdfs.length} notes to parse`);
 

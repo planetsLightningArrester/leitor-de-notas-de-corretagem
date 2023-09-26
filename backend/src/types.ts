@@ -4,4 +4,21 @@ export interface NoteToBeParsed {
   name: string,
   /** File content as an ArrayBuffer */
   content: ArrayBuffer
+  /** Some notes have missing assets */
+  missingAsset?: string
+}
+
+/** User defined asset */
+export interface CustomAsset {
+  /**
+   * Asset code
+   * @example "ABEV3"
+   */
+  code: string
+  /** The asset name */
+  name: string
+  /** Code CNPJ */
+  cnpj: string
+  /** Whether the asset is a FII (Fundo de Investimento Imobiliário) */
+  isFII: boolean
 }

@@ -21,7 +21,10 @@
   import Find from "./lib/Find.svelte";
   import PasswordModal from "./lib/PasswordModal.svelte";
   import { sortDeals } from "./lib/common";
+  import UnknownAssetModal from "./lib/UnknownAssetModal.svelte";
 
+  /** List of user defined assets */
+  let customAssets: CustomAsset[] = [];
   /** List of possible passwords */
   let passwords: string[] = [];
   /** Parsed notes */
@@ -49,13 +52,43 @@
     response: [Array<WrongPassword | UnknownAsset>, NegotiationNote[]]
   ) {
     const [_errors, result] = response;
-    notesWithWrongPassword = _errors.flatMap(
-      (e) =>
-        e.name === "WrongPassword" && request.find((p) => p.name === e.file)
-    );
-    notesWithUnknownAssets = _errors.flatMap(
-      (e) => e.name === "UnknownAsset" && request.find((p) => p.name === e.file)
-    );
+    notesWithWrongPassword = [];
+    notesWithUnknownAssets = [];
+    customAssets = [];
+    console.log(_errors);
+    _errors.forEach((e) => {
+      if (e.name === "WrongPassword") {
+        const prevRequest = request.find((p) => p.name === e.file);
+        if (prevRequest) notesWithWrongPassword.push(prevRequest);
+        else {
+          console.warn(
+            `Couldn't find a previous request matching ${e.file} in the list of requests below`
+          );
+          console.log(request);
+        }
+      } else if (e.name === "UnknownAsset" && "asset" in e) {
+        const prevRequest = request.find((p) => p.name === e.file);
+        if (prevRequest) {
+          notesWithUnknownAssets.push({
+            ...prevRequest,
+            missingAsset: e.asset,
+          });
+          customAssets.push({
+            name: e.asset,
+            cnpj: "",
+            code: "",
+            isFII: false,
+          });
+        } else {
+          console.warn(
+            `Couldn't find a previous request matching ${e.file} in the list of requests below`
+          );
+          console.log(request);
+        }
+      }
+    });
+    console.log(notesWithWrongPassword);
+    console.log(notesWithUnknownAssets);
     result.forEach((n) => n.deals.sort(sortDeals));
     notes.push(
       ...result.filter((r) => !notes.some((n) => n.number === r.number))
@@ -99,7 +132,7 @@
         onUpdate={(notesToParse) => {
           // Send the request to the server
           window.api
-            .processNotes(notesToParse, passwords)
+            .processNotes(notesToParse, passwords, customAssets)
             .then((response) => handleServerResponse(notesToParse, response));
         }}
       />
@@ -154,13 +187,27 @@
     {notesWithWrongPassword}
     onRetry={() => {
       window.api
-        .processNotes(notesWithWrongPassword, passwords)
+        .processNotes(notesWithWrongPassword, passwords, customAssets)
         .then((response) =>
           handleServerResponse(notesWithWrongPassword, response)
         );
     }}
     onDismiss={() => {
       notesWithWrongPassword = [];
+    }}
+  />
+  <UnknownAssetModal
+    {customAssets}
+    {notesWithUnknownAssets}
+    onRetry={() => {
+      window.api
+        .processNotes(notesWithUnknownAssets, passwords, customAssets)
+        .then((response) =>
+          handleServerResponse(notesWithUnknownAssets, response)
+        );
+    }}
+    onDismiss={() => {
+      notesWithUnknownAssets = [];
     }}
   />
 </main>
