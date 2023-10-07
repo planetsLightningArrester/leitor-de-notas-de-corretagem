@@ -1,12 +1,26 @@
 <script lang="ts">
   import { clearMatches } from "./Find.svelte";
   import { type TableHeader, sortDeals } from "./common";
-  import { Container, Table, TabContent, TabPane, Icon } from "sveltestrap";
+  import {
+    Container,
+    Table,
+    TabContent,
+    TabPane,
+    Icon,
+    Row,
+    Col,
+    Button,
+  } from "sveltestrap";
   import { NegotiationNote, type Deal } from "parser-de-notas-de-corretagem";
 
+  /** All `NegotiationNotes` */
   export let notes: NegotiationNote[] = [];
+  /** All `Deals` to be shown on All tab */
   export let flatDeals: Deal[] = [];
+  /** Callback for when the 'go back' button is clicked */
   export let onClickBack: () => void;
+  /** Callback for when the 'clear notes' button is clicked */
+  export let onClickClearNotes: () => void;
 
   /**
    * Format money to display
@@ -66,6 +80,7 @@
 
 <!-- Drop zone -->
 <Container>
+  <!-- Arrow to go back to the initial screen -->
   <Icon
     onclick={onClickBack}
     style="font-size: 24px; color: white; cursor: pointer"
@@ -205,6 +220,14 @@
       </TabPane>
     {/each}
   </TabContent>
+  <Row>
+    <Col class="d-flex justify-content-center my-2">
+      <Button color="danger" on:click={onClickClearNotes}>
+        <Icon name="trash" />
+        Limpar tudo
+      </Button>
+    </Col>
+  </Row>
 </Container>
 
 <style>

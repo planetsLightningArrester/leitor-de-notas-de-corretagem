@@ -1,4 +1,7 @@
 <script lang="ts">
+  import { Icon } from "sveltestrap";
+  import { get_current_component } from "svelte/internal";
+
   export let message: string;
   export let duration: number = 3000;
   export let type: "success" | "warning" | "error";
@@ -7,6 +10,7 @@
   let show: boolean = false;
   let hiding: boolean = false;
   let timeout: number | undefined;
+  const _thisComponent = get_current_component();
 
   /** Animate the notification out of the screen */
   function onHide() {
@@ -16,6 +20,7 @@
       div.classList.remove("push-up");
       show = false;
       hiding = false;
+      _thisComponent.$destroy();
     }, animationDuration);
   }
 
@@ -41,6 +46,13 @@
       14}px; animation-duration: {animationDuration}ms;"
   >
     <span class="push-text">
+      {#if type === "success"}
+        <Icon class="push-text-icon" name="check-lg" />
+      {:else if type === "warning"}
+        <Icon class="push-text-icon" name="exclamation-triangle" />
+      {:else if type === "error"}
+        <Icon class="push-text-icon" name="exclamation-circle" />
+      {/if}
       {message}
     </span>
     <span class="close-icon" on:click={onHide} on:keydown={onKeyDown}>×</span>
@@ -69,6 +81,10 @@
   .push-text {
     padding: 0px 15px 0px 0px;
     text-align: center;
+    user-select: none;
+    &-icon {
+      font-size: 20px;
+    }
   }
 
   .push-down {

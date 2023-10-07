@@ -23,6 +23,7 @@
   import { sortDeals } from "./lib/common";
   import UnknownAssetModal from "./lib/UnknownAssetModal.svelte";
   import Notifications from "./lib/Notifications.svelte";
+  import ClearNotesModal from "./lib/ClearNotesModal.svelte";
 
   /** List of user defined assets */
   let customAssets: CustomAsset[] = [];
@@ -107,7 +108,7 @@
    */
   function pushNotificationsOfNewNotes(amount: number) {
     if (amount > 0) {
-      const element = new Notifications({
+      new Notifications({
         target: mainDiv,
         props: {
           type: "success",
@@ -116,20 +117,14 @@
           }`,
         },
       });
-      setTimeout(() => {
-        element.$destroy();
-      }, 3700);
     } else {
-      const element = new Notifications({
+      new Notifications({
         target: mainDiv,
         props: {
           type: "warning",
           message: `Nenhuma nova nota adicionada. Duplicatas são ignoradas`,
         },
       });
-      setTimeout(() => {
-        element.$destroy();
-      }, 3700);
     }
   }
 
@@ -206,6 +201,19 @@
           onClickBack={() => {
             activeIndex = 0;
             clickedBack = true;
+          }}
+          onClickClearNotes={() => {
+            new ClearNotesModal({
+              target: mainDiv,
+              props: {
+                onConfirm: () => {
+                  notes = [];
+                  flatDeals = [];
+                  notesWithWrongPassword = [];
+                  notesWithUnknownAssets = [];
+                },
+              },
+            });
           }}
         />
       {/if}
