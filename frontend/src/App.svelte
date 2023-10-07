@@ -22,6 +22,7 @@
   import PasswordModal from "./lib/PasswordModal.svelte";
   import { sortDeals } from "./lib/common";
   import UnknownAssetModal from "./lib/UnknownAssetModal.svelte";
+  import Notifications from "./lib/Notifications.svelte";
 
   /** List of user defined assets */
   let customAssets: CustomAsset[] = [];
@@ -35,6 +36,7 @@
   let notesWithWrongPassword: NoteToBeParsed[] = [];
   /** Notes that issued a unknown asset error*/
   let notesWithUnknownAssets: NoteToBeParsed[] = [];
+  let mainDiv: HTMLElement;
 
   // Page index control
   let activeIndex = 0;
@@ -55,7 +57,7 @@
     notesWithWrongPassword = [];
     notesWithUnknownAssets = [];
     customAssets = [];
-    console.log(_errors);
+
     _errors.forEach((e) => {
       if (e.name === "WrongPassword") {
         const prevRequest = request.find((p) => p.name === e.file);
@@ -87,16 +89,48 @@
         }
       }
     });
-    console.log(notesWithWrongPassword);
-    console.log(notesWithUnknownAssets);
     result.forEach((n) => n.deals.sort(sortDeals));
+    const previousLength = notes.length;
     notes.push(
       ...result.filter((r) => !notes.some((n) => n.number === r.number))
     );
+    pushNotificationsOfNewNotes(notes.length - previousLength);
     notes = notes;
     flatDeals = notes.flatMap((n) => n.deals);
     flatDeals.sort(sortDeals);
     clickedBack = false;
+  }
+
+  /**
+   * Display a push notifications about new notes processed
+   * @param amount the new amount of processed notes
+   */
+  function pushNotificationsOfNewNotes(amount: number) {
+    if (amount > 0) {
+      const element = new Notifications({
+        target: mainDiv,
+        props: {
+          type: "success",
+          message: `${amount} nota${amount > 1 ? "s" : ""} adicionada${
+            amount > 1 ? "s" : ""
+          }`,
+        },
+      });
+      setTimeout(() => {
+        element.$destroy();
+      }, 3700);
+    } else {
+      const element = new Notifications({
+        target: mainDiv,
+        props: {
+          type: "warning",
+          message: `Nenhuma nova nota adicionada. Duplicatas são ignoradas`,
+        },
+      });
+      setTimeout(() => {
+        element.$destroy();
+      }, 3700);
+    }
   }
 
   $: {
@@ -113,7 +147,7 @@
 
 <Styles />
 
-<main>
+<main bind:this={mainDiv}>
   <Find />
   <Carousel items={[]} bind:activeIndex interval={false}>
     <CarouselItem bind:activeIndex itemIndex={0} class="fade-in">
@@ -170,7 +204,6 @@
           {notes}
           {flatDeals}
           onClickBack={() => {
-            console.log("clicked back");
             activeIndex = 0;
             clickedBack = true;
           }}
@@ -213,6 +246,10 @@
 </main>
 
 <style global>
+  main {
+    display: flow-root;
+  }
+
   .title-container {
     margin-top: 100px;
   }
