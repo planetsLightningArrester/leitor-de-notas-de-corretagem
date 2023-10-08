@@ -1,6 +1,6 @@
 <script lang="ts">
   import { clearMatches } from "./Find.svelte";
-  import { type TableHeader, sortDeals } from "./common";
+  import { type TableHeader, sortDeals, formatMoneyToDisplay } from "./common";
   import {
     Container,
     Table,
@@ -19,29 +19,12 @@
   export let flatDeals: Deal[] = [];
   /** Callback for when the 'go back' button is clicked */
   export let onClickBack: () => void;
-  /** Callback for when the 'clear notes' button is clicked */
-  export let onClickClearNotes: () => void;
+  /** Callback for when the 'clear notes' button is clicked. If the note was really removed, the function must return `true` */
+  export let onClickClearNotes: (tab: string) => Promise<boolean>;
+  /** Callback for when the 'export csv' button is clicked */
+  export let onClickExportCsv: (tab: string) => void;
 
-  /**
-   * Format money to display
-   * @param value a string value formatted as `AAAAAA.BB`
-   * @returns the `value` formatted as `AAA.AAA,BB`
-   */
-  function formatMoneyToDisplay(value: string): string {
-    return value
-      .replace(".", "")
-      .split("")
-      .reverse()
-      .flatMap((c, i, arr) =>
-        i - 2 > 0 && i < arr.length - 1 && (i - 1) % 3 === 0
-          ? `.${c}`
-          : i === 1
-          ? `,${c}`
-          : c
-      )
-      .reverse()
-      .join("");
-  }
+  let currentTab: string = "all";
 
   /** Current table sort order */
   let currentSortOrder: {
@@ -86,11 +69,16 @@
     style="font-size: 24px; color: white; cursor: pointer"
     name="arrow-left"
   />
-  <TabContent>
+  <TabContent
+    on:tab={(e) => {
+      if ("detail" in e && typeof e.detail === "string") currentTab = e.detail;
+    }}
+  >
     <TabPane
+      id="all-pane"
       tabId="all"
       style="overflow: auto!important; max-height: 70vh!important"
-      active
+      active={currentTab === "all"}
     >
       <span slot="tab">
         Tudo <Icon name="clipboard-data" />
@@ -155,7 +143,11 @@
       </Table>
     </TabPane>
     {#each notes as note}
-      <TabPane tabId={note.number}>
+      <TabPane
+        tabId={note.number}
+        style="overflow: auto!important; max-height: 70vh!important"
+        active={currentTab === note.number}
+      >
         <span slot="tab">
           Nº {note.number}
         </span>
@@ -221,11 +213,37 @@
     {/each}
   </TabContent>
   <Row>
-    <Col class="d-flex justify-content-center my-2">
-      <Button color="danger" on:click={onClickClearNotes}>
-        <Icon name="trash" />
-        Limpar tudo
-      </Button>
+    <Col class="d-flex justify-content-center align-itens-center my-2">
+      <Row>
+        <Col>
+          <Button color="success" on:click={() => onClickExportCsv(currentTab)}>
+            <Icon name="filetype-csv" />
+            Exportar {currentTab === "all" ? "tudo" : `Nº ${currentTab}`} para .csv
+          </Button>
+        </Col>
+        <Col class="d-flex">
+          <Button
+            color="danger"
+            on:click={() => {
+              onClickClearNotes(currentTab).then((result) => {
+                if (result && currentTab !== "all") {
+                  currentTab = "all";
+                  // ? That's messy, but I couldn't find a way to activate the all tab after deleting one
+                  const el = document
+                    .getElementById("all-pane")
+                    .parentNode.children.item(0)
+                    .children.item(0)
+                    .children.item(0);
+                  if (el && el instanceof HTMLElement) el.click();
+                }
+              });
+            }}
+          >
+            <Icon name="trash" />
+            {currentTab === "all" ? "Limpar tudo" : `Remover Nº ${currentTab}`}
+          </Button>
+        </Col>
+      </Row>
     </Col>
   </Row>
 </Container>

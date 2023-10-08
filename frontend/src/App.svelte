@@ -20,7 +20,7 @@
   } from "parser-de-notas-de-corretagem";
   import Find from "./lib/Find.svelte";
   import PasswordModal from "./lib/PasswordModal.svelte";
-  import { sortDeals } from "./lib/common";
+  import { formatMoneyToDisplay, sortDeals } from "./lib/common";
   import UnknownAssetModal from "./lib/UnknownAssetModal.svelte";
   import Notifications from "./lib/Notifications.svelte";
   import ClearNotesModal from "./lib/ClearNotesModal.svelte";
@@ -202,18 +202,77 @@
             activeIndex = 0;
             clickedBack = true;
           }}
-          onClickClearNotes={() => {
-            new ClearNotesModal({
-              target: mainDiv,
-              props: {
-                onConfirm: () => {
-                  notes = [];
-                  flatDeals = [];
-                  notesWithWrongPassword = [];
-                  notesWithUnknownAssets = [];
+          onClickClearNotes={(tab) => {
+            return new Promise((resolve) => {
+              new ClearNotesModal({
+                target: mainDiv,
+                props: {
+                  note: tab,
+                  onConfirm: () => {
+                    if (tab === "all") {
+                      notes = [];
+                      flatDeals = [];
+                      notesWithWrongPassword = [];
+                      notesWithUnknownAssets = [];
+                    } else {
+                      notes = notes.filter((n) => n.number !== tab);
+                      flatDeals = notes.flatMap((n) => n.deals);
+                      flatDeals.sort(sortDeals);
+                    }
+                    resolve(true);
+                  },
+                  onDismiss: () => {
+                    resolve(false);
+                  },
                 },
-              },
+              });
             });
+          }}
+          onClickExportCsv={(tab) => {
+            let data = "";
+            if (tab === "all") {
+              data = flatDeals
+                .map(
+                  (d) =>
+                    `${d.code}\t${d.cnpj}\t${d.date}\t${
+                      d.type === "buy" ? "Compra" : "Venda"
+                    }\t${d.quantity}\t${formatMoneyToDisplay(d.price)}`
+                )
+                .join("\n");
+            } else {
+              const note = notes.find((n) => n.number === tab);
+              if (!note) {
+                new Notifications({
+                  target: mainDiv,
+                  props: {
+                    type: "error",
+                    message: `Não foi possível gerar o .csv da nota Nº ${tab}. A nota parece ter sido removida`,
+                  },
+                });
+              } else {
+                data = note.deals
+                  .map(
+                    (d) =>
+                      `${d.code}\t${d.cnpj}\t${d.date}\t${
+                        d.type === "buy" ? "Compra" : "Venda"
+                      }\t${d.quantity}\t${formatMoneyToDisplay(d.price)}`
+                  )
+                  .join("\n");
+              }
+            }
+
+            const csv = document.createElement("a");
+            csv.setAttribute(
+              "href",
+              "data:text/plain;charset=utf-8," +
+                encodeURIComponent(
+                  "Código\tCNPJ\tData\tCompra/Venda\tQuantidade\tPreços+custos\n" +
+                    data
+                )
+            );
+            csv.setAttribute("download", "Notas.csv");
+            csv.style.display = "none";
+            csv.click();
           }}
         />
       {/if}

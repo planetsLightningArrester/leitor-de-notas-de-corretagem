@@ -47,3 +47,24 @@ export function sortDeals(a: Deal, b: Deal, mainKey?: TableHeader, direction?: '
     else return 1;
   }
 }
+
+/**
+ * Format money to display
+ * @param value a string value formatted as `AAAAAA.BB`
+ * @returns the `value` formatted as `AAA.AAA,BB`
+ */
+export function formatMoneyToDisplay(value: string): string {
+  return value
+    .replace(".", "")
+    .split("")
+    .reverse()
+    .flatMap((c, i, arr) =>
+      i - 2 > 0 && i < arr.length - 1 && (i - 1) % 3 === 0
+        ? `.${c}`
+        : i === 1
+          ? `,${c}`
+          : c
+    )
+    .reverse()
+    .join("");
+}
