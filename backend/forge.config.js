@@ -9,6 +9,7 @@ const makerSquirrelConfig = {
   setupMsi: "LeitorInstall.msi",
   setupIcon: path.join(__dirname, 'src', 'images', 'icon-setup.ico'),
   loadingGif: path.join(__dirname, 'src', 'images', 'icon-setup.gif'),
+  iconUrl: 'https://raw.githubusercontent.com/planetsLightningArrester/leitor-de-notas-de-corretagem/electron/backend/src/images/icon-setup.ico',
 };
 /** @type {import('@electron-forge/shared-types').ForgeConfig} */
 module.exports = {
