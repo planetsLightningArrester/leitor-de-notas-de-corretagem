@@ -52,7 +52,9 @@
     }
     if (search) {
       const lowerSearch = search.toLowerCase();
-      Array.from(document.getElementsByTagName("*")).forEach((el) => {
+      Array.from(
+        document.getElementById("table-container").getElementsByTagName("*")
+      ).forEach((el) => {
         if (
           el instanceof HTMLElement &&
           el.innerText.toLocaleLowerCase().includes(lowerSearch)
@@ -61,7 +63,8 @@
             element: el,
             originalColor: el.style.color,
           });
-          el.setAttribute("style", "color: yellow!important");
+          const previous = el.getAttribute("style");
+          el.setAttribute("style", previous + ";color: yellow!important");
         }
       });
     }
@@ -71,6 +74,7 @@
 <div id="find-div">
   <input
     id="find"
+    data-testid="find"
     type="text"
     name="find"
     placeholder="Procurar..."

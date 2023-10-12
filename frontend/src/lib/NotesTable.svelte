@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { clearMatches } from "./Find.svelte";
+  import Find, { clearMatches } from "./Find.svelte";
   import { type TableHeader, sortDeals, formatMoneyToDisplay } from "./common";
   import {
     Container,
@@ -61,14 +61,15 @@
   }
 </script>
 
-<!-- Drop zone -->
-<Container>
+<Find />
+<Container id="table-container">
   <!-- Arrow to go back to the initial screen -->
   <Icon
     onclick={onClickBack}
     style="font-size: 24px; color: white; cursor: pointer"
     name="arrow-left"
   />
+  <!-- Tabs -->
   <TabContent
     on:tab={(e) => {
       if ("detail" in e && typeof e.detail === "string") currentTab = e.detail;

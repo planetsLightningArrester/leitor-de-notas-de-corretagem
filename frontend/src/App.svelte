@@ -18,7 +18,6 @@
     type WrongPassword,
     type UnknownAsset,
   } from "parser-de-notas-de-corretagem";
-  import Find from "./lib/Find.svelte";
   import PasswordModal from "./lib/PasswordModal.svelte";
   import {
     formatMoneyToDisplay,
@@ -154,7 +153,6 @@
 <Styles />
 
 <main bind:this={mainDiv}>
-  <Find />
   <Carousel items={[]} bind:activeIndex interval={false}>
     <CarouselItem bind:activeIndex itemIndex={0} class="fade-in">
       <!-- Title -->
