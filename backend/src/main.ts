@@ -1,6 +1,11 @@
 import path from 'path';
 import { server } from './server';
 import { app, BrowserWindow } from 'electron';
+import { handleSquirrelEvent } from './update';
+
+// ? Prevent the app from start if it's being updated/installed/uninstalled
+// ? https://www.electronforge.io/config/makers/squirrel.windows
+handleSquirrelEvent(app);
 
 /** Creates a new window and starts the server. Called by `app.whenReady()` */
 function createWindow() {
