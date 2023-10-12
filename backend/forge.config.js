@@ -14,6 +14,7 @@ const makerSquirrelConfig = {
 /** @type {import('@electron-forge/shared-types').ForgeConfig} */
 module.exports = {
   packagerConfig: {
+    name: "Leitor de notas de corretagem",
     asar: true,
     icon: path.join(__dirname, 'src', 'images', 'icon'),
     executableName: 'leitor',
