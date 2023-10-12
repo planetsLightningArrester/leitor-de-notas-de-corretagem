@@ -20,6 +20,7 @@ function createWindow() {
 
   // Event listeners on the window
   win.webContents.on("did-finish-load", () => {
+    win.menuBarVisible = false;
     win.show();
     win.focus();
   });
