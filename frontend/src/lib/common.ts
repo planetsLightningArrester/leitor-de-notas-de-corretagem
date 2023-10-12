@@ -68,3 +68,15 @@ export function formatMoneyToDisplay(value: string): string {
     .reverse()
     .join("");
 }
+
+/**
+ * Resolve image path for Svelte + Electron integration.
+ * Basically resolve "/path" to "./path" when required.
+ * @param img the image path
+ * @returns the image path resolved to work both in dev and prod
+ */
+export function resolveImgPath(img: string) {
+  return import.meta.env.MODE === "development"
+    ? img
+    : "." + img;
+}

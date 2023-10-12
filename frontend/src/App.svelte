@@ -20,10 +20,21 @@
   } from "parser-de-notas-de-corretagem";
   import Find from "./lib/Find.svelte";
   import PasswordModal from "./lib/PasswordModal.svelte";
-  import { formatMoneyToDisplay, sortDeals } from "./lib/common";
+  import {
+    formatMoneyToDisplay,
+    resolveImgPath,
+    sortDeals,
+  } from "./lib/common";
   import UnknownAssetModal from "./lib/UnknownAssetModal.svelte";
   import Notifications from "./lib/Notifications.svelte";
   import ClearNotesModal from "./lib/ClearNotesModal.svelte";
+  import backgroundImage from "./assets/bg.jpg";
+
+  // Set background image
+  document.body.style.backgroundImage = `url(${resolveImgPath(
+    backgroundImage
+  )})`;
+  document.body.style.backgroundSize = "cover";
 
   /** List of user defined assets */
   let customAssets: CustomAsset[] = [];

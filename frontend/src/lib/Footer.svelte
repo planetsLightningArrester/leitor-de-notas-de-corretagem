@@ -1,8 +1,17 @@
 <script lang="ts">
   import { Tooltip } from "sveltestrap";
   import githubSvg from "../assets/github.svg";
+  import { onMount } from "svelte";
+  import { resolveImgPath } from "./common";
 
+  let loaded = false;
   let footerTextLeftTextContent = `Planet's Lightning Arrester - ${new Date().getFullYear()}`;
+
+  onMount(() => {
+    setTimeout(() => {
+      loaded = true;
+    }, 0);
+  });
 </script>
 
 <!-- Bottom bar -->
@@ -18,18 +27,30 @@
       bind:textContent={footerTextLeftTextContent}
     />
     <span class="footer-text">|</span>
-    <Tooltip target="github-icon">Página do GitHub</Tooltip>
+    <Tooltip target="github-icon-anchor">Página do GitHub</Tooltip>
     <a
-      id="github-icon"
+      id="github-icon-anchor"
       style="display: flex;"
       href="https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem"
     >
-      <img class="github-cat" src={githubSvg} alt="GitHub" height="20px" />
+      {#if loaded}
+        <img
+          id="github-icon-image"
+          class="github-cat"
+          src={resolveImgPath(githubSvg)}
+          alt="Página do GitHub"
+          height="20px"
+        />
+      {/if}
     </a>
   </footer>
 </div>
 
 <style>
+  .w-80 {
+    width: 80%;
+  }
+
   .footer {
     background-color: #171b26;
   }
