@@ -1,4 +1,8 @@
 const path = require('path');
+/** @type {import('@electron-forge/plugin-electronegativity').ElectronegativityConfig} */
+const electronNgConfig = {
+  isSarif: true
+};
 /** @type {import('@electron-forge/maker-squirrel').MakerSquirrelConfig} */
 const makerSquirrelConfig = {
   title: "Leitor de notas de corretagem",
@@ -42,5 +46,9 @@ module.exports = {
       name: '@electron-forge/plugin-auto-unpack-natives',
       config: {},
     },
+    {
+      name: '@electron-forge/plugin-electronegativity',
+      config: electronNgConfig
+    }
   ],
 };
