@@ -13,9 +13,6 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Replace URLs of Images, since `src` has to start with `/` instead of `./`
-  Array.from(document.getElementsByTagName('img')).forEach(i => i.src = i.src.replace(/^file:\/\/\/\w:\//i, './'));
-
 });
 
 /** Context bridge. Map the IPC communication between the client and the server */
