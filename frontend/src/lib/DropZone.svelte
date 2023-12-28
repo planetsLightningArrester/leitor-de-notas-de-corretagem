@@ -90,7 +90,12 @@
   on:dragover={ondragover}
   on:dragleave={ondragleave}
 >
-  <button id="drop-zone" class="align-items-center" on:click={onclick}>
+  <button
+    id="drop-zone"
+    data-testid="drop-zone-button"
+    class="align-items-center"
+    on:click={onclick}
+  >
     <span class="drop-zone-text">
       {mainText}
       {#if loading}
