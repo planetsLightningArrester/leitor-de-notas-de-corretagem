@@ -1,4 +1,5 @@
 import path from 'path';
+import { URL } from 'url';
 import { server } from './server';
 import { app, BrowserWindow } from 'electron';
 import { handleSquirrelEvent } from './update';
@@ -17,7 +18,8 @@ function createWindow() {
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
-      sandbox: true
+      sandbox: true,
+      disableBlinkFeatures: "Auxclick",  // https://github.com/doyensec/electronegativity/wiki/AUXCLICK_JS_CHECK
     },
     show: false,
     icon: path.join(__dirname, 'images', 'icon.png')
@@ -59,3 +61,13 @@ app.on('window-all-closed', () => {
     app.quit();
   }
 });
+
+// If your app has no need to navigate or only needs to navigate to known pages, it is a good idea to limit navigation outright to that known scope, disallowing any other kinds of navigation.
+// https://github.com/electron/electron/blob/main/docs/tutorial/security.md#13-disable-or-limit-navigation
+app.on('web-contents-created', (_, contents) => {
+  contents.on('will-navigate', (event, navigationUrl) => {
+    if (new URL(navigationUrl).origin !== 'https://github.com') {
+      event.preventDefault()
+    }
+  })
+})
