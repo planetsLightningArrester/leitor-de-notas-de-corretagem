@@ -40,6 +40,7 @@
 
 {#if show || hiding}
   <div
+    data-testid="push-notification"
     bind:this={div}
     class="push {type} push-down"
     style="width: {message.length *

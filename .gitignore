@@ -1,7 +1,6 @@
 out
 node_modules
 dist
-*.pdf
 *.csv
 !src/tests/notes/**/*
 
