@@ -33,7 +33,7 @@ function createWindow() {
   });
 
   const nodeEnv = (process.env['NODE_ENV'] || '').trim();
-  if (nodeEnv === 'development') win.loadURL('http://localhost:5173/');
+  if (nodeEnv === 'development' || nodeEnv === 'testing') win.loadURL('http://localhost:5173/');
   else win.loadFile('./dist/client/index.html');
 
   // Start the IPC server

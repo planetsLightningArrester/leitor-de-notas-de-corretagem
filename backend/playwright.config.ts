@@ -6,18 +6,16 @@ import { defineConfig, devices } from '@playwright/test';
  * https://github.com/motdotla/dotenv
  */
 // require('dotenv').config();
+const development = process.env['NODE_ENV'] == 'development';
 
 // Set mode to development, so we can run electron tests with the Playwright extension
 const webSever =
-  process.env['NODE_ENV'] === 'development' ?
-    undefined :
+  development ? undefined :
     {
       command: 'cd ../frontend && npm run dev',
       url: 'http://localhost:5173/',
-      reuseExistingServer: !process.env.CI,
+      reuseExistingServer: false,
     };
-
-process.env['NODE_ENV'] = 'development';
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -25,13 +23,13 @@ process.env['NODE_ENV'] = 'development';
 export default defineConfig({
   testDir: './src/__tests__',
   /* Run tests in files in parallel */
-  fullyParallel: true,
-  /* Fail the build on CI if you accidentally left test.only in the source code. */
-  forbidOnly: !!process.env.CI,
-  /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
-  /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  fullyParallel: !development,
+  /* Fail the build on testing if you accidentally left test.only in the source code. */
+  forbidOnly: !development,
+  /* Do not retry */
+  retries: 0,
+  /* Opt out of parallel tests on testing. */
+  workers: undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
