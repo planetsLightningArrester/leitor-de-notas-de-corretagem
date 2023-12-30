@@ -3,6 +3,6 @@
   "watch": [
     "src"
   ],
-  "exec": "npm run compile:dev && electron .",
+  "exec": "npm run compile && electron .",
   "ext": "js, json, ts, proto, css, html, png, jpeg, jpg, ico"
 }

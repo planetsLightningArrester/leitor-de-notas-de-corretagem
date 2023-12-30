@@ -56,6 +56,13 @@ Obrigado à quem me enviou notas de negociação para os testes ❤️. Os dados
 Se te ajudei, manda um "Valeu!" 👋 pelo pix 😊
 > a09e5878-2355-45f7-9f36-6df4ccf383cf
 
+## Desenvolvimento
+Para rodar no WSL, é necessário instalar alguns pacotes:
+
+```bash
+sudo apt install libgconf-2-4 libatk1.0-0 libatk-bridge2.0-0 libgdk-pixbuf2.0-0 libgtk-3-0 libgbm-dev libnss3-dev libxss-dev libasound2 zip
+```
+
 ## Licença
 
 Conforme licença, esse software não fornece nenhum tipo de garantia e seu autor se exime de responsabilidades de uso. Use sob sua responsabilidade e risco.

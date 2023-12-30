@@ -17,8 +17,8 @@ const makerSquirrelConfig: MakerSquirrelConfig = {
   name: "leitor-de-notas-de-corretagem",
   authors: "Planet's Lightning Arrester",
   description: "Parse Brazilian PDF brokerage notes",
-  setupExe: "LeitorInstall.exe",
-  setupMsi: "LeitorInstall.msi",
+  setupExe: process.platform == 'win32' ? "LeitorInstall.exe" : process.platform == 'linux' ? "LeitorInstall" : undefined,
+  setupMsi: process.platform == 'win32' ? "LeitorInstall.msi" : undefined,
   setupIcon: path.join(__dirname, 'src', 'images', 'icon-setup.ico'),
   loadingGif: path.join(__dirname, 'src', 'images', 'icon-setup.gif'),
   iconUrl: 'https://raw.githubusercontent.com/planetsLightningArrester/leitor-de-notas-de-corretagem/electron/backend/src/images/icon-setup.ico',
@@ -32,11 +32,14 @@ const config: ForgeConfig = {
     executableName: 'leitor',
   },
   rebuildConfig: {},
-  makers: [
+  makers: process.platform == 'win32' ? [
     new MakerSquirrel(makerSquirrelConfig),
     new MakerZIP({}),
     new MakerRpm({}),
     new MakerDeb({}),
+  ] : [
+    new MakerSquirrel(makerSquirrelConfig),
+    new MakerZIP({}),
   ],
   plugins: [
     new AutoUnpackNativesPlugin({}),
