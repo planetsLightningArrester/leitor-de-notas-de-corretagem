@@ -2,9 +2,9 @@
 
 name: CI
 
-defaults:
-  run:
-    shell: bash -ieo pipefail {0}
+# defaults:
+#   run:
+#     shell: bash -ieo pipefail {0}
 
 # Controls when the workflow will run
 on:
@@ -28,6 +28,7 @@ jobs:
     strategy:
       matrix:
         version: [18, 20]
+    name: "Test - Node v${{ matrix.version }}"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code 📥
