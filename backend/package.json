@@ -20,6 +20,7 @@
     "move-output": "run-script-os",
     "move-output:default": "rimraf ../dist && mv out ../dist",
     "move-output:win32": "rimraf ../dist && move out ..\\dist",
+    "pretest": "npm run compile:dev",
     "test": "run-script-os",
     "test:default": "DEBUG=pw:browser* NODE_ENV=testing xvfb-run --auto-servernum -s \"-screen 0 1280x960x24\" playwright test --reporter line",
     "test:win32": "set NODE_ENV=testing playwright test",
