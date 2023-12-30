@@ -5,7 +5,8 @@
   "scripts": {
     "start": "concurrently \"cd backend && npm run start:dev\" \"cd frontend && npm run dev\"",
     "build": "npm run build:frontend && npm run build:backend",
-    "test": "concurrently \"cd frontend && npm run dev\" \"cd backend && npm run test\"",
+    "test": "concurrently -k -s first \"cd frontend && npm run dev\" \"cd backend && npm run test\"",
+    "test:dev": "concurrently \"cd frontend && npm run dev\" \"cd backend && npm run test:dev\"",
     "test-ui": "concurrently \"cd frontend && npm run dev\" \"cd backend && npm run test-ui\"",
     "build:frontend": "cd frontend && npm run build",
     "build:backend": "cd backend && npm run make",

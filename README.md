@@ -57,6 +57,8 @@ Se te ajudei, manda um "Valeu!" 👋 pelo pix 😊
 > a09e5878-2355-45f7-9f36-6df4ccf383cf
 
 ## Desenvolvimento
+
+### Setup
 Para rodar no WSL, é necessário instalar alguns pacotes:
 
 ```bash
