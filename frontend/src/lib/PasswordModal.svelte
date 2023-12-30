@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Button, Modal, ModalBody, ModalFooter, Row } from "sveltestrap";
+  import { noTypeCheck } from "./common";
 
   /** List of possible passwords */
   export let passwords: string[];
@@ -15,7 +16,7 @@
    * @param event the `KeyboardEvent`
    */
   function keyDownHandler(
-    event: KeyboardEvent & { currentTarget: EventTarget & HTMLInputElement }
+    event: KeyboardEvent & { currentTarget: EventTarget & HTMLInputElement },
   ) {
     if (event.key === "Enter") {
       onRetry();
@@ -39,6 +40,7 @@
     {/each}
     <Row class="justify-content-center">
       <input
+        data-testid="password-input-1"
         class="password-input"
         type="password"
         placeholder="Possibilidade 1"
@@ -48,6 +50,7 @@
     </Row>
     <Row class="justify-content-center">
       <input
+        data-testid="password-input-2"
         class="password-input"
         type="password"
         placeholder="Possibilidade 2"
@@ -57,6 +60,7 @@
     </Row>
     <Row class="justify-content-center">
       <input
+        data-testid="password-input-3"
         class="password-input"
         type="password"
         placeholder="Possibilidade 3"
@@ -66,8 +70,19 @@
     </Row>
   </ModalBody>
   <ModalFooter>
-    <Button color="primary" on:click={onRetry}>Tentar novamente</Button>
-    <Button on:click={onDismiss}>Ignorar</Button>
+    <Button
+      {...noTypeCheck({ "data-testid": "retry-password-button" })}
+      color="primary"
+      on:click={onRetry}
+    >
+      Tentar novamente
+    </Button>
+    <Button
+      {...noTypeCheck({ "data-testid": "ignore-password-button" })}
+      on:click={onDismiss}
+    >
+      >Ignorar ></Button
+    >
   </ModalFooter>
 </Modal>
 

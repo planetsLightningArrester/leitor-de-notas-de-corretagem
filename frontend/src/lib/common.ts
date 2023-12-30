@@ -80,3 +80,6 @@ export function resolveImgPath(img: string) {
     ? img
     : "." + img;
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function noTypeCheck(x: any) { return x; }

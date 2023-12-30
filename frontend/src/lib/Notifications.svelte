@@ -56,7 +56,12 @@
       {/if}
       {message}
     </span>
-    <span class="close-icon" on:click={onHide} on:keydown={onKeyDown}>×</span>
+    <span
+      data-testid="push-notification-close"
+      class="close-icon"
+      on:click={onHide}
+      on:keydown={onKeyDown}>×</span
+    >
   </div>
 {/if}
 

@@ -52,12 +52,18 @@
     }
 
     notes.forEach((n) =>
-      n.deals.sort((p, c) => sortDeals(p, c, header, direction))
+      n.deals.sort((p, c) => sortDeals(p, c, header, direction)),
     );
     flatDeals.sort((p, c) => sortDeals(p, c, header, direction));
     // ? Force re-rendering
     notes = notes;
     flatDeals = flatDeals;
+  }
+
+  function notypecheck(arg0: {
+    "data-testid": string;
+  }): import("sveltestrap/src/TabPane").TabPaneProps {
+    throw new Error("Function not implemented.");
   }
 </script>
 
@@ -145,6 +151,7 @@
     </TabPane>
     {#each notes as note}
       <TabPane
+        {...notypecheck({ "data-testid": "tab-" + note.number })}
         tabId={note.number}
         style="overflow: auto!important; max-height: 70vh!important"
         active={currentTab === note.number}
