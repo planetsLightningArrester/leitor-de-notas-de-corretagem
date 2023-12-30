@@ -3,7 +3,10 @@ import { test, expect } from '@playwright/test';
 import { _electron as electron } from '@playwright/test';
 
 test('open a single page file', async () => {
-  const electronApp = await electron.launch({ args: ['.'] });
+  const electronApp = await electron.launch({
+    args: ['.'],
+    env: { ...process.env },
+  });
 
   const window = await electronApp.firstWindow();
 
@@ -27,7 +30,10 @@ test('open a single page file', async () => {
 });
 
 test('open a single page file with password', async () => {
-  const electronApp = await electron.launch({ args: ['.'] });
+  const electronApp = await electron.launch({
+    args: ['.'],
+    env: { ...process.env },
+  });
 
   const window = await electronApp.firstWindow();
 
@@ -70,7 +76,10 @@ test('open a single page file with password', async () => {
 });
 
 test('open a multi page file', async () => {
-  const electronApp = await electron.launch({ args: ['.'] });
+  const electronApp = await electron.launch({
+    args: ['.'],
+    env: { ...process.env },
+  });
 
   const window = await electronApp.firstWindow();
 
@@ -94,7 +103,10 @@ test('open a multi page file', async () => {
 });
 
 test('open multiple files', async () => {
-  const electronApp = await electron.launch({ args: ['.'] });
+  const electronApp = await electron.launch({
+    args: ['.'],
+    env: { ...process.env },
+  });
 
   const window = await electronApp.firstWindow();
 
