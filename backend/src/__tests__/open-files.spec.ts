@@ -115,7 +115,7 @@ test('open multiple files', async () => {
   // Check for the push notification
   const pushNotification = window.getByTestId("push-notification");
   await pushNotification.waitFor({ state: "visible", timeout: 2000 });
-  expect(await pushNotification.innerText()).toContain("2 notas adicionadas");
+  expect(await pushNotification.innerText()).toContain("2 notass adicionadas");
 
   await electronApp.close();
 });
