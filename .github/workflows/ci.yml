@@ -12,9 +12,8 @@ on:
   # schedule:
   #   - cron: '0 0 * * *'
 
-  # Main push
-  # push:
-  #   branches: ['main']
+  push:
+    branches: ['electron']
 
   # Can be triggered by other workflows
   workflow_call:
@@ -25,7 +24,10 @@ on:
 # Jobs
 jobs:
 
-  inter-compliance:
+  test:
+    strategy:
+      matrix:
+        version: [18, 20]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code 📥
@@ -34,63 +36,12 @@ jobs:
       - name: NodeJS setup 🛠️
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: ${{ matrix.version }}
 
       - name: Install dependencies and build 🔧
         run:  npm ci
       
       - name: Run test 🧪
-        run:  npm run test inter
-
-  rico-compliance:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code 📥
-        uses: actions/checkout@v3
-
-      - name: NodeJS setup 🛠️
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - name: Install dependencies and build 🔧
-        run:  npm ci
-      
-      - name: Run test 🧪
-        run:  npm run test rico
-
-  clear-compliance:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code 📥
-        uses: actions/checkout@v3
-
-      - name: NodeJS setup 🛠️
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - name: Install dependencies and build 🔧
-        run:  npm ci
-      
-      - name: Run test 🧪
-        run:  npm run test rico
-
-  parser:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code 📥
-        uses: actions/checkout@v3
-
-      - name: NodeJS setup 🛠️
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - name: Install dependencies and build 🔧
-        run:  npm ci
-      
-      - name: Run test 🧪
-        run:  npm run test parser
+        run:  npm run test
 
 # EOF
