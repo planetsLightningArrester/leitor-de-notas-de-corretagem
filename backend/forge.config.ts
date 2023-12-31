@@ -1,7 +1,7 @@
 import path from 'path';
 import { MakerZIP } from '@electron-forge/maker-zip';
 import { MakerRpm } from '@electron-forge/maker-rpm';
-import { MakerDeb } from '@electron-forge/maker-deb';
+import { MakerDeb, MakerDebConfig } from '@electron-forge/maker-deb';
 import { type ForgeConfig } from '@electron-forge/shared-types';
 import { AutoUnpackNativesPlugin } from '@electron-forge/plugin-auto-unpack-natives';
 import { MakerSquirrel, type MakerSquirrelConfig } from '@electron-forge/maker-squirrel';
@@ -24,6 +24,20 @@ const makerSquirrelConfig: MakerSquirrelConfig = {
   iconUrl: 'https://raw.githubusercontent.com/planetsLightningArrester/leitor-de-notas-de-corretagem/electron/backend/src/images/icon-setup.ico',
 };
 
+const makerDebConfig: MakerDebConfig = {
+  options: {
+    productName: "Leitor de notas de corretagem",
+    name: "leitor-de-notas-de-corretagem",
+    icon: "src/images/icon-setup.png",
+    bin: "leitor",
+    size: 200e6,
+    homepage: 'https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem',
+    categories: ['Office'],
+    maintainer: "Planet's Lightning Arrester",
+    description: "Parse Brazilian PDF brokerage notes",
+  }
+}
+
 const config: ForgeConfig = {
   packagerConfig: {
     name: "Leitor de notas de corretagem",
@@ -40,6 +54,7 @@ const config: ForgeConfig = {
   ] : [
     new MakerSquirrel(makerSquirrelConfig),
     new MakerZIP({}),
+    new MakerDeb(makerDebConfig),
   ],
   plugins: [
     new AutoUnpackNativesPlugin({}),
