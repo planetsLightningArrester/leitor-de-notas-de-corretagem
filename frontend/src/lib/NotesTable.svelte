@@ -150,12 +150,14 @@
     </TabPane>
     {#each notes as note}
       <TabPane
-        {...noTypeCheck({ "data-testid": "tab-" + note.number })}
         tabId={note.number}
         style="overflow: auto!important; max-height: 70vh!important"
         active={currentTab === note.number}
       >
-        <span slot="tab">
+        <span
+          {...noTypeCheck({ "data-testid": `tab-${note.number}` })}
+          slot="tab"
+        >
           Nº {note.number}
         </span>
         <Table responsive>
@@ -203,7 +205,7 @@
           >
           <tbody>
             {#each note.deals as deal}
-              <tr>
+              <tr data-testid={`tab-${note.number}-${deal.code}`}>
                 <td>{deal.code}</td>
                 <td>{deal.cnpj}</td>
                 <td>{deal.date}</td>
