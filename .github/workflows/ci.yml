@@ -26,11 +26,11 @@ jobs:
 
   test:
     strategy:
+      fail-fast: false
       matrix:
         version: [18, 20]
     name: "Test - Node v${{ matrix.version }}"
     runs-on: ubuntu-latest
-    if: always()
     steps:
       - name: Checkout code 📥
         uses: actions/checkout@v3
