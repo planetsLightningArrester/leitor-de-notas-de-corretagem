@@ -1,6 +1,6 @@
 {
   "engines": {
-    "node": "^18.x"
+    "node": ">=18"
   },
   "scripts": {
     "start": "concurrently \"cd backend && npm run start:dev\" \"cd frontend && npm run dev\"",

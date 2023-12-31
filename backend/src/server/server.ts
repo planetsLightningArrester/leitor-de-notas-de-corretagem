@@ -1,20 +1,26 @@
+import path from 'path';
+import { app } from 'electron';
 import { Print, color } from "printaeu";
-import { CustomAsset, NoteToBeParsed } from "../types";
 import { BrowserWindow, ipcMain } from "electron";
+import { CustomAsset, NoteToBeParsed } from "../types";
 import { NegotiationNote, NoteParser, WrongPassword as _WrongPassword, UnknownAsset as _UnknownAsset } from "parser-de-notas-de-corretagem";
+
+const tempDir = app.getPath("logs")
 
 /** Logs an info */
 const info = Print.create();
 info.preAppend(`[${color.green}SERV${color.reset}] [${color.cyan}INFO${color.reset}] `);
+info.logToFile(path.join(tempDir, 'server.log'))
 /** Logs a warning */
 const warn = Print.create();
 warn.preAppend(`[${color.green}SERV${color.reset}] [${color.yellow}WARN${color.reset}] `);
+warn.logToFile(path.join(tempDir, 'server.log'))
 /** Logs an error */
 const err = Print.create();
 err.preAppend(`[${color.green}SERV${color.reset}] [${color.red}ERROR${color.reset}] `);
+err.logToFile(path.join(tempDir, 'server.log'))
 
-
-// ? Unfortunately, Error messages extended from `Error` will be stripped out once sent by IPC
+// ? NOTE: Unfortunately, Error messages extended from `Error` will be stripped out once sent by IPC
 // ? Issue: https://github.com/electron/electron/issues/24427
 // ? Docs: https://github.com/electron/electron/blob/main/docs/api/ipc-renderer.md#ipcrendererinvokechannel-args
 // ? "[...] However, the Error object in the renderer process will not be the same as the one thrown in the main process."

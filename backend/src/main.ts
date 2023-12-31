@@ -45,7 +45,7 @@ app.whenReady().then(() => {
   createWindow();
 
   app.on('activate', () => {
-    // On macOS it's common to re-create a window in the app when the
+    // INFO: On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow();
@@ -54,7 +54,7 @@ app.whenReady().then(() => {
 });
 
 app.on('window-all-closed', () => {
-  // Quit when all windows are closed, except on macOS. There, it's common
+  // INFO: Quit when all windows are closed, except on macOS. There, it's common
   // for applications and their menu bar to stay active until the user quits
   // explicitly with Cmd + Q.
   if (process.platform !== 'darwin') {
@@ -62,7 +62,7 @@ app.on('window-all-closed', () => {
   }
 });
 
-// If your app has no need to navigate or only needs to navigate to known pages, it is a good idea to limit navigation outright to that known scope, disallowing any other kinds of navigation.
+// INFO: If your app has no need to navigate or only needs to navigate to known pages, it is a good idea to limit navigation outright to that known scope, disallowing any other kinds of navigation.
 // https://github.com/electron/electron/blob/main/docs/tutorial/security.md#13-disable-or-limit-navigation
 app.on('web-contents-created', (_, contents) => {
   contents.on('will-navigate', (event, navigationUrl) => {

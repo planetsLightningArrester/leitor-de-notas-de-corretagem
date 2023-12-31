@@ -23,7 +23,7 @@ contextBridge.exposeInMainWorld("api", {
    * @param callback a callback with an `event` and a `result` of the parser
    */
   processNotes: async (notes: NoteToBeParsed[], passwords: string[], customAssets: CustomAsset[]): Promise<[Array<WrongPassword | UnknownAsset>, NegotiationNote[]]> => {
-    // TODO type check if the incoming data is as expected
+    // TODO: type check if the incoming data is as expected
     ipcRenderer.send("process-notes", notes, passwords, customAssets);
     return await new Promise<[Array<WrongPassword | UnknownAsset>, NegotiationNote[]]>(resolve => {
       ipcRenderer.on("notes-results", (_, ...args) => {

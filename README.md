@@ -15,7 +15,11 @@ Leitor de notas de corretagem que pode exportar para `.csv`. Testado majoritaria
 ## Possíveis problemas
 - Se as notas possuírem senha, uma mensagem irá aparecer e você pode colocar até três possíveis senhas para abrir os arquivos.
 - Se algum ativo não for identificado, uma mensagem irá aparecer e você pode entrar manualmente qual o código, o CNPJ e se o ativo é um fundo imobiliário.
-- * Caso encontre problemas na conversão, pode ser que a lista de ações não está atualizada. Verifique se você está utilizando a versão mais recente do programa.
+- Caso encontre problemas na conversão, pode ser que a lista de ações não está atualizada. Verifique se você está utilizando a versão mais recente do programa.
+- As mensagens de erro podem ser encontradas em:
+  - Linux: `~/.config/leitor-de-notas-de-corretagem-backend/log`
+  - Mac: `~/Library/Application Support/leitor-de-notas-de-corretagem-backend/log`
+  - Windows: `%APPDATA%/leitor-de-notas-de-corretagem-backend/log`
 
 ## Exportando os resultados
 - Os resultados totais ou individuais podem ser exportados para `.csv`.
