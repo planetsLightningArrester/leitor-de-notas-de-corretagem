@@ -2,6 +2,7 @@
   "recommendations": [
     "ms-playwright.playwright",
     "svelte.svelte-vscode",
-    "dbaeumer.vscode-eslint"
+    "dbaeumer.vscode-eslint",
+    "yzhang.markdown-all-in-one"
   ]
 }
