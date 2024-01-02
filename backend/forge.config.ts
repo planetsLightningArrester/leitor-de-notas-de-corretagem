@@ -1,42 +1,13 @@
 import path from 'path';
 import { MakerZIP } from '@electron-forge/maker-zip';
-import { MakerRpm } from '@electron-forge/maker-rpm';
-import { MakerDeb, MakerDebConfig } from '@electron-forge/maker-deb';
 import { type ForgeConfig } from '@electron-forge/shared-types';
 import { AutoUnpackNativesPlugin } from '@electron-forge/plugin-auto-unpack-natives';
-import { MakerSquirrel, type MakerSquirrelConfig } from '@electron-forge/maker-squirrel';
 import { ElectronegativityPlugin, type ElectronegativityConfig } from '@electron-forge/plugin-electronegativity';
 
 const electronNgConfig: ElectronegativityConfig = {
   parserPlugins: [],
   isSarif: true
 };
-
-const makerSquirrelConfig: MakerSquirrelConfig = {
-  title: "Leitor de notas de corretagem",
-  name: "leitor-de-notas-de-corretagem",
-  authors: "Planet's Lightning Arrester",
-  description: "Parse Brazilian PDF brokerage notes",
-  setupExe: process.platform == 'win32' ? "LeitorInstall.exe" : process.platform == 'linux' ? "LeitorInstall" : undefined,
-  setupMsi: process.platform == 'win32' ? "LeitorInstall.msi" : undefined,
-  setupIcon: path.join(__dirname, 'src', 'images', 'icon-setup.ico'),
-  loadingGif: path.join(__dirname, 'src', 'images', 'icon-setup.gif'),
-  iconUrl: 'https://raw.githubusercontent.com/planetsLightningArrester/leitor-de-notas-de-corretagem/electron/backend/src/images/icon-setup.ico',
-};
-
-const makerDebConfig: MakerDebConfig = {
-  options: {
-    productName: "Leitor de notas de corretagem",
-    name: "leitor-de-notas-de-corretagem",
-    icon: "src/images/icon-setup.png",
-    bin: "leitor",
-    size: 200e6,
-    homepage: 'https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem',
-    categories: ['Office'],
-    maintainer: "Planet's Lightning Arrester",
-    description: "Parse Brazilian PDF brokerage notes",
-  }
-}
 
 const config: ForgeConfig = {
   packagerConfig: {
@@ -46,16 +17,7 @@ const config: ForgeConfig = {
     executableName: 'leitor',
   },
   rebuildConfig: {},
-  makers: process.platform == 'win32' ? [
-    new MakerSquirrel(makerSquirrelConfig),
-    new MakerZIP({}),
-    new MakerRpm({}),
-    new MakerDeb({}),
-  ] : [
-    new MakerSquirrel(makerSquirrelConfig),
-    new MakerZIP({}),
-    new MakerDeb(makerDebConfig),
-  ],
+  makers: [new MakerZIP({}),],
   plugins: [
     new AutoUnpackNativesPlugin({}),
     new ElectronegativityPlugin(electronNgConfig),
