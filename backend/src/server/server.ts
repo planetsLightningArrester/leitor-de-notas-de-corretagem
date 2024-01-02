@@ -80,7 +80,7 @@ export async function server(win: BrowserWindow) {
   const noteParser = new NoteParser();
   const passwords: string[] = ['000'];
 
-  // Listen to client requests
+  // Listen to process notes requests
   ipcMain.on("process-notes", async (_, ...args) => {
     const pdfs: NoteToBeParsed[] = args[0];
     const _passwords: string[] = args[1];
@@ -119,5 +119,26 @@ export async function server(win: BrowserWindow) {
     info.log(`Got ${results.length} results`);
 
     win.webContents.send("notes-results", [errors, results]);
+  });
+
+
+  // Listen to check updates requests
+  ipcMain.on("check-updates", async () => {
+    win.webContents.send('update-results', await getUpdates())
+  })
+
+  // Listen to install updates requests
+  ipcMain.on("proceed-with-update", async (_, ...args) => {
+    try {
+      const update: Update = args[0];
+
+      await installUpdate(update)
+      spawn(process.execPath, { detached: true })
+      app.quit()
+    } catch (error: unknown) {
+      err.log("Error on proceeding with the update")
+      if (error instanceof Error) err.log(error.message)
+      else err.log(error)
+    }
   });
 }

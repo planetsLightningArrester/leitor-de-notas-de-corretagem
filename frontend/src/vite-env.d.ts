@@ -26,6 +26,16 @@ interface CustomAsset {
   isFII: boolean
 }
 
+/** The info about the new update */
+interface Update {
+  /** The update version */
+  version: string,
+  /** The update file name */
+  name: string,
+  /** The update URL */
+  url: string,
+}
+
 interface Window {
   api: {
     /**
@@ -36,6 +46,17 @@ interface Window {
     processNotes: (notes: NoteToBeParsed[], passwords: string[], customAssets: CustomAsset[]) => Promise<[
       Array<import("parser-de-notas-de-corretagem").WrongPassword | import("parser-de-notas-de-corretagem").UnknownAsset>,
       import("parser-de-notas-de-corretagem").NegotiationNote[]
-    ]>
+    ]>,
+    /**
+     * Check if there are updates
+     * @returns a `Promise` that resolves to the name of the file
+     * if there are updates, otherwise resolves to an empty string
+     */
+    checkUpdates: () => Promise<Update | undefined>,
+    /**
+     * Send a request to the server to proceed with the app update
+     * @param the update to install
+     */
+    proceedWithUpdate: (update: Update) => void,
   }
 }
