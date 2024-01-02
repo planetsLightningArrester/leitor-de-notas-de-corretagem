@@ -1,3 +1,4 @@
+import { Update } from './update';
 import { CustomAsset, NoteToBeParsed } from './types';
 import { ipcRenderer, contextBridge } from 'electron';
 import { NegotiationNote, UnknownAsset, WrongPassword } from 'parser-de-notas-de-corretagem';
@@ -32,5 +33,19 @@ contextBridge.exposeInMainWorld("api", {
         resolve([errors, results]);
       });
     });
+  },
+  /** Send a request to the server to proceed with the app update */
+  checkUpdates: (): Promise<Update | undefined> => {
+    ipcRenderer.send("check-updates");
+    return new Promise<Update | undefined>(resolve => {
+      ipcRenderer.on("update-results", (_, ...args) => resolve(args[0]));
+    })
+  },
+  /**
+   * Send a request to the server to proceed with the app update
+   * @param the update to install
+   */
+  proceedWithUpdate: (update: Update): void => {
+    ipcRenderer.send("proceed-with-update", update);
   }
 });
