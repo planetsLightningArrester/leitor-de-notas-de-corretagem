@@ -10,6 +10,7 @@
     Icon,
     Row,
     Styles,
+    Tooltip,
   } from "sveltestrap";
   import NotesTable from "./lib/NotesTable.svelte";
   import {
@@ -31,7 +32,7 @@
 
   // Set background image
   document.body.style.backgroundImage = `url(${resolveImgPath(
-    backgroundImage
+    backgroundImage,
   )})`;
   document.body.style.backgroundSize = "cover";
 
@@ -53,6 +54,14 @@
   let activeIndex = 0;
   let clickedBack = false;
 
+  // Updates
+  let checkingForUpdates = false;
+  let update: Update | undefined;
+  window.api.checkUpdates().then((value) => (update = value));
+  const onUpdateAssets = async () => {
+    if (update) window.api.proceedWithUpdate(update);
+  };
+
   /**
    * Handle server response of a parse request
    * @param request the requested `NoteToBeParsed[]`
@@ -60,9 +69,9 @@
    * position are possible password errors, and the second position are the
    * successfully parsed `NegotiationNote[]` results
    */
-  function handleServerResponse(
+  function handleProcessNotesResponse(
     request: NoteToBeParsed[],
-    response: [Array<WrongPassword | UnknownAsset>, NegotiationNote[]]
+    response: [Array<WrongPassword | UnknownAsset>, NegotiationNote[]],
   ) {
     const [_errors, result] = response;
     notesWithWrongPassword = [];
@@ -75,7 +84,7 @@
         if (prevRequest) notesWithWrongPassword.push(prevRequest);
         else {
           console.warn(
-            `Couldn't find a previous request matching ${e.file} in the list of requests below`
+            `Couldn't find a previous request matching ${e.file} in the list of requests below`,
           );
           console.log(request);
         }
@@ -94,7 +103,7 @@
           });
         } else {
           console.warn(
-            `Couldn't find a previous request matching ${e.file} in the list of requests below`
+            `Couldn't find a previous request matching ${e.file} in the list of requests below`,
           );
           console.log(request);
         }
@@ -103,7 +112,7 @@
     result.forEach((n) => n.deals.sort(sortDeals));
     const previousLength = notes.length;
     notes.push(
-      ...result.filter((r) => !notes.some((n) => n.number === r.number))
+      ...result.filter((r) => !notes.some((n) => n.number === r.number)),
     );
     pushNotificationsOfNewNotes(notes.length - previousLength);
     notes = notes;
@@ -160,7 +169,28 @@
         <div class="container title-container">
           <Row>
             <Col>
-              <p class="title-text"><b>Leitor de notas de corretagem</b></p>
+              <p class="title-text position-relative">
+                <b>Leitor de notas de corretagem</b>
+                <!--Update badge-->
+                {#if update}
+                  <Tooltip target="updates-badge">Atualizar ativos</Tooltip>
+                  <span
+                    id="updates-badge"
+                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success"
+                    style="cursor: pointer;"
+                    on:click={onUpdateAssets}
+                    on:keydown={(e) => {
+                      if (!checkingForUpdates && e.key === "U") {
+                        onUpdateAssets();
+                      }
+                    }}
+                    on:click={onUpdateAssets}
+                  >
+                    {checkingForUpdates ? "⌛" : "📈"}
+                    <span class="visually-hidden">Atualizar ativos</span>
+                  </span>
+                {/if}
+              </p>
             </Col>
           </Row>
         </div>
@@ -171,7 +201,9 @@
           // Send the request to the server
           window.api
             .processNotes(notesToParse, passwords, customAssets)
-            .then((response) => handleServerResponse(notesToParse, response));
+            .then((response) =>
+              handleProcessNotesResponse(notesToParse, response),
+            );
         }}
       />
       {#if clickedBack}
@@ -245,7 +277,7 @@
                   (d) =>
                     `${d.code}\t${d.cnpj}\t${d.date}\t${
                       d.type === "buy" ? "Compra" : "Venda"
-                    }\t${d.quantity}\t${formatMoneyToDisplay(d.price)}`
+                    }\t${d.quantity}\t${formatMoneyToDisplay(d.price)}`,
                 )
                 .join("\n");
             } else {
@@ -264,7 +296,7 @@
                     (d) =>
                       `${d.code}\t${d.cnpj}\t${d.date}\t${
                         d.type === "buy" ? "Compra" : "Venda"
-                      }\t${d.quantity}\t${formatMoneyToDisplay(d.price)}`
+                      }\t${d.quantity}\t${formatMoneyToDisplay(d.price)}`,
                   )
                   .join("\n");
               }
@@ -276,8 +308,8 @@
               "data:text/plain;charset=utf-8," +
                 encodeURIComponent(
                   "Código\tCNPJ\tData\tCompra/Venda\tQuantidade\tPreços+custos\n" +
-                    data
-                )
+                    data,
+                ),
             );
             csv.setAttribute("download", "Notas.csv");
             csv.style.display = "none";
@@ -298,7 +330,7 @@
       window.api
         .processNotes(notesWithWrongPassword, passwords, customAssets)
         .then((response) =>
-          handleServerResponse(notesWithWrongPassword, response)
+          handleProcessNotesResponse(notesWithWrongPassword, response),
         );
     }}
     onDismiss={() => {
@@ -312,7 +344,7 @@
       window.api
         .processNotes(notesWithUnknownAssets, passwords, customAssets)
         .then((response) =>
-          handleServerResponse(notesWithUnknownAssets, response)
+          handleProcessNotesResponse(notesWithUnknownAssets, response),
         );
     }}
     onDismiss={() => {
@@ -335,7 +367,9 @@
     text-align: center;
     color: #d6d6d6;
     font-size: 50px;
-    text-shadow: 0 0 6px #000000, 0 0 10px #000000;
+    text-shadow:
+      0 0 6px #000000,
+      0 0 10px #000000;
   }
 
   /* Required to apply to Svelte components */

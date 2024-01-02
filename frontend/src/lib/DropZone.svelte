@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Container, Row, Spinner, Col } from "sveltestrap";
+  import { Container, Row, Spinner, Col, Button } from "sveltestrap";
   /**
    * Callback when the parsed notes are updated
    * @param notes `NegotiationNote`s parsed
@@ -106,10 +106,7 @@
 </div>
 <Container>
   <Row class="justify-content-center">
-    <Col
-      xs="8"
-      style="text-align: center; margin-bottom: 20px; max-width: 350px"
-    >
+    <Col xs="8" style="text-align: center; max-width: 350px">
       <p class="info-text">Nenhum dado é coletado</p>
     </Col>
   </Row>
@@ -159,9 +156,12 @@
     font-size: 15px;
     text-align: center;
     user-select: none;
-    text-shadow: 0 0 6px #000000, 0 0 10px #000000;
+    text-shadow:
+      0 0 6px #000000,
+      0 0 10px #000000;
     background-color: #0000006b;
     border-radius: 10px;
     margin-top: 10px;
+    margin-bottom: 0;
   }
 </style>

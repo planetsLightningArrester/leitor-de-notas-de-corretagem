@@ -1,24 +1,26 @@
 import path from 'path';
 import { app } from 'electron';
+import { spawn } from 'child_process';
 import { Print, color } from "printaeu";
 import { BrowserWindow, ipcMain } from "electron";
 import { CustomAsset, NoteToBeParsed } from "../types";
+import { Update, getUpdates, installUpdate } from '../update';
 import { NegotiationNote, NoteParser, WrongPassword as _WrongPassword, UnknownAsset as _UnknownAsset } from "parser-de-notas-de-corretagem";
 
-const tempDir = app.getPath("logs")
+const logDir = app.getPath("logs")
 
 /** Logs an info */
 const info = Print.create();
 info.preAppend(`[${color.green}SERV${color.reset}] [${color.cyan}INFO${color.reset}] `);
-info.logToFile(path.join(tempDir, 'server.log'))
+info.logToFile(path.join(logDir, 'server.log'))
 /** Logs a warning */
 const warn = Print.create();
 warn.preAppend(`[${color.green}SERV${color.reset}] [${color.yellow}WARN${color.reset}] `);
-warn.logToFile(path.join(tempDir, 'server.log'))
+warn.logToFile(path.join(logDir, 'server.log'))
 /** Logs an error */
 const err = Print.create();
 err.preAppend(`[${color.green}SERV${color.reset}] [${color.red}ERROR${color.reset}] `);
-err.logToFile(path.join(tempDir, 'server.log'))
+err.logToFile(path.join(logDir, 'server.log'))
 
 // ? NOTE: Unfortunately, Error messages extended from `Error` will be stripped out once sent by IPC
 // ? Issue: https://github.com/electron/electron/issues/24427
