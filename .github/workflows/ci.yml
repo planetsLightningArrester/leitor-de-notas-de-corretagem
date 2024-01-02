@@ -2,10 +2,6 @@
 
 name: CI
 
-# defaults:
-#   run:
-#     shell: bash -ieo pipefail {0}
-
 # Controls when the workflow will run
 on:
   # Nightly - running every 00:00 UTC
@@ -29,7 +25,7 @@ jobs:
       fail-fast: false
       matrix:
         version: [18, 20]
-    name: "Test - Node v${{ matrix.version }}"
+    name: "🧪 Test (v${{ matrix.version }})"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code 📥
@@ -45,5 +41,27 @@ jobs:
       
       - name: Run test 🧪
         run:  npm run test
+
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        version: [18, 20]
+    name: "📦 Build (v${{ matrix.version }})"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code 📥
+        uses: actions/checkout@v3
+
+      - name: NodeJS setup 🛠️
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.version }}
+
+      - name: Install dependencies and build 🔧
+        run:  npm ci
+      
+      - name: Run test 📦
+        run:  npm run build
 
 # EOF
