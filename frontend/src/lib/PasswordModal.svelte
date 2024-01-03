@@ -1,5 +1,11 @@
 <script lang="ts">
-  import { Button, Modal, ModalBody, ModalFooter, Row } from "sveltestrap";
+  import {
+    Button,
+    Modal,
+    ModalBody,
+    ModalFooter,
+    Row,
+  } from "@sveltestrap/sveltestrap";
   import { noTypeCheck } from "./common";
 
   /** List of possible passwords */

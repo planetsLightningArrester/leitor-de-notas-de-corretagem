@@ -16,7 +16,7 @@
       }
       if (clearInput) {
         const find = document.getElementById(
-          "find"
+          "find",
         ) as unknown as HTMLInputElement;
         if (find) find.value = "";
       }
@@ -42,7 +42,7 @@
         clearMatches(true);
       }
     },
-    false
+    false,
   );
 
   $: {
@@ -52,21 +52,24 @@
     }
     if (search) {
       const lowerSearch = search.toLowerCase();
-      Array.from(
-        document.getElementById("table-container").getElementsByTagName("*")
-      ).forEach((el) => {
-        if (
-          el instanceof HTMLElement &&
-          el.innerText.toLocaleLowerCase().includes(lowerSearch)
-        ) {
-          lastMatches.push({
-            element: el,
-            originalColor: el.style.color,
-          });
-          const previous = el.getAttribute("style");
-          el.setAttribute("style", previous + ";color: yellow!important");
-        }
-      });
+      const tableContainerElement = document.getElementById("table-container");
+      if (tableContainerElement) {
+        Array.from(tableContainerElement.getElementsByTagName("*")).forEach(
+          (el) => {
+            if (
+              el instanceof HTMLElement &&
+              el.innerText.toLocaleLowerCase().includes(lowerSearch)
+            ) {
+              lastMatches.push({
+                element: el,
+                originalColor: el.style.color,
+              });
+              const previous = el.getAttribute("style");
+              el.setAttribute("style", previous + ";color: yellow!important");
+            }
+          },
+        );
+      }
     }
   }
 </script>

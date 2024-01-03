@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { Icon } from "sveltestrap";
-  import { get_current_component } from "svelte/internal";
+  import { Icon } from "@sveltestrap/sveltestrap";
 
   export let message: string;
   export let duration: number = 3000;
@@ -10,24 +9,17 @@
   let show: boolean = false;
   let hiding: boolean = false;
   let timeout: number | undefined;
-  const _thisComponent = get_current_component();
 
   /** Animate the notification out of the screen */
   function onHide() {
-    hiding = true;
-    div.classList.add("push-up");
-    setTimeout(() => {
-      div.classList.remove("push-up");
-      show = false;
-      hiding = false;
-      _thisComponent.$destroy();
-    }, animationDuration);
-  }
-
-  /** Listen to 'Escape' to dismiss the notification */
-  function onKeyDown(e: KeyboardEvent) {
-    if (show && e.key === "Escape") {
-      onHide();
+    if (!hiding) {
+      hiding = true;
+      div.classList.add("push-up");
+      setTimeout(() => {
+        div.classList.remove("push-up");
+        show = false;
+        hiding = false;
+      }, animationDuration);
     }
   }
 
@@ -56,16 +48,13 @@
       {/if}
       {message}
     </span>
-    <span
+    <button
       data-testid="push-notification-close"
       class="close-icon"
-      on:click={onHide}
-      on:keydown={onKeyDown}>×</span
+      on:click={onHide}>×</button
     >
   </div>
 {/if}
-
-<div style="--animationDuration:{animationDuration};" />
 
 <style lang="scss">
   :global(.push) {
@@ -108,6 +97,8 @@
     font-size: 20px;
     cursor: pointer;
     user-select: none;
+    background-color: transparent;
+    border: none;
   }
 
   .success {

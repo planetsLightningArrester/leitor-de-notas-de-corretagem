@@ -6,7 +6,7 @@
     Modal,
     ModalBody,
     ModalFooter,
-  } from "sveltestrap";
+  } from "@sveltestrap/sveltestrap";
 
   /** List of custom assets */
   export let customAssets: CustomAsset[];
@@ -21,9 +21,7 @@
    * Handles key down press in the inputs. If `Enter` is pressed, `onRetry` is called
    * @param event the `KeyboardEvent`
    */
-  function keyDownHandler(
-    event: KeyboardEvent & { currentTarget: EventTarget & HTMLInputElement }
-  ) {
+  function keyDownHandler(event: KeyboardEvent) {
     if (event.key === "Enter") {
       onRetry();
     }
@@ -49,6 +47,7 @@
           class="form-control"
           placeholder="Código (Ex: ABEV3)"
           bind:value={customAssets[i].code}
+          on:keydown={keyDownHandler}
         />
         <Input
           type="text"
@@ -56,6 +55,7 @@
           class="form-control"
           placeholder="CNPJ"
           bind:value={customAssets[i].cnpj}
+          on:keydown={keyDownHandler}
         />
         <Input type="checkbox" label="FII" bind:value={customAssets[i].isFII} />
       </InputGroup>

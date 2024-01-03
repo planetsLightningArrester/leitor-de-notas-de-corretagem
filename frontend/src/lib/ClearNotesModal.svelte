@@ -1,6 +1,11 @@
 <script lang="ts">
-  import { get_current_component } from "svelte/internal";
-  import { Button, Modal, ModalBody, ModalFooter } from "sveltestrap";
+  import {
+    Button,
+    Modal,
+    ModalBody,
+    ModalFooter,
+  } from "@sveltestrap/sveltestrap";
+  import type { SvelteComponent } from "svelte";
 
   export let note: string;
   /** Callback when the user confirmed the deletion */
@@ -9,18 +14,20 @@
   export let onDismiss: () => void;
 
   let showModal = true;
-  const _thisComponent = get_current_component();
+  let nodeRef: SvelteComponent | undefined;
 
   $: if (!showModal) {
     // Wait for modal fade-out
     setTimeout(() => {
-      _thisComponent.$destroy();
+      if (nodeRef && nodeRef.parentNode)
+        nodeRef.parentNode.removeChild(nodeRef);
     }, 1000);
   }
 </script>
 
 <!-- Clear notes modal -->
 <Modal
+  bind:this={nodeRef}
   header={note === "all" ? "♻️ Limpar notas" : `♻️ Remover nota Nº ${note}`}
   isOpen={showModal}
   toggle={onDismiss}

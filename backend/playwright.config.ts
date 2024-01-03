@@ -1,11 +1,6 @@
 import process from 'process';
 import { defineConfig, devices } from '@playwright/test';
 
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-// require('dotenv').config();
 const development = process.env['NODE_ENV'] == 'development';
 
 // Set mode to development, so we can run electron tests with the Playwright extension

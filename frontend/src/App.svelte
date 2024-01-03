@@ -11,7 +11,7 @@
     Row,
     Styles,
     Tooltip,
-  } from "sveltestrap";
+  } from "@sveltestrap/sveltestrap";
   import NotesTable from "./lib/NotesTable.svelte";
   import {
     type NegotiationNote,
@@ -171,25 +171,6 @@
             <Col>
               <p class="title-text position-relative">
                 <b>Leitor de notas de corretagem</b>
-                <!--Update badge-->
-                {#if update}
-                  <Tooltip target="updates-badge">Atualizar ativos</Tooltip>
-                  <span
-                    id="updates-badge"
-                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success"
-                    style="cursor: pointer;"
-                    on:click={onUpdateAssets}
-                    on:keydown={(e) => {
-                      if (!checkingForUpdates && e.key === "U") {
-                        onUpdateAssets();
-                      }
-                    }}
-                    on:click={onUpdateAssets}
-                  >
-                    {checkingForUpdates ? "⌛" : "📈"}
-                    <span class="visually-hidden">Atualizar ativos</span>
-                  </span>
-                {/if}
               </p>
             </Col>
           </Row>
@@ -206,6 +187,31 @@
             );
         }}
       />
+      {#if update}
+        <Container>
+          <Row class="justify-content-center">
+            <Col
+              xs="8"
+              style="text-align: center; max-width: 350px; margin-bottom: 20px"
+            >
+              {#if !checkingForUpdates}
+                <button
+                  class="info-text info-text-button"
+                  on:click={onUpdateAssets}
+                >
+                  Atualizar informação de ativos
+                  <Icon
+                    style="font-size: 15px; color: white; margin-left: 10px"
+                    name="download"
+                  />
+                </button>
+              {:else}
+                <p class="info-text">Atualizando...</p>
+              {/if}
+            </Col>
+          </Row>
+        </Container>
+      {/if}
       {#if clickedBack}
         <Container>
           <Row style="justify-content: center">
@@ -225,7 +231,7 @@
                   >Voltar para notas carregadas</span
                 >
                 <Icon
-                  style="font-size: 24px; color: white"
+                  style="font-size: 20px; color: white; margin-left: 10px"
                   name="arrow-right"
                 />
               </Button>
@@ -353,13 +359,14 @@
   />
 </main>
 
-<style global>
+<style global lang="scss">
   main {
     display: flow-root;
   }
 
   .title-container {
     margin-top: 100px;
+    user-select: none;
   }
 
   .title-text {
@@ -367,9 +374,31 @@
     text-align: center;
     color: #d6d6d6;
     font-size: 50px;
+    user-select: none;
     text-shadow:
       0 0 6px #000000,
       0 0 10px #000000;
+  }
+
+  .info-text {
+    font-family: "Roboto Slab", serif;
+    color: #d6d6d680;
+    font-size: 15px;
+    text-align: center;
+    text-decoration: underline;
+    user-select: none;
+    text-shadow:
+      0 0 6px #000000,
+      0 0 10px #000000;
+    background-color: #0000006b;
+    border-radius: 10px;
+    margin-top: 10px;
+    margin-bottom: 0;
+    &-button {
+      cursor: pointer;
+      border: none;
+      background-color: transparent;
+    }
   }
 
   /* Required to apply to Svelte components */

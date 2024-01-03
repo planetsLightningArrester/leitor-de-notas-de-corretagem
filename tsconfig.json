@@ -19,10 +19,6 @@
     }
   },
   "exclude": [
-    "src/__tests__",
-    "src/client",
-    "dist",
-    "playwright.config.ts",
-    "forge.config.js"
+    "dist"
   ]
 }

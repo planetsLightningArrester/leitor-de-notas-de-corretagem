@@ -1,23 +1,21 @@
-import { Update } from './update';
-import { CustomAsset, NoteToBeParsed } from './types';
-import { ipcRenderer, contextBridge } from 'electron';
-import { NegotiationNote, UnknownAsset, WrongPassword } from 'parser-de-notas-de-corretagem';
+import { type Update } from './update'
+import { type CustomAsset, type NoteToBeParsed } from './types'
+import { ipcRenderer, contextBridge } from 'electron'
+import { type NegotiationNote, type UnknownAsset, type WrongPassword } from 'parser-de-notas-de-corretagem'
 
 window.addEventListener('DOMContentLoaded', () => {
-
   // Update the version in the Window
   for (const type of ['chrome', 'node', 'electron']) {
-    const version = process.versions[type];
-    if (version) {
-      const element = document.getElementById(`${type}-version`);
-      if (element) element.innerText = version;
+    const version = process.versions[type]
+    if (typeof version !== 'undefined') {
+      const element = document.getElementById(`${type}-version`)
+      if (element !== null) element.innerText = version
     }
   }
-
-});
+})
 
 /** Context bridge. Map the IPC communication between the client and the server */
-contextBridge.exposeInMainWorld("api", {
+contextBridge.exposeInMainWorld('api', {
   /**
    * Send a request to the server to parse brokerage notes
    * @param notes an `Array` of `NoteToBeParsed`
@@ -25,20 +23,23 @@ contextBridge.exposeInMainWorld("api", {
    */
   processNotes: async (notes: NoteToBeParsed[], passwords: string[], customAssets: CustomAsset[]): Promise<[Array<WrongPassword | UnknownAsset>, NegotiationNote[]]> => {
     // TODO: type check if the incoming data is as expected
-    ipcRenderer.send("process-notes", notes, passwords, customAssets);
+    ipcRenderer.send('process-notes', notes, passwords, customAssets)
     return await new Promise<[Array<WrongPassword | UnknownAsset>, NegotiationNote[]]>(resolve => {
-      ipcRenderer.on("notes-results", (_, ...args) => {
-        const errors: Array<WrongPassword | UnknownAsset> = args[0][0];
-        const results: NegotiationNote[] = args[0][1];
-        resolve([errors, results]);
-      });
-    });
+      ipcRenderer.on('notes-results', (_, ...args) => {
+        const errors: Array<WrongPassword | UnknownAsset> = args[0][0]
+        const results: NegotiationNote[] = args[0][1]
+        resolve([errors, results])
+      })
+    })
   },
   /** Send a request to the server to proceed with the app update */
-  checkUpdates: (): Promise<Update | undefined> => {
-    ipcRenderer.send("check-updates");
-    return new Promise<Update | undefined>(resolve => {
-      ipcRenderer.on("update-results", (_, ...args) => resolve(args[0]));
+  checkUpdates: async (): Promise<Update | undefined> => {
+    ipcRenderer.send('check-updates')
+    return await new Promise<Update | undefined>(resolve => {
+      ipcRenderer.on('update-results', (_, ...args) => {
+        const update: Update | undefined = args[0]
+        resolve(update)
+      })
     })
   },
   /**
@@ -46,6 +47,6 @@ contextBridge.exposeInMainWorld("api", {
    * @param the update to install
    */
   proceedWithUpdate: (update: Update): void => {
-    ipcRenderer.send("proceed-with-update", update);
+    ipcRenderer.send('proceed-with-update', update)
   }
-});
+})

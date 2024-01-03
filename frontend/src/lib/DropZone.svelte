@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Container, Row, Spinner, Col, Button } from "sveltestrap";
+  import { Container, Row, Spinner, Col } from "@sveltestrap/sveltestrap";
   /**
    * Callback when the parsed notes are updated
    * @param notes `NegotiationNote`s parsed
@@ -59,7 +59,7 @@
     input.type = "file";
     input.multiple = true;
     input.onchange = () => {
-      if (input) processNotes(Array.from(input.files));
+      if (input && input.files) processNotes(Array.from(input.files));
     };
     input.click();
   }
@@ -83,18 +83,15 @@
 </script>
 
 <!-- Drop zone -->
-<div
-  id="drop-zone-div"
-  class="container d-flex justify-content-center"
-  on:drop={ondrop}
-  on:dragover={ondragover}
-  on:dragleave={ondragleave}
->
+<Container id="drop-zone-div" class="container d-flex justify-content-center">
   <button
     id="drop-zone"
     data-testid="drop-zone-button"
     class="align-items-center"
     on:click={onclick}
+    on:drop={ondrop}
+    on:dragover={ondragover}
+    on:dragleave={ondragleave}
   >
     <span class="drop-zone-text">
       {mainText}
@@ -103,7 +100,7 @@
       {/if}
     </span>
   </button>
-</div>
+</Container>
 <Container>
   <Row class="justify-content-center">
     <Col xs="8" style="text-align: center; max-width: 350px">

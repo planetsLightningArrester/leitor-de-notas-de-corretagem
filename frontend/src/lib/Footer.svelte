@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Tooltip } from "sveltestrap";
+  import { Tooltip } from "@sveltestrap/sveltestrap";
   import { resolveImgPath } from "./common";
   import githubSvg from "../assets/github.svg";
 

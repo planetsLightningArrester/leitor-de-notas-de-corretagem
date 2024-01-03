@@ -15,7 +15,7 @@
     Row,
     Col,
     Button,
-  } from "sveltestrap";
+  } from "@sveltestrap/sveltestrap";
   import { NegotiationNote, type Deal } from "parser-de-notas-de-corretagem";
 
   /** All `NegotiationNotes` */
@@ -69,11 +69,15 @@
 <Find />
 <Container id="table-container">
   <!-- Arrow to go back to the initial screen -->
-  <Icon
-    onclick={onClickBack}
-    style="font-size: 24px; color: white; cursor: pointer"
-    name="arrow-left"
-  />
+  <button
+    on:click={onClickBack}
+    style="background-color: transparent; border: none"
+  >
+    <Icon
+      style="font-size: 24px; color: white; cursor: pointer"
+      name="arrow-left"
+    />
+  </button>
   <!-- Tabs -->
   <TabContent
     on:tab={(e) => {
@@ -238,11 +242,15 @@
                 if (result && currentTab !== "all") {
                   currentTab = "all";
                   // ? That's messy, but I couldn't find a way to activate the all tab after deleting one
-                  const el = document
-                    .getElementById("all-pane")
-                    .parentNode.children.item(0)
-                    .children.item(0)
-                    .children.item(0);
+                  let el;
+                  el = document.getElementById("all-pane");
+                  if (el) el = el.parentNode;
+                  if (el) el = el.children;
+                  if (el) el = el.item(0);
+                  if (el) el = el.children;
+                  if (el) el = el.item(0);
+                  if (el) el = el.children;
+                  if (el) el = el.item(0);
                   if (el && el instanceof HTMLElement) el.click();
                 }
               });

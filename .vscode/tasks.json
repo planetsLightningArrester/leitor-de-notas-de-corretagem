@@ -40,7 +40,7 @@
 			"detail": "Compile backend",
 			"path": "backend",
 			"type": "npm",
-			"script": "compile:dev",
+			"script": "compile",
 			"presentation": {
 				"echo": true,
 				"reveal": "silent",
