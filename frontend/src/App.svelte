@@ -10,7 +10,6 @@
     Icon,
     Row,
     Styles,
-    Tooltip,
   } from "@sveltestrap/sveltestrap";
   import NotesTable from "./lib/NotesTable.svelte";
   import {
@@ -123,7 +122,7 @@
 
   /**
    * Display a push notifications about new notes processed
-   * @param amount the new amount of processed notes
+   * @param amount the amount of new notes processed
    */
   function pushNotificationsOfNewNotes(amount: number) {
     if (amount > 0) {

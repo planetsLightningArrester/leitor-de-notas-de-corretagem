@@ -2,7 +2,7 @@ import path from 'path'
 import { URL } from 'url'
 import { server } from './server'
 import { Print, color } from 'printaeu'
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, session } from 'electron'
 
 const logDir = app.getPath('logs')
 
@@ -64,6 +64,23 @@ function createWindow(): void {
 
 app.whenReady()
   .then(() => {
+    // INFO: Content Security Policy (CSP)
+    // https://github.com/electron/electron/blob/main/docs/tutorial/security.md#7-define-a-content-security-policy
+    session.defaultSession.webRequest.onHeadersReceived((details, handler) => {
+      handler({
+        responseHeaders: {
+          ...details.responseHeaders,
+          // Validate it here: https://csp-evaluator.withgoogle.com/
+          'Content-Security-Policy': [
+            'default-src \'unsafe-inline\' \'self\' https://cdn.jsdelivr.net data:',
+            'script-src \'unsafe-inline\' \'self\'',
+            'require-trusted-types-for \'script\'',
+            'base-uri http'
+          ]
+        }
+      })
+    })
+
     createWindow()
 
     app.on('activate', () => {
@@ -89,12 +106,23 @@ app.on('window-all-closed', () => {
   }
 })
 
-// INFO: If your app has no need to navigate or only needs to navigate to known pages, it is a good idea to limit navigation outright to that known scope, disallowing any other kinds of navigation.
-// https://github.com/electron/electron/blob/main/docs/tutorial/security.md#13-disable-or-limit-navigation
 app.on('web-contents-created', (_, contents) => {
+  // INFO: If your app has no need to navigate or only needs to navigate to known pages, it is a good idea to limit navigation outright to that known scope, disallowing any other kinds of navigation.
+  // https://github.com/electron/electron/blob/main/docs/tutorial/security.md#13-disable-or-limit-navigation
   contents.on('will-navigate', (event, navigationUrl) => {
     if (new URL(navigationUrl).origin !== 'https://github.com') {
       event.preventDefault()
     }
+  })
+  contents.setWindowOpenHandler(details => {
+    if (details.disposition === 'new-window' && new URL(details.url).origin !== 'https://github.com') {
+      return { action: 'deny' }
+    } else return { action: 'allow' }
+  })
+
+  contents.session.setPermissionRequestHandler((webContents, permission, handle) => {
+    if (webContents.getURL() !== 'https://github.com' && permission === 'openExternal') {
+      handle(false)
+    } else handle(true)
   })
 })
