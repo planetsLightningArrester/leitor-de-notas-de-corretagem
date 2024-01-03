@@ -87,7 +87,7 @@
       {...noTypeCheck({ "data-testid": "ignore-password-button" })}
       on:click={onDismiss}
     >
-      >Ignorar ></Button
+      Ignorar</Button
     >
   </ModalFooter>
 </Modal>
