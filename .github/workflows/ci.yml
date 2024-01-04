@@ -79,7 +79,7 @@ jobs:
       - name: Install dependencies 🔧
         run:  npm ci
 
-      - name: Run test 📦
+      - name: Run build 📦
         run:  npm run build
 
 # EOF
