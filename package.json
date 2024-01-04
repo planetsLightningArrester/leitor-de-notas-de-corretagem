@@ -11,7 +11,8 @@
     "build:frontend": "cd frontend && npm run build",
     "build:backend": "cd backend && npm run make",
     "update-assets": "cd backend && npm i parser-de-notas-de-corretagem@latest",
-    "preinstall": "cd backend && npm ci && cd ../frontend && npm ci"
+    "preinstall": "cd backend && npm ci && cd ../frontend && npm ci",
+    "lint": "cd backend && npm run lint; cd ../frontend && npm run lint"
   },
   "repository": {
     "type": "git",
@@ -28,11 +29,6 @@
     "@eslint/create-config": "^0.4.6",
     "@typescript-eslint/eslint-plugin": "^6.17.0",
     "concurrently": "^8.2.2",
-    "eslint": "^8.56.0",
-    "eslint-config-standard-with-typescript": "^43.0.0",
-    "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-n": "^16.6.1",
-    "eslint-plugin-promise": "^6.1.1",
     "typescript": "^5.3.3"
   }
 }

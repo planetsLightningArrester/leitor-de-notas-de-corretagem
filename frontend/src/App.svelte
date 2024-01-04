@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Footer from "./lib/Footer.svelte";
-  import DropZone from "./lib/DropZone.svelte";
+  import Footer from './lib/Footer.svelte'
+  import DropZone from './lib/DropZone.svelte'
   import {
     Button,
     Carousel,
@@ -9,57 +9,64 @@
     Container,
     Icon,
     Row,
-    Styles,
-  } from "@sveltestrap/sveltestrap";
-  import NotesTable from "./lib/NotesTable.svelte";
+    Styles
+  } from '@sveltestrap/sveltestrap'
+  import NotesTable from './lib/NotesTable.svelte'
   import {
     type NegotiationNote,
     type Deal,
     type WrongPassword,
-    type UnknownAsset,
-  } from "parser-de-notas-de-corretagem";
-  import PasswordModal from "./lib/PasswordModal.svelte";
+    type UnknownAsset
+  } from 'parser-de-notas-de-corretagem'
+  import PasswordModal from './lib/PasswordModal.svelte'
   import {
     formatMoneyToDisplay,
     resolveImgPath,
-    sortDeals,
-  } from "./lib/common";
-  import UnknownAssetModal from "./lib/UnknownAssetModal.svelte";
-  import Notifications from "./lib/Notifications.svelte";
-  import ClearNotesModal from "./lib/ClearNotesModal.svelte";
-  import backgroundImage from "./assets/bg.jpg";
+    sortDeals
+  } from './lib/common'
+  import UnknownAssetModal from './lib/UnknownAssetModal.svelte'
+  import Notifications from './lib/Notifications.svelte'
+  import ClearNotesModal from './lib/ClearNotesModal.svelte'
+  import backgroundImage from './assets/bg.jpg'
 
   // Set background image
   document.body.style.backgroundImage = `url(${resolveImgPath(
-    backgroundImage,
-  )})`;
-  document.body.style.backgroundSize = "cover";
+    backgroundImage
+  )})`
+  document.body.style.backgroundSize = 'cover'
 
   /** List of user defined assets */
-  let customAssets: CustomAsset[] = [];
+  let customAssets: CustomAsset[] = []
   /** List of possible passwords */
-  let passwords: string[] = [];
+  const passwords: string[] = []
   /** Parsed notes */
-  let notes: NegotiationNote[] = [];
-  /** Note results for the tab "all"*/
-  let flatDeals: Deal[] = [];
-  /** Notes that issued a wrong password error*/
-  let notesWithWrongPassword: NoteToBeParsed[] = [];
-  /** Notes that issued a unknown asset error*/
-  let notesWithUnknownAssets: NoteToBeParsed[] = [];
-  let mainDiv: HTMLElement;
+  let notes: NegotiationNote[] = []
+  /** Note results for the tab "all" */
+  let flatDeals: Deal[] = []
+  /** Notes that issued a wrong password error */
+  let notesWithWrongPassword: NoteToBeParsed[] = []
+  /** Notes that issued a unknown asset error */
+  let notesWithUnknownAssets: NoteToBeParsed[] = []
+  let mainDiv: HTMLElement
 
   // Page index control
-  let activeIndex = 0;
-  let clickedBack = false;
+  let activeIndex = 0
+  let clickedBack = false
 
   // Updates
-  let checkingForUpdates = false;
-  let update: Update | undefined;
-  window.api.checkUpdates().then((value) => (update = value));
-  const onUpdateAssets = async () => {
-    if (update) window.api.proceedWithUpdate(update);
-  };
+  const checkingForUpdates = false
+  let update: Update | undefined
+  window.api
+    .checkUpdates()
+    .then((value) => (update = value))
+    .catch((reason) => {
+      console.error('Error checking for updates')
+      if (reason instanceof Error) console.error(reason.message)
+      else console.error(reason)
+    })
+  const onUpdateAssets = async (): Promise<void> => {
+    if (typeof update !== 'undefined') window.api.proceedWithUpdate(update)
+  }
 
   /**
    * Handle server response of a parse request
@@ -70,91 +77,91 @@
    */
   function handleProcessNotesResponse(
     request: NoteToBeParsed[],
-    response: [Array<WrongPassword | UnknownAsset>, NegotiationNote[]],
-  ) {
-    const [_errors, result] = response;
-    notesWithWrongPassword = [];
-    notesWithUnknownAssets = [];
-    customAssets = [];
+    response: [Array<WrongPassword | UnknownAsset>, NegotiationNote[]]
+  ): void {
+    const [_errors, result] = response
+    notesWithWrongPassword = []
+    notesWithUnknownAssets = []
+    customAssets = []
 
     _errors.forEach((e) => {
-      if (e.name === "WrongPassword") {
-        const prevRequest = request.find((p) => p.name === e.file);
-        if (prevRequest) notesWithWrongPassword.push(prevRequest);
+      if (e.name === 'WrongPassword') {
+        const prevRequest = request.find((p) => p.name === e.file)
+        if (typeof prevRequest !== 'undefined') notesWithWrongPassword.push(prevRequest)
         else {
           console.warn(
-            `Couldn't find a previous request matching ${e.file} in the list of requests below`,
-          );
-          console.log(request);
+            `Couldn't find a previous request matching ${e.file} in the list of requests below`
+          )
+          console.log(request)
         }
-      } else if (e.name === "UnknownAsset" && "asset" in e) {
-        const prevRequest = request.find((p) => p.name === e.file);
-        if (prevRequest) {
+      } else if (e.name === 'UnknownAsset' && 'asset' in e) {
+        const prevRequest = request.find((p) => p.name === e.file)
+        if (typeof prevRequest !== 'undefined') {
           notesWithUnknownAssets.push({
             ...prevRequest,
-            missingAsset: e.asset,
-          });
+            missingAsset: e.asset
+          })
           customAssets.push({
             name: e.asset,
-            cnpj: "",
-            code: "",
-            isFII: false,
-          });
+            cnpj: '',
+            code: '',
+            isFII: false
+          })
         } else {
           console.warn(
-            `Couldn't find a previous request matching ${e.file} in the list of requests below`,
-          );
-          console.log(request);
+            `Couldn't find a previous request matching ${e.file} in the list of requests below`
+          )
+          console.log(request)
         }
       }
-    });
-    result.forEach((n) => n.deals.sort(sortDeals));
-    const previousLength = notes.length;
+    })
+    result.forEach((n) => n.deals.sort(sortDeals))
+    const previousLength = notes.length
     notes.push(
-      ...result.filter((r) => !notes.some((n) => n.number === r.number)),
-    );
-    pushNotificationsOfNewNotes(notes.length - previousLength);
-    notes = notes;
-    flatDeals = notes.flatMap((n) => n.deals);
-    flatDeals.sort(sortDeals);
-    clickedBack = false;
+      ...result.filter((r) => !notes.some((n) => n.number === r.number))
+    )
+    pushNotificationsOfNewNotes(notes.length - previousLength)
+    notes = notes
+    flatDeals = notes.flatMap((n) => n.deals)
+    flatDeals.sort(sortDeals)
+    clickedBack = false
   }
 
   /**
    * Display a push notifications about new notes processed
    * @param amount the amount of new notes processed
    */
-  function pushNotificationsOfNewNotes(amount: number) {
+  function pushNotificationsOfNewNotes(amount: number): void {
     if (amount > 0) {
       new Notifications({
         target: mainDiv,
         props: {
-          type: "success",
-          message: `${amount} nota${amount > 1 ? "s" : ""} adicionada${
-            amount > 1 ? "s" : ""
-          }`,
-        },
-      });
+          type: 'success',
+          message: `${amount} nota${amount > 1 ? 's' : ''} adicionada${
+            amount > 1 ? 's' : ''
+          }`
+        }
+      })
     } else {
       new Notifications({
         target: mainDiv,
         props: {
-          type: "warning",
-          message: `Nenhuma nova nota adicionada. Duplicatas são ignoradas`,
-        },
-      });
+          type: 'warning',
+          message: 'Nenhuma nova nota adicionada. Duplicatas são ignoradas'
+        }
+      })
     }
   }
 
   $: {
     activeIndex =
       !clickedBack &&
-      notes.length &&
-      flatDeals.length &&
-      notes[0] &&
-      flatDeals[0]
+      notes.length > 0 &&
+      flatDeals.length > 0 &&
+      typeof notes[0] !== 'undefined' &&
+      typeof flatDeals[0] !== 'undefined'
         ? 1
-        : 0;
+        : 0
   }
 </script>
 
@@ -181,9 +188,15 @@
           // Send the request to the server
           window.api
             .processNotes(notesToParse, passwords, customAssets)
-            .then((response) =>
-              handleProcessNotesResponse(notesToParse, response),
-            );
+            .then((response) => {
+              // TODO: send an object instead of an array
+              handleProcessNotesResponse(notesToParse, response)
+            })
+            .catch(reason => {
+              console.error('Error processing notes')
+              if (reason instanceof Error) console.error(reason.message)
+              else console.error(reason)
+            })
         }}
       />
       {#if update}
@@ -222,8 +235,8 @@
                 color="secondary"
                 style="margin-bottom: 75px; background: none"
                 on:click={() => {
-                  activeIndex = 1;
-                  clickedBack = false;
+                  activeIndex = 1
+                  clickedBack = false
                 }}
               >
                 <span style="font-size: 20px; color: white"
@@ -240,85 +253,85 @@
       {/if}
     </CarouselItem>
     <CarouselItem bind:activeIndex itemIndex={1} class="fade-in">
-      {#if notes.length && flatDeals.length && notes[0] && flatDeals[0]}
+      {#if notes.length > 0 && flatDeals.length > 0 && notes[0] && flatDeals[0]}
         <NotesTable
           {notes}
           {flatDeals}
           onClickBack={() => {
-            activeIndex = 0;
-            clickedBack = true;
+            activeIndex = 0
+            clickedBack = true
           }}
-          onClickClearNotes={(tab) => {
-            return new Promise((resolve) => {
+          onClickClearNotes={async (tab) => {
+            return await new Promise((resolve) => {
               new ClearNotesModal({
                 target: mainDiv,
                 props: {
                   note: tab,
                   onConfirm: () => {
-                    if (tab === "all") {
-                      notes = [];
-                      flatDeals = [];
-                      notesWithWrongPassword = [];
-                      notesWithUnknownAssets = [];
+                    if (tab === 'all') {
+                      notes = []
+                      flatDeals = []
+                      notesWithWrongPassword = []
+                      notesWithUnknownAssets = []
                     } else {
-                      notes = notes.filter((n) => n.number !== tab);
-                      flatDeals = notes.flatMap((n) => n.deals);
-                      flatDeals.sort(sortDeals);
+                      notes = notes.filter((n) => n.number !== tab)
+                      flatDeals = notes.flatMap((n) => n.deals)
+                      flatDeals.sort(sortDeals)
                     }
-                    resolve(true);
+                    resolve(true)
                   },
                   onDismiss: () => {
-                    resolve(false);
-                  },
-                },
-              });
-            });
+                    resolve(false)
+                  }
+                }
+              })
+            })
           }}
           onClickExportCsv={(tab) => {
-            let data = "";
-            if (tab === "all") {
+            let data = ''
+            if (tab === 'all') {
               data = flatDeals
                 .map(
                   (d) =>
                     `${d.code}\t${d.cnpj}\t${d.date}\t${
-                      d.type === "buy" ? "Compra" : "Venda"
-                    }\t${d.quantity}\t${formatMoneyToDisplay(d.price)}`,
+                      d.type === 'buy' ? 'Compra' : 'Venda'
+                    }\t${d.quantity}\t${formatMoneyToDisplay(d.price)}`
                 )
-                .join("\n");
+                .join('\n')
             } else {
-              const note = notes.find((n) => n.number === tab);
+              const note = notes.find((n) => n.number === tab)
               if (!note) {
                 new Notifications({
                   target: mainDiv,
                   props: {
-                    type: "error",
-                    message: `Não foi possível gerar o .csv da nota Nº ${tab}. A nota parece ter sido removida`,
-                  },
-                });
+                    type: 'error',
+                    message: `Não foi possível gerar o .csv da nota Nº ${tab}. A nota parece ter sido removida`
+                  }
+                })
               } else {
                 data = note.deals
                   .map(
                     (d) =>
                       `${d.code}\t${d.cnpj}\t${d.date}\t${
-                        d.type === "buy" ? "Compra" : "Venda"
-                      }\t${d.quantity}\t${formatMoneyToDisplay(d.price)}`,
+                        d.type === 'buy' ? 'Compra' : 'Venda'
+                      }\t${d.quantity}\t${formatMoneyToDisplay(d.price)}`
                   )
-                  .join("\n");
+                  .join('\n')
               }
             }
 
-            const csv = document.createElement("a");
+            const csv = document.createElement('a')
             csv.setAttribute(
-              "href",
-              "data:text/plain;charset=utf-8," +
+              'href',
+              'data:text/plain;charset=utf-8,' +
                 encodeURIComponent(
-                  "Código\tCNPJ\tData\tCompra/Venda\tQuantidade\tPreços+custos\n" +
-                    data,
-                ),
-            );
-            csv.setAttribute("download", "Notas.csv");
-            csv.style.display = "none";
-            csv.click();
+                  'Código\tCNPJ\tData\tCompra/Venda\tQuantidade\tPreços+custos\n' +
+                    data
+                )
+            )
+            csv.setAttribute('download', 'Notas.csv')
+            csv.style.display = 'none'
+            csv.click()
           }}
         />
       {/if}
@@ -334,12 +347,12 @@
     onRetry={() => {
       window.api
         .processNotes(notesWithWrongPassword, passwords, customAssets)
-        .then((response) =>
-          handleProcessNotesResponse(notesWithWrongPassword, response),
-        );
+        .then((response) => {
+          handleProcessNotesResponse(notesWithWrongPassword, response)
+        })
     }}
     onDismiss={() => {
-      notesWithWrongPassword = [];
+      notesWithWrongPassword = []
     }}
   />
   <UnknownAssetModal
@@ -348,12 +361,12 @@
     onRetry={() => {
       window.api
         .processNotes(notesWithUnknownAssets, passwords, customAssets)
-        .then((response) =>
-          handleProcessNotesResponse(notesWithUnknownAssets, response),
-        );
+        .then((response) => {
+          handleProcessNotesResponse(notesWithUnknownAssets, response)
+        })
     }}
     onDismiss={() => {
-      notesWithUnknownAssets = [];
+      notesWithUnknownAssets = []
     }}
   />
 </main>

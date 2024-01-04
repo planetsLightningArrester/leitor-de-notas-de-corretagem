@@ -4,7 +4,7 @@
 /** Object from the client that represents the PDF notes to be parsed */
 interface NoteToBeParsed {
   /** Name of the file. Doesn't have to be the full path. It's just for error tracking */
-  name: string,
+  name: string
   /** File content as an ArrayBuffer */
   content: ArrayBuffer
   /** Some notes have missing assets */
@@ -29,11 +29,11 @@ interface CustomAsset {
 /** The info about the new update */
 interface Update {
   /** The update version */
-  version: string,
+  version: string
   /** The update file name */
-  name: string,
+  name: string
   /** The update URL */
-  url: string,
+  url: string
 }
 
 interface Window {
@@ -43,20 +43,17 @@ interface Window {
      * @param notes an `Array` of `NoteToBeParsed`
      * @param callback a callback with an `event` and a `result` of the parser
      */
-    processNotes: (notes: NoteToBeParsed[], passwords: string[], customAssets: CustomAsset[]) => Promise<[
-      Array<import("parser-de-notas-de-corretagem").WrongPassword | import("parser-de-notas-de-corretagem").UnknownAsset>,
-      import("parser-de-notas-de-corretagem").NegotiationNote[]
-    ]>,
+    processNotes: (notes: NoteToBeParsed[], passwords: string[], customAssets: CustomAsset[]) => Promise<[Array<WrongPassword | UnknownAsset>, NegotiationNote[]]>
     /**
      * Check if there are updates
      * @returns a `Promise` that resolves to the name of the file
      * if there are updates, otherwise resolves to an empty string
      */
-    checkUpdates: () => Promise<Update | undefined>,
+    checkUpdates: () => Promise<Update | undefined>
     /**
      * Send a request to the server to proceed with the app update
      * @param the update to install
      */
-    proceedWithUpdate: (update: Update) => void,
+    proceedWithUpdate: (update: Update) => void
   }
 }

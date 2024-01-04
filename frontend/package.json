@@ -12,12 +12,16 @@
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "copy-client": "run-script-os",
     "copy-client:default": "mkdir -p ../backend/src/client && cp -rf dist/* ../backend/src/client/",
-    "copy-client:win32": "xcopy dist\\* ..\\backend\\src\\client\\ /e /i /h"
+    "copy-client:win32": "xcopy dist\\* ..\\backend\\src\\client\\ /e /i /h",
+    "lint": "eslint --ext .js,.svelte src"
   },
   "devDependencies": {
+    "eslint-config-standard-with-typescript": "^43.0.0",
     "@sveltejs/vite-plugin-svelte": "^3.0.1",
     "@sveltestrap/sveltestrap": "^6.1.1",
     "@tsconfig/svelte": "^5.0.2",
+    "eslint": "^8.56.0",
+    "eslint-plugin-svelte": "^2.35.1",
     "parser-de-notas-de-corretagem": "^0.9.78",
     "rimraf": "^5.0.5",
     "run-script-os": "^1.1.6",

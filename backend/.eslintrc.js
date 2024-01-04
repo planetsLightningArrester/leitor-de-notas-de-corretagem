@@ -6,7 +6,7 @@ module.exports = {
     browser: true,
     commonjs: true,
     es2021: true,
-    node: true,
+    node: true
   },
   extends: 'standard-with-typescript',
   parser: '@typescript-eslint/parser',
