@@ -20,6 +20,24 @@ on:
 # Jobs
 jobs:
 
+  sanitize:
+    name: "🧹 Sanitize"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code 📥
+        uses: actions/checkout@v3
+
+      - name: NodeJS setup 🛠️
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install dependencies 🔧
+        run:  npm ci
+
+      - name: Run linters 🧹
+        run:  npm run lint
+
   test:
     strategy:
       fail-fast: false
@@ -36,9 +54,9 @@ jobs:
         with:
           node-version: ${{ matrix.version }}
 
-      - name: Install dependencies and build 🔧
+      - name: Install dependencies 🔧
         run:  npm ci
-      
+
       - name: Run test 🧪
         run:  npm run test
 
@@ -58,9 +76,9 @@ jobs:
         with:
           node-version: ${{ matrix.version }}
 
-      - name: Install dependencies and build 🔧
+      - name: Install dependencies 🔧
         run:  npm ci
-      
+
       - name: Run test 📦
         run:  npm run build
 
