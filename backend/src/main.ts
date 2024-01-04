@@ -1,8 +1,9 @@
+// import crypto from 'crypto'
 import path from 'path'
 import { URL } from 'url'
 import { server } from './server'
 import { Print, color } from 'printaeu'
-import { app, BrowserWindow, session } from 'electron'
+import { app, BrowserWindow } from 'electron'
 
 const logDir = app.getPath('logs')
 
@@ -23,7 +24,9 @@ function createWindow(): void {
       contextIsolation: true,
       sandbox: true,
       // https://github.com/doyensec/electronegativity/wiki/AUXCLICK_JS_CHECK
-      disableBlinkFeatures: 'Auxclick'
+      disableBlinkFeatures: 'Auxclick',
+      // https://github.com/doyensec/electronegativity/wiki/NODE_INTEGRATION_JS_CHECK
+      nodeIntegration: false
     },
     show: false,
     icon: path.join(__dirname, 'images', 'icon.png')
@@ -38,7 +41,7 @@ function createWindow(): void {
 
   const nodeEnv: string = (process.env.NODE_ENV ?? '').trim()
   if (nodeEnv === 'development' || nodeEnv === 'testing') {
-    win.loadURL('http://localhost:5173/')
+    win.loadURL('http://localhost:5173/') /* eng-disable HTTP_RESOURCES_JS_CHECK */
       .catch(reason => {
         err.log(`Error loading the client in '${nodeEnv}' mode`)
         if (reason instanceof Error) err.log(reason.message)
@@ -64,23 +67,6 @@ function createWindow(): void {
 
 app.whenReady()
   .then(() => {
-    // INFO: Content Security Policy (CSP)
-    // https://github.com/electron/electron/blob/main/docs/tutorial/security.md#7-define-a-content-security-policy
-    session.defaultSession.webRequest.onHeadersReceived((details, handler) => {
-      handler({
-        responseHeaders: {
-          ...details.responseHeaders,
-          // Validate it here: https://csp-evaluator.withgoogle.com/
-          'Content-Security-Policy': [
-            'default-src \'unsafe-inline\' \'self\' https://cdn.jsdelivr.net data:',
-            'script-src \'unsafe-inline\' \'self\'',
-            'require-trusted-types-for \'script\'',
-            'base-uri http'
-          ]
-        }
-      })
-    })
-
     createWindow()
 
     app.on('activate', () => {
