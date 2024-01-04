@@ -3,6 +3,7 @@
     "node": ">=18"
   },
   "scripts": {
+    "clean": "cd backend && npm run clean; cd ../frontend && npm run clean",
     "start": "concurrently \"cd backend && npm run start:dev\" \"cd frontend && npm run dev\"",
     "build": "npm run build:frontend && npm run build:backend",
     "test": "cd backend && npm run test",
@@ -12,7 +13,7 @@
     "build:backend": "cd backend && npm run make",
     "update-assets": "cd backend && npm i parser-de-notas-de-corretagem@latest",
     "preinstall": "cd backend && npm ci && cd ../frontend && npm ci",
-    "lint": "cd backend && npm run lint; cd ../frontend && npm run lint"
+    "lint": "rimraf node_modules dist; cd backend && npm run lint; cd ../frontend && npm run lint"
   },
   "repository": {
     "type": "git",
@@ -29,6 +30,7 @@
     "@eslint/create-config": "^0.4.6",
     "@typescript-eslint/eslint-plugin": "^6.17.0",
     "concurrently": "^8.2.2",
+    "rimraf": "^5.0.5",
     "typescript": "^5.3.3"
   }
 }

@@ -4,6 +4,7 @@
   "description": "Svelte app for the frontend of the leitor de notas de corretagem",
   "type": "module",
   "scripts": {
+    "clean": "rimraf dist node_modules",
     "dev": "run-script-os",
     "dev:default": "NODE_ENV=development && vite",
     "dev:win32": "set NODE_ENV=development && vite",
