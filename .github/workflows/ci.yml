@@ -10,6 +10,12 @@ on:
 
   push:
     branches: ['electron']
+    paths: 
+      - .github/workflows/ci.yml
+      - backend/**/*
+      - frontend/**/*
+      - package.json
+      - tsconfig.json
 
   # Can be triggered by other workflows
   workflow_call:
