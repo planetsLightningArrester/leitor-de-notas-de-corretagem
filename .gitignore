@@ -6,6 +6,7 @@ dist
 
 *.png
 !**/src/**/*.png
+!art/**/*.png
 !frontend/**/*.png
 backend/src/client/**
 
