@@ -1,9 +1,9 @@
 # Brokerage Note Reader
 
-[![en-us](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/blob/electron/README.md)
-[![pt-br](https://img.shields.io/badge/lang-pt--br-green.svg)](https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/blob/electron/README.en-us.md)
+[![zh-cn](https://img.shields.io/badge/lang-zh-blue.svg)](https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/blob/electron/README.zh-cn.md)
+[![en-us](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/blob/electron/README.en-us.md)
 [![es-mx](https://img.shields.io/badge/lang-es-yellow.svg)](https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/blob/electron/README.es-mx.md)
-[![zh-cn](https://img.shields.io/badge/lang-es-yellow.svg)](https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/blob/electron/README.zh-cn.md)
+[![pt-br](https://img.shields.io/badge/lang-pt--br-green.svg)](https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/blob/electron/README.md)
 
 User-friendly interface for the [brokerage-note-parser](https://www.npmjs.com/package/parser-de-notas-de-corretagem).
 
