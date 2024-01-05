@@ -15,8 +15,6 @@
   import {
     type NegotiationNote,
     type Deal,
-    type WrongPassword,
-    type UnknownAsset
   } from 'parser-de-notas-de-corretagem'
   import PasswordModal from './lib/PasswordModal.svelte'
   import {
@@ -77,14 +75,14 @@
    */
   function handleProcessNotesResponse(
     request: NoteToBeParsed[],
-    response: [Array<WrongPassword | UnknownAsset>, NegotiationNote[]]
+    response: ProcessNotesResult
   ): void {
-    const [_errors, result] = response
+    const { errors, results } = response
     notesWithWrongPassword = []
     notesWithUnknownAssets = []
     customAssets = []
 
-    _errors.forEach((e) => {
+    errors.forEach((e) => {
       if (e.name === 'WrongPassword') {
         const prevRequest = request.find((p) => p.name === e.file)
         if (typeof prevRequest !== 'undefined') notesWithWrongPassword.push(prevRequest)
@@ -115,10 +113,10 @@
         }
       }
     })
-    result.forEach((n) => n.deals.sort(sortDeals))
+    results.forEach((n) => n.deals.sort(sortDeals))
     const previousLength = notes.length
     notes.push(
-      ...result.filter((r) => !notes.some((n) => n.number === r.number))
+      ...Array.from<NegotiationNote>(results.filter((r) => !notes.some((n) => n.number === r.number)))
     )
     pushNotificationsOfNewNotes(notes.length - previousLength)
     notes = notes
@@ -132,8 +130,9 @@
    * @param amount the amount of new notes processed
    */
   function pushNotificationsOfNewNotes(amount: number): void {
+    let notification: Notifications
     if (amount > 0) {
-      new Notifications({
+      notification = new Notifications({
         target: mainDiv,
         props: {
           type: 'success',
@@ -143,7 +142,7 @@
         }
       })
     } else {
-      new Notifications({
+      notification = new Notifications({
         target: mainDiv,
         props: {
           type: 'warning',
@@ -151,6 +150,24 @@
         }
       })
     }
+    notification.$on('destroy', () => { notification.$destroy() })
+  }
+
+  /**
+   * Handle updates on the drop-zone
+   * @param notesToParse the files updated into the drop-zone
+   */
+  function onUpdateDropZone(notesToParse: NoteToBeParsed[]): void {
+    window.api
+      .processNotes(notesToParse, passwords, customAssets)
+      .then((response) => {
+        handleProcessNotesResponse(notesToParse, response)
+      })
+      .catch(reason => {
+        console.error('Error processing notes')
+        if (reason instanceof Error) console.error(reason.message)
+        else console.error(reason)
+      })
   }
 
   $: {
@@ -184,20 +201,7 @@
       </Container>
       <!-- Drop zone -->
       <DropZone
-        onUpdate={(notesToParse) => {
-          // Send the request to the server
-          window.api
-            .processNotes(notesToParse, passwords, customAssets)
-            .then((response) => {
-              // TODO: send an object instead of an array
-              handleProcessNotesResponse(notesToParse, response)
-            })
-            .catch(reason => {
-              console.error('Error processing notes')
-              if (reason instanceof Error) console.error(reason.message)
-              else console.error(reason)
-            })
-        }}
+        onUpdate={onUpdateDropZone}
       />
       {#if update}
         <Container>
@@ -253,7 +257,7 @@
       {/if}
     </CarouselItem>
     <CarouselItem bind:activeIndex itemIndex={1} class="fade-in">
-      {#if notes.length > 0 && flatDeals.length > 0 && notes[0] && flatDeals[0]}
+      {#if notes.length > 0 && flatDeals.length > 0 && typeof notes[0] !== 'undefined' && typeof flatDeals[0] !== 'undefined'}
         <NotesTable
           {notes}
           {flatDeals}
@@ -263,7 +267,7 @@
           }}
           onClickClearNotes={async (tab) => {
             return await new Promise((resolve) => {
-              new ClearNotesModal({
+              const clearNotesModal = new ClearNotesModal({
                 target: mainDiv,
                 props: {
                   note: tab,
@@ -285,6 +289,7 @@
                   }
                 }
               })
+              clearNotesModal.$on('destroy', () => { clearNotesModal.$destroy() })
             })
           }}
           onClickExportCsv={(tab) => {
@@ -300,14 +305,15 @@
                 .join('\n')
             } else {
               const note = notes.find((n) => n.number === tab)
-              if (!note) {
-                new Notifications({
+              if (typeof note === 'undefined') {
+                const notificaion = new Notifications({
                   target: mainDiv,
                   props: {
                     type: 'error',
                     message: `Não foi possível gerar o .csv da nota Nº ${tab}. A nota parece ter sido removida`
                   }
                 })
+                notificaion.$on('destroy', () => { notificaion.$destroy() })
               } else {
                 data = note.deals
                   .map(
@@ -350,6 +356,11 @@
         .then((response) => {
           handleProcessNotesResponse(notesWithWrongPassword, response)
         })
+        .catch(reason => {
+          console.error('Error on processing notes')
+          if (reason instanceof Error) console.error(reason.message)
+          else console.error(reason)
+        })
     }}
     onDismiss={() => {
       notesWithWrongPassword = []
@@ -363,6 +374,11 @@
         .processNotes(notesWithUnknownAssets, passwords, customAssets)
         .then((response) => {
           handleProcessNotesResponse(notesWithUnknownAssets, response)
+        })
+        .catch(reason => {
+          console.error('Error on processing notes')
+          if (reason instanceof Error) console.error(reason.message)
+          else console.error(reason)
         })
     }}
     onDismiss={() => {

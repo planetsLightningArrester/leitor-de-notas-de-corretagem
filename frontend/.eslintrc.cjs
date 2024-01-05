@@ -27,7 +27,9 @@ module.exports = {
   plugins: ['@typescript-eslint'],
   root: true,
   rules: {
+    'no-self-assign': 'off',
     '@typescript-eslint/space-before-function-paren': 'off',
-    '@typescript-eslint/no-misused-promises': 'off'
+    '@typescript-eslint/no-misused-promises': 'off',
+    '@typescript-eslint/comma-dangle': 'off',
   }
 }

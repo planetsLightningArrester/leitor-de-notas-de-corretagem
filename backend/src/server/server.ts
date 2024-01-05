@@ -2,7 +2,7 @@ import path from 'path'
 import { app, type BrowserWindow, ipcMain } from 'electron'
 import { spawn } from 'child_process'
 import { Print, color } from 'printaeu'
-import { type CustomAsset, type NoteToBeParsed } from '../types'
+import { ProcessNotesResult, type CustomAsset, type NoteToBeParsed } from '../types'
 import { type Update, getUpdates, installUpdate } from '../update'
 import { type NegotiationNote, NoteParser, WrongPassword as _WrongPassword, UnknownAsset as _UnknownAsset } from 'parser-de-notas-de-corretagem'
 
@@ -119,7 +119,7 @@ export async function server(win: BrowserWindow): Promise<void> {
     results = results.filter((r, i, arr) => !arr.some((_r, _i) => i > _i && r.number === _r.number))
     info.log(`Got ${results.length} results`)
 
-    win.webContents.send('notes-results', [errors, results])
+    win.webContents.send('notes-results', new ProcessNotesResult(errors, results))
   })
 
   // Listen to check updates requests

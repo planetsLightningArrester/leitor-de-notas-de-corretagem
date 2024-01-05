@@ -43,7 +43,7 @@ interface Window {
      * @param notes an `Array` of `NoteToBeParsed`
      * @param callback a callback with an `event` and a `result` of the parser
      */
-    processNotes: (notes: NoteToBeParsed[], passwords: string[], customAssets: CustomAsset[]) => Promise<[Array<WrongPassword | UnknownAsset>, NegotiationNote[]]>
+    processNotes: (notes: NoteToBeParsed[], passwords: string[], customAssets: CustomAsset[]) => Promise<ProcessNotesResult>
     /**
      * Check if there are updates
      * @returns a `Promise` that resolves to the name of the file
@@ -56,4 +56,12 @@ interface Window {
      */
     proceedWithUpdate: (update: Update) => void
   }
+}
+
+/** The output result sent from server */
+interface ProcessNotesResult {
+  /** Array of errors found */
+  errors: Array<WrongPassword | UnknownAsset>
+  /** Array of negotiation notes parsed */
+  results: NegotiationNote[]
 }

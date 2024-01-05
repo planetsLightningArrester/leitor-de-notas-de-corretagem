@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { Tooltip } from "@sveltestrap/sveltestrap";
-  import { resolveImgPath } from "./common";
-  import githubSvg from "../assets/github.svg";
+  import { Tooltip } from '@sveltestrap/sveltestrap'
+  import { resolveImgPath } from './common'
+  import githubSvg from '../assets/github.svg'
 
-  let footerTextLeftTextContent = `Planet's Lightning Arrester - ${new Date().getFullYear()}`;
+  let footerTextLeftTextContent = `Planet's Lightning Arrester - ${new Date().getFullYear()}`
 </script>
 
 <!-- Bottom bar -->

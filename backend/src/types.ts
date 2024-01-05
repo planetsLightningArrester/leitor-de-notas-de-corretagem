@@ -1,3 +1,5 @@
+import { type NegotiationNote, type UnknownAsset, type WrongPassword } from 'parser-de-notas-de-corretagem'
+
 /** Object from the client that represents the PDF notes to be parsed */
 export interface NoteToBeParsed {
   /** Name of the file. Doesn't have to be the full path. It's just for error tracking */
@@ -21,4 +23,17 @@ export interface CustomAsset {
   cnpj: string
   /** Whether the asset is a FII (Fundo de Investimento Imobiliário) */
   isFII: boolean
+}
+
+/** The output result to send to the client */
+export class ProcessNotesResult {
+  /** Array of errors found */
+  errors: Array<WrongPassword | UnknownAsset>
+  /** Array of negotiation notes parsed */
+  results: NegotiationNote[]
+
+  constructor(errors: Array<WrongPassword | UnknownAsset>, results: NegotiationNote[]) {
+    this.errors = errors
+    this.results = results
+  }
 }

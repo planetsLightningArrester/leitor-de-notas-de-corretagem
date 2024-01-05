@@ -1,14 +1,14 @@
 <script lang="ts">
-  import { Container, Row, Spinner, Col } from "@sveltestrap/sveltestrap";
+  import { Container, Row, Spinner, Col } from '@sveltestrap/sveltestrap'
   /**
    * Callback when the parsed notes are updated
    * @param notes `NegotiationNote`s parsed
    * @param flatDeals all `Deal`s in a flat `Array`
    */
-  export let onUpdate: (notesToParse: NoteToBeParsed[]) => void;
+  export let onUpdate: (notesToParse: NoteToBeParsed[]) => void
 
-  let mainText = "Arraste as notas ou clique para carregar 📤";
-  let loading = false;
+  let mainText = 'Arraste as notas ou clique para carregar 📤'
+  let loading = false
 
   // -- Callbacks
 
@@ -17,68 +17,80 @@
    * and process the response
    * @param files files picked or dragged-and-dropped
    */
-  async function processNotes(files: Array<File>) {
-    mainText = "Processando";
-    loading = true;
+  async function processNotes(files: File[]): Promise<void> {
+    mainText = 'Processando'
+    loading = true
 
-    if (!files) {
-      mainText = "Arquivos inválidos❗ Use apenas PDFs";
+    if (files.length === 0) {
+      mainText = 'Arquivos inválidos❗ Use apenas PDFs'
       setTimeout(() => {
-        mainText = "Arraste as notas ou clique para carregar 📤";
-      }, 2000);
-      loading = false;
-      return;
+        mainText = 'Arraste as notas ou clique para carregar 📤'
+      }, 2000)
+      loading = false
+      return
     }
 
-    const pdfs = files.filter((f) => f.type === "application/pdf");
-    if (!pdfs.length) {
-      mainText = "Arquivos inválidos❗ Nenhum PDF encontrado";
+    const pdfs = files.filter((f) => f.type === 'application/pdf')
+    if (pdfs.length === 0) {
+      mainText = 'Arquivos inválidos❗ Nenhum PDF encontrado'
       setTimeout(() => {
-        mainText = "Arraste as notas ou clique para carregar 📤";
-      }, 2000);
-      loading = false;
-      return;
+        mainText = 'Arraste as notas ou clique para carregar 📤'
+      }, 2000)
+      loading = false
+      return
     }
 
-    const toParse: NoteToBeParsed[] = [];
+    const toParse: NoteToBeParsed[] = []
     for await (const pdf of pdfs) {
       toParse.push({
         name: pdf.name,
         content: await pdf.arrayBuffer(),
-      });
+      })
     }
 
-    mainText = "Arraste as notas ou clique para carregar 📤";
-    loading = false;
+    mainText = 'Arraste as notas ou clique para carregar 📤'
+    loading = false
 
-    onUpdate(toParse);
+    onUpdate(toParse)
   }
 
-  function onclick() {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.multiple = true;
+  function onclick(): void {
+    const input = document.createElement('input')
+    input.type = 'file'
+    input.multiple = true
     input.onchange = () => {
-      if (input && input.files) processNotes(Array.from(input.files));
-    };
-    input.click();
+      if (input.files !== null) {
+        processNotes(Array.from(input.files))
+          .catch(reason => {
+            console.error('Error on processing notes')
+            if (reason instanceof Error) console.error(reason.message)
+            else console.error(reason)
+          })
+      }
+    }
+    input.click()
   }
 
-  function ondrop(event: DragEvent) {
-    event.preventDefault();
-    if (event.dataTransfer) {
-      processNotes(Array.from(event.dataTransfer.files));
-    } else mainText = "Arraste as notas ou clique para carregar 📤";
+  function ondrop(event: DragEvent): void {
+    event.preventDefault()
+    if (event.dataTransfer !== null) {
+      processNotes(Array.from(event.dataTransfer.files))
+        .catch(reason => {
+          console.error('Error on processing notes')
+          if (reason instanceof Error) console.error(reason.message)
+          else console.error(reason)
+        })
+    } else mainText = 'Arraste as notas ou clique para carregar 📤'
   }
 
-  function ondragover(event: DragEvent) {
-    event.preventDefault();
-    mainText = "Solte para carregar";
+  function ondragover(event: DragEvent): void {
+    event.preventDefault()
+    mainText = 'Solte para carregar'
   }
 
-  function ondragleave(event: DragEvent) {
-    event.preventDefault();
-    mainText = "Arraste as notas ou clique para carregar 📤";
+  function ondragleave(event: DragEvent): void {
+    event.preventDefault()
+    mainText = 'Arraste as notas ou clique para carregar 📤'
   }
 </script>
 

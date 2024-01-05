@@ -1,32 +1,32 @@
 <script lang="ts">
-  import { Icon } from "@sveltestrap/sveltestrap";
+  import { Icon } from '@sveltestrap/sveltestrap'
 
-  export let message: string;
-  export let duration: number = 3000;
-  export let type: "success" | "warning" | "error";
-  let animationDuration = 400;
-  let div: HTMLDivElement;
-  let show: boolean = false;
-  let hiding: boolean = false;
-  let timeout: number | undefined;
+  export let message: string
+  export let duration: number = 3000
+  export let type: 'success' | 'warning' | 'error'
+  const animationDuration = 400
+  let div: HTMLDivElement
+  let show: boolean = false
+  let hiding: boolean = false
+  let timeout: number | undefined
 
   /** Animate the notification out of the screen */
-  function onHide() {
+  function onHide(): void {
     if (!hiding) {
-      hiding = true;
-      div.classList.add("push-up");
+      hiding = true
+      div.classList.add('push-up')
       setTimeout(() => {
-        div.classList.remove("push-up");
-        show = false;
-        hiding = false;
-      }, animationDuration);
+        div.classList.remove('push-up')
+        show = false
+        hiding = false
+      }, animationDuration)
     }
   }
 
   $: {
-    show = !!message;
-    if (timeout) clearTimeout(timeout);
-    timeout = setTimeout(onHide, duration);
+    show = message !== ''
+    if (typeof timeout !== 'undefined') clearTimeout(timeout)
+    timeout = setTimeout(onHide, duration)
   }
 </script>
 
@@ -39,11 +39,11 @@
       14}px; animation-duration: {animationDuration}ms;"
   >
     <span class="push-text">
-      {#if type === "success"}
+      {#if type === 'success'}
         <Icon class="push-text-icon" name="check-lg" />
-      {:else if type === "warning"}
+      {:else if type === 'warning'}
         <Icon class="push-text-icon" name="exclamation-triangle" />
-      {:else if type === "error"}
+      {:else if type === 'error'}
         <Icon class="push-text-icon" name="exclamation-circle" />
       {/if}
       {message}

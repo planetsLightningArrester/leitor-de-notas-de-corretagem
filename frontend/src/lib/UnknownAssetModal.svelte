@@ -6,24 +6,24 @@
     Modal,
     ModalBody,
     ModalFooter,
-  } from "@sveltestrap/sveltestrap";
+  } from '@sveltestrap/sveltestrap'
 
   /** List of custom assets */
-  export let customAssets: CustomAsset[];
+  export let customAssets: CustomAsset[]
   /** Notes with wrong password */
-  export let notesWithUnknownAssets: NoteToBeParsed[];
+  export let notesWithUnknownAssets: NoteToBeParsed[]
   /** Callback when the user changed the passwords and want to try to parse again */
-  export let onRetry: () => void;
+  export let onRetry: () => void
   /** Callback when the user don't want to re-try to parse the notes and they should be ignored */
-  export let onDismiss: () => void;
+  export let onDismiss: () => void
 
   /**
    * Handles key down press in the inputs. If `Enter` is pressed, `onRetry` is called
    * @param event the `KeyboardEvent`
    */
-  function keyDownHandler(event: KeyboardEvent) {
-    if (event.key === "Enter") {
-      onRetry();
+  function keyDownHandler(event: KeyboardEvent): void {
+    if (event.key === 'Enter') {
+      onRetry()
     }
   }
 </script>
@@ -31,7 +31,7 @@
 <!-- Unknown assets modal -->
 <Modal
   header="⚠️ Ativos desconhecidos"
-  isOpen={!!notesWithUnknownAssets.length}
+  isOpen={!(notesWithUnknownAssets.length === 0)}
   toggle={onDismiss}
 >
   <ModalBody>

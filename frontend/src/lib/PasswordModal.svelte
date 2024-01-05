@@ -5,17 +5,17 @@
     ModalBody,
     ModalFooter,
     Row,
-  } from "@sveltestrap/sveltestrap";
-  import { noTypeCheck } from "./common";
+  } from '@sveltestrap/sveltestrap'
+  import { noTypeCheck } from './common'
 
   /** List of possible passwords */
-  export let passwords: string[];
+  export let passwords: string[]
   /** Notes with wrong password */
-  export let notesWithWrongPassword: NoteToBeParsed[];
+  export let notesWithWrongPassword: NoteToBeParsed[]
   /** Callback when the user changed the passwords and want to try to parse again */
-  export let onRetry: () => void;
+  export let onRetry: () => void
   /** Callback when the user don't want to re-try to parse the notes and they should be ignored */
-  export let onDismiss: () => void;
+  export let onDismiss: () => void
 
   /**
    * Handles key down press in the inputs. If `Enter` is pressed, `onRetry` is called
@@ -23,9 +23,9 @@
    */
   function keyDownHandler(
     event: KeyboardEvent & { currentTarget: EventTarget & HTMLInputElement },
-  ) {
-    if (event.key === "Enter") {
-      onRetry();
+  ): void {
+    if (event.key === 'Enter') {
+      onRetry()
     }
   }
 </script>
@@ -33,7 +33,7 @@
 <!-- Password modal -->
 <Modal
   header="⚠️ PDFs com senha"
-  isOpen={!!notesWithWrongPassword.length}
+  isOpen={!(notesWithWrongPassword.length === 0)}
   toggle={onDismiss}
 >
   <ModalBody>
@@ -77,14 +77,14 @@
   </ModalBody>
   <ModalFooter>
     <Button
-      {...noTypeCheck({ "data-testid": "retry-password-button" })}
+      {...noTypeCheck({ 'data-testid': 'retry-password-button' })}
       color="primary"
       on:click={onRetry}
     >
       Tentar novamente
     </Button>
     <Button
-      {...noTypeCheck({ "data-testid": "ignore-password-button" })}
+      {...noTypeCheck({ 'data-testid': 'ignore-password-button' })}
       on:click={onDismiss}
     >
       Ignorar</Button
