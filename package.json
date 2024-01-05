@@ -13,7 +13,7 @@
     "build:backend": "cd backend && npm run make",
     "update-assets": "cd backend && npm i parser-de-notas-de-corretagem@latest",
     "preinstall": "cd backend && npm ci && cd ../frontend && npm ci",
-    "lint": "rimraf node_modules dist; cd backend && npm run lint; cd ../frontend && npm run lint"
+    "lint": "rimraf node_modules dist; cd backend && npm run lint && cd ../frontend && npm run lint"
   },
   "repository": {
     "type": "git",
