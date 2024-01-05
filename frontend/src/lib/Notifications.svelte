@@ -12,13 +12,15 @@
 
   /** Animate the notification out of the screen */
   function onHide(): void {
-    if (!hiding) {
+    if (!hiding && div !== null) {
       hiding = true
       div.classList.add('push-up')
       setTimeout(() => {
-        div.classList.remove('push-up')
-        show = false
-        hiding = false
+        if (div !== null) {
+          div.classList.remove('push-up')
+          show = false
+          hiding = false
+        }
       }, animationDuration)
     }
   }
