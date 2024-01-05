@@ -111,4 +111,21 @@ app.on('web-contents-created', (_, contents) => {
       handle(false)
     } else handle(true)
   })
+
+  // CSP
+  contents.session.webRequest.onHeadersReceived((details, listener) => {
+    listener({
+      responseHeaders: { /* eng-disable CSP_GLOBAL_CHECK */
+        ...details.responseHeaders,
+        'Content-Security-Policy': [
+          "style-src 'unsafe-inline' 'self' https://cdn.jsdelivr.net",
+          "font-src 'unsafe-inline' 'self' https://cdn.jsdelivr.net",
+          "img-src 'self' data: ",
+          "script-src 'self'",
+          "object-src 'none'",
+          "require-trusted-types-for 'script'",
+        ],
+      }
+    })
+  })
 })

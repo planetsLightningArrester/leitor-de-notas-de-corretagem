@@ -14,6 +14,7 @@ module.exports = {
   root: true,
   rules: {
     '@typescript-eslint/space-before-function-paren': 'off',
-    '@typescript-eslint/no-misused-promises': 'off'
+    '@typescript-eslint/no-misused-promises': 'off',
+    '@typescript-eslint/comma-dangle': 'off',
   }
 }
