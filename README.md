@@ -1,5 +1,10 @@
 # Leitor de notas de corretagem
 
+[![zh-cn](https://img.shields.io/badge/lang-zh-blue.svg)](https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/blob/electron/README.zh-cn.md)
+[![en-us](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/blob/electron/README.md)
+[![es-mx](https://img.shields.io/badge/lang-es-yellow.svg)](https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/blob/electron/README.es-mx.md)
+[![pt-br](https://img.shields.io/badge/lang-pt--br-green.svg)](https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/blob/electron/README.en-us.md)
+
 Interface amigável do [parser-de-notas-de-corretagem](https://www.npmjs.com/package/parser-de-notas-de-corretagem).
 
 ![alt](./art/demo.png)
@@ -41,12 +46,12 @@ Leitor de notas de corretagem que pode exportar para `.csv`. Testado majoritaria
 Obrigado à quem me enviou notas de negociação para os testes ❤️. Os dados pessoais não são armazenados nem são usados em testes, apenas o conteúdo das notas.
 
 ## Obrigado? De nada
-Se te ajudei, manda um "Valeu!" 👋 pelo pix 😊
+Se te ajudei, manda um "Valeu!" 👋 pelo [pix](https://www.bcb.gov.br/en/financialstability/pix_en) 😊
 > a09e5878-2355-45f7-9f36-6df4ccf383cf
 
 ## Desenvolvimento
 
-Requer Node `^18.x`.
+Requer Node `>=18`.
 
 ### Setup
 Para rodar no WSL, é necessário instalar alguns pacotes:
