@@ -6,16 +6,14 @@ Interface amigável do [parser-de-notas-de-corretagem](https://www.npmjs.com/pac
 Leitor de notas de corretagem que pode exportar para `.csv`. Testado majoritariamente com as notas das corretoras Rico e Clear, mas também possui suporte para Inter. Automaticamente ignora notas duplicadas, mesmo que em PDFs diferentes.
 
 ## Modo de usar
-1. Entre nas [releases](https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/releases) e baixe a última versão portátil ou o instalador `msi`*.
-2. Instale* ou execute o portátil. 
+1. Entre nas [releases](https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/releases) e baixe a última versão portátil de acordo com o seu sistema operacional
+2. Execute o portátil. 
 3. Arraste os PDFs das notas que deseja converter ou clique para procurar pelos PDFs. Adicione quantas notas quiser.
-
-> *NOTA: O instalador talvez abra uma janela do Windows Smart Screen dizer que o software não é assinado. Isso é porque é necessário pagar para a Microsoft para obter uma assinatura de software. Eu não paguei, logo não tem assinatura 😄
 
 ## Possíveis problemas
 - Se as notas possuírem senha, uma mensagem irá aparecer e você pode colocar até três possíveis senhas para abrir os arquivos.
 - Se algum ativo não for identificado, uma mensagem irá aparecer e você pode entrar manualmente qual o código, o CNPJ e se o ativo é um fundo imobiliário.
-- Caso encontre problemas na conversão, pode ser que a lista de ações não está atualizada. Verifique se você está utilizando a versão mais recente do programa.
+- Caso encontre problemas na conversão, pode ser que a lista de ações não esteja atualizada. Verifique se você está utilizando a versão mais recente do programa.
 - As mensagens de erro podem ser encontradas em:
   - Linux: `~/.config/leitor-de-notas-de-corretagem-backend/log`
   - Mac: `~/Library/Application Support/leitor-de-notas-de-corretagem-backend/log`
