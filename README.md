@@ -7,7 +7,7 @@
 
 Interface amigável do [parser-de-notas-de-corretagem](https://www.npmjs.com/package/parser-de-notas-de-corretagem).
 
-![alt](./art/demo.png)
+![alt](./art/demo.gif)
 
 ## Sobre
 Leitor de notas de corretagem que pode exportar para `.csv`. Testado majoritariamente com as notas das corretoras Rico e Clear, mas também possui suporte para Inter. Automaticamente ignora notas duplicadas, mesmo que em PDFs diferentes.
