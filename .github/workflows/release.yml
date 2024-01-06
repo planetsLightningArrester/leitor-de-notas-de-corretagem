@@ -1,6 +1,6 @@
 # Release workflow
 
-name: Create release
+name: 🎁 Create release
 
 # Controls when the workflow will run
 on: 
@@ -17,30 +17,59 @@ jobs:
     uses: ./.github/workflows/ci.yml
     secrets: inherit
 
-  # Create the release if CI success
   create-release:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-    needs: ci-check
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    name: 🎁 Create release
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: write
     steps:
-      - name: Checkout code 📥
+      - name: 📥 Checkout code
         uses: actions/checkout@v3
 
-      - name: Set Release version
-        run: echo "RELEASE_VERSION=$(echo ${{ github.ref_name }} | cut -c 2-)" >> $GITHUB_ENV
-
-      - name: Create Release
+      - name: 🚀 Publish release
         id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.PERSONAL_TOKEN }} # Created a "personal token" and added as a "secret" in the repo settings
+        uses: ncipollo/release-action@v1.13.0
         with:
-          tag_name: v${{ env.RELEASE_VERSION }}
-          release_name: v${{ env.RELEASE_VERSION }}
-          body_path: ./CHANGELOG.md
+          bodyFile: ./CHANGELOG.md
 
-      # TODO Upload binaries in the future?
+  upload-artifacts:
+    name: 📦 Upload artifacts
+    needs: [create-release]
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: write
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v3
+
+      - name: 🛠️ NodeJS setup
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: 🔧 Install dependencies
+        run:  npm ci
+
+      - name: 📦 Run build
+        run:  npm run build
+
+      - name: ⬆️ Upload artifacts
+        id: create_release
+        uses: ncipollo/release-action@v1.13.0
+        with:
+          allowUpdates: true
+          omitBodyDuringUpdate: true
+          omitDraftDuringUpdate: true
+          omitNameDuringUpdate: true
+          omitPrereleaseDuringUpdate: true
+          artifacts: "dist/make/zip/**/*.zip"
 
 # EOF
