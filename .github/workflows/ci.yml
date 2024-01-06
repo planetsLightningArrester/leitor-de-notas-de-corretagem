@@ -8,6 +8,14 @@ on:
   # schedule:
   #   - cron: '0 0 * * *'
 
+  pull_request: 
+    paths: 
+      - .github/workflows/ci.yml
+      - backend/**/*
+      - frontend/**/*
+      - package.json
+      - tsconfig.json
+
   push:
     branches: ['electron']
     paths: 
