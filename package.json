@@ -1,6 +1,6 @@
 {
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
   },
   "scripts": {
     "clean": "rimraf dist && cd backend && npm run clean && cd ../frontend && npm run clean",
