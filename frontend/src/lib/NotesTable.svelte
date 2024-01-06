@@ -1,21 +1,8 @@
 <script lang="ts">
+  import { _ } from 'svelte-i18n'
   import Find, { clearMatches } from './Find.svelte'
-  import {
-    type TableHeader,
-    noTypeCheck,
-    sortDeals,
-    formatMoneyToDisplay,
-  } from './common'
-  import {
-    Container,
-    Table,
-    TabContent,
-    TabPane,
-    Icon,
-    Row,
-    Col,
-    Button,
-  } from '@sveltestrap/sveltestrap'
+  import { type TableHeader, noTypeCheck, sortDeals, formatMoneyToDisplay } from './common'
+  import { Container, Table, TabContent, TabPane, Icon, Row, Col, Button } from '@sveltestrap/sveltestrap'
   import { type NegotiationNote, type Deal } from 'parser-de-notas-de-corretagem'
 
   /** All `NegotiationNotes` */
@@ -56,9 +43,7 @@
       currentSortOrder = { header, direction }
     }
 
-    notes.forEach((n) =>
-      n.deals.sort((p, c) => sortDeals(p, c, header, direction)),
-    )
+    notes.forEach((n) => n.deals.sort((p, c) => sortDeals(p, c, header, direction)))
     flatDeals.sort((p, c) => sortDeals(p, c, header, direction))
     // ? Force re-rendering
     notes = notes
@@ -69,14 +54,8 @@
 <Find />
 <Container id="table-container">
   <!-- Arrow to go back to the initial screen -->
-  <button
-    on:click={onClickBack}
-    style="background-color: transparent; border: none"
-  >
-    <Icon
-      style="font-size: 24px; color: white; cursor: pointer"
-      name="arrow-left"
-    />
+  <button on:click={onClickBack} style="background-color: transparent; border: none">
+    <Icon style="font-size: 24px; color: white; cursor: pointer" name="arrow-left" />
   </button>
   <!-- Tabs -->
   <TabContent
@@ -84,58 +63,42 @@
       if ('detail' in e && typeof e.detail === 'string') currentTab = e.detail
     }}
   >
-    <TabPane
-      id="all-pane"
-      tabId="all"
-      style="overflow: auto!important; max-height: 70vh!important"
-      active={currentTab === 'all'}
-    >
+    <TabPane id="all-pane" tabId="all" style="overflow: auto!important; max-height: 70vh!important" active={currentTab === 'all'}>
       <span slot="tab">
-        Tudo <Icon name="clipboard-data" />
+        {$_('words.all')}
+        <Icon name="clipboard-data" />
       </span>
       <Table responsive>
         <thead>
-          <th on:click={() => { sortTable('code') }}
-            >Código{currentSortOrder.header === 'code'
-              ? currentSortOrder.direction === 'down'
-                ? '▼'
-                : '▲'
-              : ''}</th
+          <th
+            on:click={() => {
+              sortTable('code')
+            }}>{$_('words.code')}{currentSortOrder.header === 'code' ? (currentSortOrder.direction === 'down' ? '▼' : '▲') : ''}</th
           >
-          <th on:click={() => { sortTable('cnpj') }}
-            >CNPJ{currentSortOrder.header === 'cnpj'
-              ? currentSortOrder.direction === 'down'
-                ? '▼'
-                : '▲'
-              : ''}</th
+          <th
+            on:click={() => {
+              sortTable('cnpj')
+            }}>{$_('words.cnpj')}{currentSortOrder.header === 'cnpj' ? (currentSortOrder.direction === 'down' ? '▼' : '▲') : ''}</th
           >
-          <th on:click={() => { sortTable('date') }}
-            >Data{currentSortOrder.header === 'date'
-              ? currentSortOrder.direction === 'down'
-                ? '▼'
-                : '▲'
-              : ''}</th
+          <th
+            on:click={() => {
+              sortTable('date')
+            }}>{$_('words.date')}{currentSortOrder.header === 'date' ? (currentSortOrder.direction === 'down' ? '▼' : '▲') : ''}</th
           >
-          <th on:click={() => { sortTable('type') }}
-            >Compra/Venda{currentSortOrder.header === 'type'
-              ? currentSortOrder.direction === 'down'
-                ? '▼'
-                : '▲'
-              : ''}</th
+          <th
+            on:click={() => {
+              sortTable('type')
+            }}>{$_('words.buy_sell')}{currentSortOrder.header === 'type' ? (currentSortOrder.direction === 'down' ? '▼' : '▲') : ''}</th
           >
-          <th on:click={() => { sortTable('quantity') }}
-            >Quantidade{currentSortOrder.header === 'quantity'
-              ? currentSortOrder.direction === 'down'
-                ? '▼'
-                : '▲'
-              : ''}</th
+          <th
+            on:click={() => {
+              sortTable('quantity')
+            }}>{$_('words.amount')}{currentSortOrder.header === 'quantity' ? (currentSortOrder.direction === 'down' ? '▼' : '▲') : ''}</th
           >
-          <th on:click={() => { sortTable('price') }}
-            >Preços+custos{currentSortOrder.header === 'price'
-              ? currentSortOrder.direction === 'down'
-                ? '▼'
-                : '▲'
-              : ''}</th
+          <th
+            on:click={() => {
+              sortTable('price')
+            }}>{$_('words.price_cost')}{currentSortOrder.header === 'price' ? (currentSortOrder.direction === 'down' ? '▼' : '▲') : ''}</th
           >
         </thead>
         <tbody>
@@ -144,7 +107,7 @@
               <td>{deal.code}</td>
               <td>{deal.cnpj}</td>
               <td>{deal.date}</td>
-              <td>{deal.type === 'buy' ? 'Compra' : 'Venda'}</td>
+              <td>{deal.type === 'buy' ? $_('words.buy') : $_('words.sell')}</td>
               <td>{deal.quantity}</td>
               <td>R$ {formatMoneyToDisplay(deal.price)}</td>
             </tr>
@@ -153,59 +116,52 @@
       </Table>
     </TabPane>
     {#each notes as note}
-      <TabPane
-        tabId={note.number}
-        style="overflow: auto!important; max-height: 70vh!important"
-        active={currentTab === note.number}
-      >
-        <span
-          {...noTypeCheck({ 'data-testid': `tab-${note.number}` })}
-          slot="tab"
-        >
+      <TabPane tabId={note.number} style="overflow: auto!important; max-height: 70vh!important" active={currentTab === note.number}>
+        <span {...noTypeCheck({ 'data-testid': `tab-${note.number}` })} slot="tab">
           Nº {note.number}
         </span>
         <Table responsive>
-          <th on:click={() => { sortTable('code') }}
-            >Código{currentSortOrder.header === 'code'
-              ? currentSortOrder.direction === 'down'
-                ? '▼'
-                : '▲'
-              : ''}</th
+          <th
+            on:click={() => {
+              sortTable('code')
+            }}
           >
-          <th on:click={() => { sortTable('cnpj') }}
-            >CNPJ{currentSortOrder.header === 'cnpj'
-              ? currentSortOrder.direction === 'down'
-                ? '▼'
-                : '▲'
-              : ''}</th
+            {$_('words.code')}{currentSortOrder.header === 'code' ? (currentSortOrder.direction === 'down' ? '▼' : '▲') : ''}</th
           >
-          <th on:click={() => { sortTable('date') }}
-            >Data{currentSortOrder.header === 'date'
-              ? currentSortOrder.direction === 'down'
-                ? '▼'
-                : '▲'
-              : ''}</th
+          <th
+            on:click={() => {
+              sortTable('cnpj')
+            }}
           >
-          <th on:click={() => { sortTable('type') }}
-            >Compra/Venda{currentSortOrder.header === 'type'
-              ? currentSortOrder.direction === 'down'
-                ? '▼'
-                : '▲'
-              : ''}</th
+            {$_('words.cnpj')}{currentSortOrder.header === 'cnpj' ? (currentSortOrder.direction === 'down' ? '▼' : '▲') : ''}</th
           >
-          <th on:click={() => { sortTable('quantity') }}
-            >Quantidade{currentSortOrder.header === 'quantity'
-              ? currentSortOrder.direction === 'down'
-                ? '▼'
-                : '▲'
-              : ''}</th
+          <th
+            on:click={() => {
+              sortTable('date')
+            }}
           >
-          <th on:click={() => { sortTable('price') }}
-            >Preços+custos{currentSortOrder.header === 'price'
-              ? currentSortOrder.direction === 'down'
-                ? '▼'
-                : '▲'
-              : ''}</th
+            {$_('words.date')}{currentSortOrder.header === 'date' ? (currentSortOrder.direction === 'down' ? '▼' : '▲') : ''}</th
+          >
+          <th
+            on:click={() => {
+              sortTable('type')
+            }}
+          >
+            {$_('words.buy_sell')}{currentSortOrder.header === 'type' ? (currentSortOrder.direction === 'down' ? '▼' : '▲') : ''}</th
+          >
+          <th
+            on:click={() => {
+              sortTable('quantity')
+            }}
+          >
+            {$_('words.amount')}{currentSortOrder.header === 'quantity' ? (currentSortOrder.direction === 'down' ? '▼' : '▲') : ''}</th
+          >
+          <th
+            on:click={() => {
+              sortTable('price')
+            }}
+          >
+            {$_('words.price_cost')}{currentSortOrder.header === 'price' ? (currentSortOrder.direction === 'down' ? '▼' : '▲') : ''}</th
           >
           <tbody>
             {#each note.deals as deal}
@@ -213,7 +169,7 @@
                 <td>{deal.code}</td>
                 <td>{deal.cnpj}</td>
                 <td>{deal.date}</td>
-                <td>{deal.type === 'buy' ? 'Compra' : 'Venda'}</td>
+                <td>{deal.type === 'buy' ? $_('words.buy') : $_('words.sell')}</td>
                 <td>{deal.quantity}</td>
                 <td>
                   R$ {formatMoneyToDisplay(deal.price)}
@@ -229,9 +185,14 @@
     <Col class="d-flex justify-content-center align-itens-center my-2">
       <Row>
         <Col>
-          <Button color="success" on:click={() => { onClickExportCsv(currentTab) }}>
+          <Button
+            color="success"
+            on:click={() => {
+              onClickExportCsv(currentTab)
+            }}
+          >
             <Icon name="filetype-csv" />
-            Exportar {currentTab === 'all' ? 'tudo' : `Nº ${currentTab}`} para .csv
+            {$_({ id: 'notes_page.export', values: { what: currentTab === 'all' ? $_('notes_page.all') : `Nº ${currentTab}` } })}
           </Button>
         </Col>
         <Col class="d-flex">
@@ -255,7 +216,7 @@
                     if (el !== null && el instanceof HTMLElement) el.click()
                   }
                 })
-                .catch(reason => {
+                .catch((reason) => {
                   console.error('Error on clearing notes')
                   if (reason instanceof Error) console.error(reason.message)
                   else console.error(reason)
@@ -263,7 +224,7 @@
             }}
           >
             <Icon name="trash" />
-            {currentTab === 'all' ? 'Limpar tudo' : `Remover Nº ${currentTab}`}
+            {currentTab === 'all' ? $_('notes_page.clean_all') : $_({ id: 'notes_page.clean_note', values: { note: currentTab } })}
           </Button>
         </Col>
       </Row>

@@ -1,10 +1,6 @@
 <script lang="ts">
-  import {
-    Button,
-    Modal,
-    ModalBody,
-    ModalFooter,
-  } from '@sveltestrap/sveltestrap'
+  import { _ } from 'svelte-i18n'
+  import { Button, Modal, ModalBody, ModalFooter } from '@sveltestrap/sveltestrap'
   import type { SvelteComponent } from 'svelte'
 
   export let note: string
@@ -19,23 +15,18 @@
   $: if (!showModal) {
     // Wait for modal fade-out
     setTimeout(() => {
-      if (typeof nodeRef !== 'undefined' && nodeRef.parentNode !== null) { nodeRef.parentNode.removeChild(nodeRef) }
+      if (typeof nodeRef !== 'undefined' && nodeRef.parentNode !== null) {
+        nodeRef.parentNode.removeChild(nodeRef)
+      }
     }, 1000)
   }
 </script>
 
 <!-- Clear notes modal -->
-<Modal
-  bind:this={nodeRef}
-  header={note === 'all' ? '♻️ Limpar notas' : `♻️ Remover nota Nº ${note}`}
-  isOpen={showModal}
-  toggle={onDismiss}
->
+<Modal bind:this={nodeRef} header={note === 'all' ? $_('clear_notes.clear_all_notes.header') : $_({ id: 'clear_notes.clear_note.header', values: { note } })} isOpen={showModal} toggle={onDismiss}>
   <ModalBody>
     <p style="user-select: none;">
-      Você realmente deseja remover {note === 'all'
-        ? 'todas as notas carregadas'
-        : `a nota Nº ${note}`}?
+      {note === 'all' ? $_('clear_notes.clear_all_notes.info') : $_({ id: 'clear_notes.clear_note.info', values: { note } })}?
     </p>
   </ModalBody>
   <ModalFooter>
@@ -44,14 +35,14 @@
       on:click={() => {
         showModal = false
         onDismiss()
-      }}>Não</Button
+      }}>{$_('words.cancel')}</Button
     >
     <Button
       color="danger"
       on:click={() => {
         showModal = false
         onConfirm()
-      }}>Sim</Button
+      }}>{$_('words.confirm')}</Button
     >
   </ModalFooter>
 </Modal>

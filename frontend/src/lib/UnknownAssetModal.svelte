@@ -1,12 +1,6 @@
 <script lang="ts">
-  import {
-    Button,
-    Input,
-    InputGroup,
-    Modal,
-    ModalBody,
-    ModalFooter,
-  } from '@sveltestrap/sveltestrap'
+  import { _ } from 'svelte-i18n'
+  import { Button, Input, InputGroup, Modal, ModalBody, ModalFooter } from '@sveltestrap/sveltestrap'
 
   /** List of custom assets */
   export let customAssets: CustomAsset[]
@@ -29,40 +23,20 @@
 </script>
 
 <!-- Unknown assets modal -->
-<Modal
-  header="⚠️ Ativos desconhecidos"
-  isOpen={!(notesWithUnknownAssets.length === 0)}
-  toggle={onDismiss}
->
+<Modal header={$_('unkown_asset.title')} isOpen={!(notesWithUnknownAssets.length === 0)} toggle={onDismiss}>
   <ModalBody>
-    <p>
-      Um ou mais PDFs possuem ativos que não estão na base de dados. Entre
-      manualmente.
-    </p>
+    <p>{$_('unkown_asset.info')}</p>
     {#each notesWithUnknownAssets as error, i}
       🏛️ <b>{error.missingAsset}</b>
       <InputGroup class="align-items-center mb-3">
-        <Input
-          type="text"
-          class="form-control"
-          placeholder="Código (Ex: ABEV3)"
-          bind:value={customAssets[i].code}
-          on:keydown={keyDownHandler}
-        />
-        <Input
-          type="text"
-          style="margin-left: 10px; margin-right: 10px"
-          class="form-control"
-          placeholder="CNPJ"
-          bind:value={customAssets[i].cnpj}
-          on:keydown={keyDownHandler}
-        />
-        <Input type="checkbox" label="FII" bind:value={customAssets[i].isFII} />
+        <Input type="text" class="form-control" placeholder={$_('unkown_asset.code_placeholder')} bind:value={customAssets[i].code} on:keydown={keyDownHandler} />
+        <Input type="text" style="margin-left: 10px; margin-right: 10px" class="form-control" placeholder={$_('words.cnpj')} bind:value={customAssets[i].cnpj} on:keydown={keyDownHandler} />
+        <Input type="checkbox" label={$_('unkown_asset.fii')} bind:value={customAssets[i].isFII} />
       </InputGroup>
     {/each}
   </ModalBody>
   <ModalFooter>
-    <Button color="primary" on:click={onRetry}>Tentar novamente</Button>
-    <Button on:click={onDismiss}>Ignorar</Button>
+    <Button color="primary" on:click={onRetry}>{$_('unkown_asset.retry')}</Button>
+    <Button on:click={onDismiss}>{$_('unkown_asset.ignore')}</Button>
   </ModalFooter>
 </Modal>

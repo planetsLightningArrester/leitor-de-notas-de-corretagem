@@ -1,0 +1,68 @@
+{
+  "main_page": {
+    "title": "Lector de notas de corretaje",
+    "drop_zone": {
+      "idle_text": "Arrastra las notas o haz clic para cargar 📤",
+      "invalid_files": "Archivos no válidos❗ Usa solo PDFs",
+      "no_pdf": "Archivos no válidos❗ No se encontró ningún PDF",
+      "drop_here": "Suelta para cargar",
+      "data_disclaimer": "No se recopila ningún dato",
+      "processing": "Procesando"
+    },
+    "update": "Actualizar información de activos",
+    "updating": "Actualizando...",
+    "back_to_notes": "Volver a las notas cargadas"
+  },
+  "notes_page": {
+    "all": "todo",
+    "csv_error": "No se pudo generar el .csv de la nota N.º {tab}. La nota parece haber sido eliminada",
+    "export": "Exportar {what} a .csv",
+    "clean_all": "Limpiar todo",
+    "clean_note": "Eliminar N.º {note}"
+  },
+  "unknown_asset": {
+    "title": "⚠️ Activos desconocidos",
+    "info": "Uno o más PDFs contienen activos que no están en la base de datos. Ingréselos manualmente.",
+    "fii": "Fondo de Inversión Inmobiliaria (FII)",
+    "code_placeholder": "Código (Ej: ABEV3)",
+    "retry": "Intentar nuevamente",
+    "ignore": "Ignorar"
+  },
+  "password_modal": {
+    "title": "⚠️ PDFs con contraseña",
+    "info": "Los siguientes PDFs requieren contraseña. Puede ingresar más de una posibilidad de contraseña para los PDFs",
+    "retry": "Intentar nuevamente",
+    "ignore": "Ignorar"
+  },
+  "clear_notes": {
+    "clear_all_notes": {
+      "header": "♻️ Limpiar notas",
+      "info": "¿Realmente desea eliminar todas las notas cargadas?"
+    },
+    "clear_note": {
+      "header": "♻️ Eliminar nota N.º {note}",
+      "info": "¿Realmente desea eliminar la nota N.º {note}?"
+    }
+  },
+  "footer": {
+    "github_page": "Página de GitHub"
+  },
+  "find": {
+    "find": "Buscar..."
+  },
+  "words": {
+    "all": "Todo",
+    "amount": "Cantidad",
+    "buy": "Compra",
+    "buy_sell": "Compra/Venta",
+    "cancel": "Cancelar",
+    "cnpj": "CNPJ",
+    "code": "Código",
+    "confirm": "Confirmar",
+    "date": "Fecha",
+    "notes": "Notas",
+    "possibility": "Posibilidad",
+    "price_cost": "Precios+costos",
+    "sell": "Venta"
+  }
+}

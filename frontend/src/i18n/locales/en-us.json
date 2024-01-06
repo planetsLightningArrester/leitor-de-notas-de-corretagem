@@ -1,0 +1,68 @@
+{
+  "main_page": {
+    "title": "Brokerage note reader",
+    "drop_zone": {
+      "idle_text": "Drag and drop notes or click to search 📤",
+      "invalid_files": "Invalid files❗ Use only PDFs",
+      "no_pdf": "Invalid files❗ No PDF found",
+      "drop_here": "Drop here",
+      "data_disclaimer": "No data is collected",
+      "processing": "Processing"
+    },
+    "update": "Update asset information",
+    "updating": "Updating...",
+    "back_to_notes": "Back to notes"
+  },
+  "notes_page": {
+    "all": "all",
+    "csv_error": "Unable to generate the .csv for Note No. {tab}. The note seems to have been removed",
+    "export": "Export {what} to .csv",
+    "clean_all": "Clear all",
+    "clean_note": "Remove No. {note}"
+  },
+  "unknown_asset": {
+    "title": "⚠️ Unknown Assets",
+    "info": "One or more PDFs contain assets not in the database. Enter manually.",
+    "fii": "Real Estate Investment Fund (FII)",
+    "code_placeholder": "Code (e.g., ABEV3)",
+    "retry": "Retry",
+    "ignore": "Ignore"
+  },
+  "password_modal": {
+    "title": "⚠️ Password-Protected PDFs",
+    "info": "The PDFs below require a password. You can enter more than one possible password for the PDFs",
+    "retry": "Retry",
+    "ignore": "Ignore"
+  },
+  "clear_notes": {
+    "clear_all_notes": {
+      "header": "♻️ Clear notes",
+      "info": "Do you really want to remove all processed notes?"
+    },
+    "clear_note": {
+      "header": "♻️ Remove Note No. {note}",
+      "info": "Do you really want to remove Note No. {note}?"
+    }
+  },
+  "footer": {
+    "github_page": "GitHub Page"
+  },
+  "find": {
+    "find": "Search..."
+  },
+  "words": {
+    "all": "All",
+    "amount": "Quantity",
+    "buy": "Buy",
+    "buy_sell": "Buy/Sell",
+    "cancel": "Cancel",
+    "cnpj": "CNPJ",
+    "code": "Code",
+    "confirm": "Confirm",
+    "date": "Date",
+    "notes": "Notes",
+    "possibility": "Possibility",
+    "price_cost": "Prices+Costs",
+    "sell": "Sell"
+  }
+}

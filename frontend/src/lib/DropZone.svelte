@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { _ } from 'svelte-i18n'
   import { Container, Row, Spinner, Col } from '@sveltestrap/sveltestrap'
   /**
    * Callback when the parsed notes are updated
@@ -7,7 +8,7 @@
    */
   export let onUpdate: (notesToParse: NoteToBeParsed[]) => void
 
-  let mainText = 'Arraste as notas ou clique para carregar 📤'
+  let mainText = $_('main_page.drop_zone.idle_text')
   let loading = false
 
   // -- Callbacks
@@ -18,13 +19,13 @@
    * @param files files picked or dragged-and-dropped
    */
   async function processNotes(files: File[]): Promise<void> {
-    mainText = 'Processando'
+    mainText = $_('main_page.drop_zone.processing')
     loading = true
 
     if (files.length === 0) {
-      mainText = 'Arquivos inválidos❗ Use apenas PDFs'
+      mainText = $_('main_page.drop_zone.invalid_files')
       setTimeout(() => {
-        mainText = 'Arraste as notas ou clique para carregar 📤'
+        mainText = $_('main_page.drop_zone.idle_text')
       }, 2000)
       loading = false
       return
@@ -32,9 +33,9 @@
 
     const pdfs = files.filter((f) => f.type === 'application/pdf')
     if (pdfs.length === 0) {
-      mainText = 'Arquivos inválidos❗ Nenhum PDF encontrado'
+      mainText = $_('main_page.drop_zone.no_pdf')
       setTimeout(() => {
-        mainText = 'Arraste as notas ou clique para carregar 📤'
+        mainText = $_('main_page.drop_zone.idle_text')
       }, 2000)
       loading = false
       return
@@ -48,7 +49,7 @@
       })
     }
 
-    mainText = 'Arraste as notas ou clique para carregar 📤'
+    mainText = $_('main_page.drop_zone.idle_text')
     loading = false
 
     onUpdate(toParse)
@@ -60,12 +61,11 @@
     input.multiple = true
     input.onchange = () => {
       if (input.files !== null) {
-        processNotes(Array.from(input.files))
-          .catch(reason => {
-            console.error('Error on processing notes')
-            if (reason instanceof Error) console.error(reason.message)
-            else console.error(reason)
-          })
+        processNotes(Array.from(input.files)).catch((reason) => {
+          console.error('Error on processing notes')
+          if (reason instanceof Error) console.error(reason.message)
+          else console.error(reason)
+        })
       }
     }
     input.click()
@@ -74,37 +74,28 @@
   function ondrop(event: DragEvent): void {
     event.preventDefault()
     if (event.dataTransfer !== null) {
-      processNotes(Array.from(event.dataTransfer.files))
-        .catch(reason => {
-          console.error('Error on processing notes')
-          if (reason instanceof Error) console.error(reason.message)
-          else console.error(reason)
-        })
-    } else mainText = 'Arraste as notas ou clique para carregar 📤'
+      processNotes(Array.from(event.dataTransfer.files)).catch((reason) => {
+        console.error('Error on processing notes')
+        if (reason instanceof Error) console.error(reason.message)
+        else console.error(reason)
+      })
+    } else mainText = $_('main_page.drop_zone.idle_text')
   }
 
   function ondragover(event: DragEvent): void {
     event.preventDefault()
-    mainText = 'Solte para carregar'
+    mainText = $_('main_page.drop_zone.drop_here')
   }
 
   function ondragleave(event: DragEvent): void {
     event.preventDefault()
-    mainText = 'Arraste as notas ou clique para carregar 📤'
+    mainText = $_('main_page.drop_zone.idle_text')
   }
 </script>
 
 <!-- Drop zone -->
 <Container id="drop-zone-div" class="container d-flex justify-content-center">
-  <button
-    id="drop-zone"
-    data-testid="drop-zone-button"
-    class="align-items-center"
-    on:click={onclick}
-    on:drop={ondrop}
-    on:dragover={ondragover}
-    on:dragleave={ondragleave}
-  >
+  <button id="drop-zone" data-testid="drop-zone-button" class="align-items-center" on:click={onclick} on:drop={ondrop} on:dragover={ondragover} on:dragleave={ondragleave}>
     <span class="drop-zone-text">
       {mainText}
       {#if loading}
@@ -116,7 +107,7 @@
 <Container>
   <Row class="justify-content-center">
     <Col xs="8" style="text-align: center; max-width: 350px">
-      <p class="info-text">Nenhum dado é coletado</p>
+      <p class="info-text">{$_('main_page.drop_zone.data_disclaimer')}</p>
     </Col>
   </Row>
 </Container>
@@ -152,7 +143,7 @@
   }
 
   .drop-zone-text {
-    font-family: "Roboto Slab", serif;
+    font-family: 'Roboto Slab', serif;
     color: #d6d6d660;
     font-size: 30px;
     text-align: center;
@@ -160,7 +151,7 @@
   }
 
   .info-text {
-    font-family: "Roboto Slab", serif;
+    font-family: 'Roboto Slab', serif;
     color: #d6d6d680;
     font-size: 15px;
     text-align: center;

@@ -1,36 +1,21 @@
 <script lang="ts">
+  import './i18n'
+  import { _ } from 'svelte-i18n'
   import Footer from './lib/Footer.svelte'
   import DropZone from './lib/DropZone.svelte'
-  import {
-    Button,
-    Carousel,
-    CarouselItem,
-    Col,
-    Container,
-    Icon,
-    Row,
-    Styles
-  } from '@sveltestrap/sveltestrap'
+  import { Button, Carousel, CarouselItem, Col, Container, Icon, Row, Styles } from '@sveltestrap/sveltestrap'
   import NotesTable from './lib/NotesTable.svelte'
-  import {
-    type NegotiationNote,
-    type Deal,
-  } from 'parser-de-notas-de-corretagem'
+  import { type NegotiationNote, type Deal } from 'parser-de-notas-de-corretagem'
   import PasswordModal from './lib/PasswordModal.svelte'
-  import {
-    formatMoneyToDisplay,
-    resolveImgPath,
-    sortDeals
-  } from './lib/common'
+  import { formatMoneyToDisplay, resolveImgPath, sortDeals } from './lib/common'
   import UnknownAssetModal from './lib/UnknownAssetModal.svelte'
   import Notifications from './lib/Notifications.svelte'
   import ClearNotesModal from './lib/ClearNotesModal.svelte'
   import backgroundImage from './assets/bg.jpg'
+  import LocaleSwitches from './lib/LocaleSwitches.svelte'
 
   // Set background image
-  document.body.style.backgroundImage = `url(${resolveImgPath(
-    backgroundImage
-  )})`
+  document.body.style.backgroundImage = `url(${resolveImgPath(backgroundImage)})`
   document.body.style.backgroundSize = 'cover'
 
   /** List of user defined assets */
@@ -73,10 +58,7 @@
    * position are possible password errors, and the second position are the
    * successfully parsed `NegotiationNote[]` results
    */
-  function handleProcessNotesResponse(
-    request: NoteToBeParsed[],
-    response: ProcessNotesResult
-  ): void {
+  function handleProcessNotesResponse(request: NoteToBeParsed[], response: ProcessNotesResult): void {
     const { errors, results } = response
     notesWithWrongPassword = []
     notesWithUnknownAssets = []
@@ -87,9 +69,7 @@
         const prevRequest = request.find((p) => p.name === e.file)
         if (typeof prevRequest !== 'undefined') notesWithWrongPassword.push(prevRequest)
         else {
-          console.warn(
-            `Couldn't find a previous request matching ${e.file} in the list of requests below`
-          )
+          console.warn(`Couldn't find a previous request matching ${e.file} in the list of requests below`)
           console.log(request)
         }
       } else if (e.name === 'UnknownAsset' && 'asset' in e) {
@@ -97,27 +77,23 @@
         if (typeof prevRequest !== 'undefined') {
           notesWithUnknownAssets.push({
             ...prevRequest,
-            missingAsset: e.asset
+            missingAsset: e.asset,
           })
           customAssets.push({
             name: e.asset,
             cnpj: '',
             code: '',
-            isFII: false
+            isFII: false,
           })
         } else {
-          console.warn(
-            `Couldn't find a previous request matching ${e.file} in the list of requests below`
-          )
+          console.warn(`Couldn't find a previous request matching ${e.file} in the list of requests below`)
           console.log(request)
         }
       }
     })
     results.forEach((n) => n.deals.sort(sortDeals))
     const previousLength = notes.length
-    notes.push(
-      ...Array.from<NegotiationNote>(results.filter((r) => !notes.some((n) => n.number === r.number)))
-    )
+    notes.push(...Array.from<NegotiationNote>(results.filter((r) => !notes.some((n) => n.number === r.number))))
     pushNotificationsOfNewNotes(notes.length - previousLength)
     notes = notes
     flatDeals = notes.flatMap((n) => n.deals)
@@ -136,21 +112,21 @@
         target: mainDiv,
         props: {
           type: 'success',
-          message: `${amount} nota${amount > 1 ? 's' : ''} adicionada${
-            amount > 1 ? 's' : ''
-          }`
-        }
+          message: `${amount} nota${amount > 1 ? 's' : ''} adicionada${amount > 1 ? 's' : ''}`,
+        },
       })
     } else {
       notification = new Notifications({
         target: mainDiv,
         props: {
           type: 'warning',
-          message: 'Nenhuma nova nota adicionada. Duplicatas são ignoradas'
-        }
+          message: 'Nenhuma nova nota adicionada. Duplicatas são ignoradas',
+        },
       })
     }
-    notification.$on('destroy', () => { notification.$destroy() })
+    notification.$on('destroy', () => {
+      notification.$destroy()
+    })
   }
 
   /**
@@ -163,7 +139,7 @@
       .then((response) => {
         handleProcessNotesResponse(notesToParse, response)
       })
-      .catch(reason => {
+      .catch((reason) => {
         console.error('Error processing notes')
         if (reason instanceof Error) console.error(reason.message)
         else console.error(reason)
@@ -171,14 +147,7 @@
   }
 
   $: {
-    activeIndex =
-      !clickedBack &&
-      notes.length > 0 &&
-      flatDeals.length > 0 &&
-      typeof notes[0] !== 'undefined' &&
-      typeof flatDeals[0] !== 'undefined'
-        ? 1
-        : 0
+    activeIndex = !clickedBack && notes.length > 0 && flatDeals.length > 0 && typeof notes[0] !== 'undefined' && typeof flatDeals[0] !== 'undefined' ? 1 : 0
   }
 </script>
 
@@ -193,48 +162,35 @@
           <Row>
             <Col>
               <p class="title-text position-relative">
-                <b>Leitor de notas de corretagem</b>
+                <b>{$_('main_page.title')}</b>
               </p>
             </Col>
           </Row>
         </div>
       </Container>
       <!-- Drop zone -->
-      <DropZone
-        onUpdate={onUpdateDropZone}
-      />
+      <DropZone onUpdate={onUpdateDropZone} />
       {#if update}
         <Container>
           <Row class="justify-content-center">
-            <Col
-              xs="8"
-              style="text-align: center; max-width: 350px; margin-bottom: 20px"
-            >
+            <Col xs="8" style="text-align: center; max-width: 350px">
               {#if !checkingForUpdates}
-                <button
-                  class="info-text info-text-button"
-                  on:click={onUpdateAssets}
-                >
-                  Atualizar informação de ativos
-                  <Icon
-                    style="font-size: 15px; color: white; margin-left: 10px"
-                    name="download"
-                  />
+                <button class="info-text info-text-button" on:click={onUpdateAssets}>
+                  {$_('main_page.update')}
+                  <Icon style="font-size: 15px; color: white; margin-left: 10px" name="download" />
                 </button>
               {:else}
-                <p class="info-text">Atualizando...</p>
+                <p class="info-text">{$_('main_page.updating')}</p>
               {/if}
             </Col>
           </Row>
         </Container>
       {/if}
+      <LocaleSwitches />
       {#if clickedBack}
         <Container>
-          <Row style="justify-content: center">
-            <Col
-              xs={12}
-              style="max-width: 600px; display: flex; justify-content: right"
-            >
+          <Row style="justify-content: center; margin-top: 20px">
+            <Col xs={12} style="max-width: 600px; display: flex; justify-content: right">
               <Button
                 color="secondary"
                 style="margin-bottom: 75px; background: none"
@@ -243,13 +199,8 @@
                   clickedBack = false
                 }}
               >
-                <span style="font-size: 20px; color: white"
-                  >Voltar para notas carregadas</span
-                >
-                <Icon
-                  style="font-size: 20px; color: white; margin-left: 10px"
-                  name="arrow-right"
-                />
+                <span style="font-size: 20px; color: white">{$_('main_page.back_to_notes')}</span>
+                <Icon style="font-size: 20px; color: white; margin-left: 10px" name="arrow-right" />
               </Button>
             </Col>
           </Row>
@@ -286,23 +237,18 @@
                   },
                   onDismiss: () => {
                     resolve(false)
-                  }
-                }
+                  },
+                },
               })
-              clearNotesModal.$on('destroy', () => { clearNotesModal.$destroy() })
+              clearNotesModal.$on('destroy', () => {
+                clearNotesModal.$destroy()
+              })
             })
           }}
           onClickExportCsv={(tab) => {
             let data = ''
             if (tab === 'all') {
-              data = flatDeals
-                .map(
-                  (d) =>
-                    `${d.code}\t${d.cnpj}\t${d.date}\t${
-                      d.type === 'buy' ? 'Compra' : 'Venda'
-                    }\t${d.quantity}\t${formatMoneyToDisplay(d.price)}`
-                )
-                .join('\n')
+              data = flatDeals.map((d) => `${d.code}\t${d.cnpj}\t${d.date}\t${d.type === 'buy' ? $_('words.buy') : $_('words.sell')}\t${d.quantity}\t${formatMoneyToDisplay(d.price)}`).join('\n')
             } else {
               const note = notes.find((n) => n.number === tab)
               if (typeof note === 'undefined') {
@@ -310,19 +256,14 @@
                   target: mainDiv,
                   props: {
                     type: 'error',
-                    message: `Não foi possível gerar o .csv da nota Nº ${tab}. A nota parece ter sido removida`
-                  }
+                    message: $_({ id: 'csv_error', values: { tab } }),
+                  },
                 })
-                notificaion.$on('destroy', () => { notificaion.$destroy() })
+                notificaion.$on('destroy', () => {
+                  notificaion.$destroy()
+                })
               } else {
-                data = note.deals
-                  .map(
-                    (d) =>
-                      `${d.code}\t${d.cnpj}\t${d.date}\t${
-                        d.type === 'buy' ? 'Compra' : 'Venda'
-                      }\t${d.quantity}\t${formatMoneyToDisplay(d.price)}`
-                  )
-                  .join('\n')
+                data = note.deals.map((d) => `${d.code}\t${d.cnpj}\t${d.date}\t${d.type === 'buy' ? $_('words.buy') : $_('words.sell')}\t${d.quantity}\t${formatMoneyToDisplay(d.price)}`).join('\n')
               }
             }
 
@@ -330,12 +271,9 @@
             csv.setAttribute(
               'href',
               'data:text/plain;charset=utf-8,' +
-                encodeURIComponent(
-                  'Código\tCNPJ\tData\tCompra/Venda\tQuantidade\tPreços+custos\n' +
-                    data
-                )
+                encodeURIComponent(`${$_('words.code')}\t${$_('words.cnpj')}\t${$_('words.date')}\t${$_('words.buy_sell')}\t${$_('words.amount')}\t${$_('words.price_cost')}\n` + data),
             )
-            csv.setAttribute('download', 'Notas.csv')
+            csv.setAttribute('download', $_('words.notes') + '.csv')
             csv.style.display = 'none'
             csv.click()
           }}
@@ -356,7 +294,7 @@
         .then((response) => {
           handleProcessNotesResponse(notesWithWrongPassword, response)
         })
-        .catch(reason => {
+        .catch((reason) => {
           console.error('Error on processing notes')
           if (reason instanceof Error) console.error(reason.message)
           else console.error(reason)
@@ -375,7 +313,7 @@
         .then((response) => {
           handleProcessNotesResponse(notesWithUnknownAssets, response)
         })
-        .catch(reason => {
+        .catch((reason) => {
           console.error('Error on processing notes')
           if (reason instanceof Error) console.error(reason.message)
           else console.error(reason)
@@ -398,7 +336,7 @@
   }
 
   .title-text {
-    font-family: "Roboto Slab", serif;
+    font-family: 'Roboto Slab', serif;
     text-align: center;
     color: #d6d6d6;
     font-size: 50px;
@@ -409,7 +347,7 @@
   }
 
   .info-text {
-    font-family: "Roboto Slab", serif;
+    font-family: 'Roboto Slab', serif;
     color: #d6d6d680;
     font-size: 15px;
     text-align: center;
@@ -434,7 +372,7 @@
     animation: fadeIn 1s;
   }
 
-  @keyframes fadeIn {
+  @keyframes fadIn {
     from {
       opacity: 0;
     }

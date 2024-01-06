@@ -1,0 +1,68 @@
+{
+  "main_page": {
+    "title": "Leitor de notas de corretagem",
+    "drop_zone": {
+      "idle_text": "Arraste as notas ou clique para carregar 📤",
+      "invalid_files": "Arquivos inválidos❗ Use apenas PDFs",
+      "no_pdf": "Arquivos inválidos❗ Nenhum PDF encontrado",
+      "drop_here": "Solte para carregar",
+      "data_disclaimer": "Nenhum dado é coletado",
+      "processing": "Processando"
+    },
+    "update": "Atualizar informação de ativos",
+    "updating": "Atualizando...",
+    "back_to_notes": "Voltar para notas carregadas"
+  },
+  "notes_page": {
+    "all": "tudo",
+    "csv_error": "Não foi possível gerar o .csv da nota Nº {tab}. A nota parece ter sido removida",
+    "export": "Exportar {what} para .csv",
+    "clean_all": "Limpar tudo",
+    "clean_note": "Remover Nº {note}"
+  },
+  "unknown_asset": {
+    "title": "⚠️ Ativos desconhecidos",
+    "info": "Um ou mais PDFs possuem ativos que não estão na base de dados. Entre manualmente.",
+    "fii": "Fundo de Investimento Imobiliário (FII)",
+    "code_placeholder": "Código (Ex: ABEV3)",
+    "retry": "Tentar novamente",
+    "ignore": "Ignorar"
+  },
+  "password_modal": {
+    "title": "⚠️ PDFs com senha",
+    "info": "Os PDFs abaixo precisam de senha. Você pode inserir mais de uma possibilidade de senha para os PDFs",
+    "retry": "Tentar novamente",
+    "ignore": "Ignorar"
+  },
+  "clear_notes": {
+    "clear_all_notes": {
+      "header": "♻️ Limpar notas",
+      "info": "Você realmente deseja remover todas as notas carregadas?"
+    },
+    "clear_note": {
+      "header": "♻️ Remover nota Nº {note}",
+      "info": "Você realmente deseja remover a nota Nº {note}?"
+    }
+  },
+  "footer": {
+    "github_page": "Página do GitHub"
+  },
+  "find": {
+    "find": "Procurar..."
+  },
+  "words": {
+    "all": "Tudo",
+    "amount": "Quantidade",
+    "buy": "Compra",
+    "buy_sell": "Compra/Venda",
+    "cancel": "Cancelar",
+    "cnpj": "CNPJ",
+    "code": "Código",
+    "confirm": "Confirmar",
+    "date": "Data",
+    "notes": "Notas",
+    "possibility": "Possibility",
+    "price_cost": "Preços+custos",
+    "sell": "Sell"
+  }
+}

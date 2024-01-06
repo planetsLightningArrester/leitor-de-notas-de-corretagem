@@ -1,4 +1,5 @@
 <script context="module" lang="ts">
+  import { _ } from 'svelte-i18n'
   interface Matches {
     element: HTMLElement
     originalColor: string
@@ -15,9 +16,7 @@
         match.element.style.color = match.originalColor
       }
       if (clearInput) {
-        const find = document.getElementById(
-          'find',
-        ) as unknown as HTMLInputElement
+        const find = document.getElementById('find') as unknown as HTMLInputElement
         if (find !== null) find.value = ''
       }
     } catch (error) {
@@ -54,36 +53,23 @@
       const lowerSearch = search.toLowerCase()
       const tableContainerElement = document.getElementById('table-container')
       if (tableContainerElement !== null) {
-        Array.from(tableContainerElement.getElementsByTagName('*')).forEach(
-          (el) => {
-            if (
-              el instanceof HTMLElement &&
-              el.innerText.toLocaleLowerCase().includes(lowerSearch)
-            ) {
-              lastMatches.push({
-                element: el,
-                originalColor: el.style.color,
-              })
-              const previous = el.getAttribute('style')
-              el.setAttribute('style', previous + ';color: yellow!important')
-            }
-          },
-        )
+        Array.from(tableContainerElement.getElementsByTagName('*')).forEach((el) => {
+          if (el instanceof HTMLElement && el.innerText.toLocaleLowerCase().includes(lowerSearch)) {
+            lastMatches.push({
+              element: el,
+              originalColor: el.style.color,
+            })
+            const previous = el.getAttribute('style')
+            el.setAttribute('style', previous + ';color: yellow!important')
+          }
+        })
       }
     }
   }
 </script>
 
 <div id="find-div">
-  <input
-    id="find"
-    data-testid="find"
-    type="text"
-    name="find"
-    placeholder="Procurar..."
-    bind:value={search}
-    style="position: absolute;top: 10px;right: 10px;z-index:1"
-  />
+  <input id="find" data-testid="find" type="text" name="find" placeholder={$_('find.find')} bind:value={search} style="position: absolute;top: 10px;right: 10px;z-index:1" />
 </div>
 
 <style>
