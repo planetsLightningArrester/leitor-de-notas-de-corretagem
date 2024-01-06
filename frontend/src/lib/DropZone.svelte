@@ -11,6 +11,10 @@
   let mainText = $_('main_page.drop_zone.idle_text')
   let loading = false
 
+  $: {
+    mainText = $_('main_page.drop_zone.idle_text')
+  }
+
   // -- Callbacks
 
   /**
