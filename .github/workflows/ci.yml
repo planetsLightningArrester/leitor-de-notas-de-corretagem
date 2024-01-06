@@ -30,62 +30,64 @@ jobs:
     name: "🧹 Sanitize"
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code 📥
+      - name: 📥 Checkout code
         uses: actions/checkout@v3
 
-      - name: NodeJS setup 🛠️
+      - name: 🛠️ NodeJS setup
         uses: actions/setup-node@v3
         with:
           node-version: 20
 
-      - name: Install dependencies 🔧
+      - name: 🔧 Install dependencies
         run:  npm ci
 
-      - name: Run linters 🧹
+      - name: 🧹 Run linters
         run:  npm run lint
 
   test:
     strategy:
       fail-fast: false
       matrix:
-        version: [18, 20]
-    name: "🧪 Test (v${{ matrix.version }})"
-    runs-on: ubuntu-latest
+        node-version: [18, 20]
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+    name: "🧪 Test (v${{ matrix.node-version }})"
+    runs-on: ${{ matrix.os }}
     steps:
-      - name: Checkout code 📥
+      - name: 📥 Checkout code
         uses: actions/checkout@v3
 
-      - name: NodeJS setup 🛠️
+      - name: 🛠️ NodeJS setup
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.version }}
+          node-version: ${{ matrix.node-version }}
 
-      - name: Install dependencies 🔧
+      - name: 🔧 Install dependencies
         run:  npm ci
 
-      - name: Run test 🧪
+      - name: 🧪 Run test
         run:  npm run test
 
   build:
     strategy:
       fail-fast: false
       matrix:
-        version: [18, 20]
-    name: "📦 Build (v${{ matrix.version }})"
-    runs-on: ubuntu-latest
+        node-version: [18, 20]
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+    name: "📦 Build (v${{ matrix.node-version }})"
+    runs-on: ${{ matrix.os }}
     steps:
-      - name: Checkout code 📥
+      - name: 📥 Checkout code
         uses: actions/checkout@v3
 
-      - name: NodeJS setup 🛠️
+      - name: 🛠️ NodeJS setup
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.version }}
+          node-version: ${{ matrix.node-version }}
 
-      - name: Install dependencies 🔧
+      - name: 🔧 Install dependencies
         run:  npm ci
 
-      - name: Run build 📦
+      - name: 📦 Run build
         run:  npm run build
 
 # EOF
