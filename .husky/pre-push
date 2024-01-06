@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+[ -n "$CI" ] && exit 0
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo '[INFO] Running tests'
+npm run test
+echo '[INFO] Running build'
+npm run build

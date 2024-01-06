@@ -13,7 +13,9 @@
     "build:backend": "cd backend && npm run make",
     "update-assets": "cd backend && npm i parser-de-notas-de-corretagem@latest",
     "preinstall": "cd backend && npm ci && cd ../frontend && npm ci",
-    "lint": "cd backend && npm run lint && cd ../frontend && npm run lint"
+    "postinstall": "npx husky install",
+    "lint": "cd backend && npm run lint && cd ../frontend && npm run lint",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -27,10 +29,9 @@
   },
   "homepage": "https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem#readme",
   "devDependencies": {
-    "@eslint/create-config": "^0.4.6",
-    "@typescript-eslint/eslint-plugin": "^6.17.0",
     "concurrently": "^8.2.2",
-    "rimraf": "^5.0.5",
-    "typescript": "^5.3.3"
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.0",
+    "rimraf": "^5.0.5"
   }
 }

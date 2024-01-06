@@ -84,5 +84,14 @@
   "dependencies": {
     "parser-de-notas-de-corretagem": "^0.9.78",
     "printaeu": "^0.1.12"
+  },
+  "lint-staged": {
+    "*.{ts,js}": [
+      "npx eslint --fix",
+      "npx prettier --write"
+    ],
+    "*.json": [
+      "npx prettier --write"
+    ]
   }
 }
