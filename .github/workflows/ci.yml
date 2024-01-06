@@ -1,13 +1,8 @@
 # Continuos Integration workflow
-
 name: 🔄 CI
 
 # Controls when the workflow will run
 on:
-  # Nightly - running every 00:00 UTC
-  # schedule:
-  #   - cron: '0 0 * * *'
-
   pull_request: 
     paths: 
       - .github/workflows/ci.yml
@@ -17,7 +12,7 @@ on:
       - tsconfig.json
 
   push:
-    branches: ['electron']
+    branches: ['main']
     paths: 
       - .github/workflows/ci.yml
       - backend/**/*
