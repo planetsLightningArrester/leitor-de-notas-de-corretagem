@@ -8,17 +8,56 @@ on:
     tags:
       - 'v*' # Push events matching v*, i.e. v1.0, v20.15.10
 
+  # Also can be triggered by other workflows, such as auto-update
+  workflow_call:
+    inputs:
+      release_version:
+        type: string
+        description: 'Release version formatted as "vMM.mm.pp"'
+        required: true
+      skip_ci:
+        type: boolean
+        description: 'Whether to skip the CI run'
+        required: true
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
 
-  # Call CI
   ci-check:
+    if: ${{ ! inputs.skip_ci }}
     uses: ./.github/workflows/ci.yml
     secrets: inherit
 
+  calculate-release-version:
+    name: 🧮 Calculate release version
+    needs: ci-check
+    runs-on: ubuntu-latest
+    outputs:
+      RELEASE_VERSION: ${{ steps.result.outputs.RELEASE_VERSION }}
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: 🧮 Calculate version
+        shell: bash
+        id: result
+        run: |
+          RELEASE_VERSION=${{ inputs.release_version }}
+          if [[ -n $RELEASE_VERSION ]] && [[ $RELEASE_VERSION =~ v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+ ]]; then
+            echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
+          else
+            echo "[$(date +"%T")] [DEBUG] Calculating new version from the tag $(git describe --tags)";
+            RELEASE_VERSION=v$(git describe --tags | sed -r -n 's/v([[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+).*/\1/p');
+            echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
+          fi
+
+          echo "[INFO] Release version: $RELEASE_VERSION"
+
   create-release:
     name: 🎁 Create release
-    needs: [ci-check]
+    needs: calculate-release-version
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -30,11 +69,12 @@ jobs:
         id: create_release
         uses: ncipollo/release-action@v1.13.0
         with:
+          tag: ${{ needs.calculate-release-version.outputs.RELEASE_VERSION }}
           bodyFile: ./CHANGELOG.md
 
   upload-artifacts:
     name: 📦 Upload artifacts
-    needs: [create-release]
+    needs: [create-release, calculate-release-version]
     strategy:
       fail-fast: false
       matrix:
@@ -61,6 +101,7 @@ jobs:
         id: create_release
         uses: ncipollo/release-action@v1.13.0
         with:
+          tag: ${{ needs.calculate-release-version.outputs.RELEASE_VERSION }}
           allowUpdates: true
           omitBodyDuringUpdate: true
           omitDraftDuringUpdate: true

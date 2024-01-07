@@ -98,10 +98,23 @@ jobs:
             git tag "v$new_version";
             git push -u origin main --tags;
 
+            echo "RELEASE_VERSION=v$new_version" >> $GITHUB_OUTPUT;
+
           else
             echo "[$(date +"%T")] [DEBUG] No changes detected";
           fi
 
           echo "[$(date +"%T")] [DEBUG] Done";
+
+  # Trigger the release if a version tag was submitted
+  # This is required because submits done by bot won't trigger workflows
+  make_release:
+    needs: check_for_updates
+    if: ${{ needs.check_for_updates.outputs.RELEASE_VERSION }}
+    uses: ./.github/workflows/release.yml
+    secrets: inherit
+    with:
+      skip_ci: true
+      release_version: ${{ needs.check_for_updates.outputs.RELEASE_VERSION }}
 
 # EOF
