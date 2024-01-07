@@ -6,6 +6,11 @@ test('open a single page file', async () => {
 
   const window = await electronApp.firstWindow()
 
+  // Change locale to pt-br
+  const ptBrButton = window.getByTestId('pt-BR-button')
+  expect(ptBrButton).not.toBe(undefined)
+  await ptBrButton.click()
+
   const dropZoneButton = window.getByTestId('drop-zone-button')
   expect(dropZoneButton).not.toBe(undefined)
   const fileChooserPromise = new Promise<void>((resolve) => {
@@ -36,6 +41,11 @@ test('open a single page file with password', async () => {
   const electronApp = await electron.launch({ args: ['.'] })
 
   const window = await electronApp.firstWindow()
+
+  // Change locale to pt-br
+  const ptBrButton = window.getByTestId('pt-BR-button')
+  expect(ptBrButton).not.toBe(undefined)
+  await ptBrButton.click()
 
   const dropZoneButton = window.getByTestId('drop-zone-button')
   expect(dropZoneButton).not.toBe(undefined)
@@ -88,6 +98,11 @@ test('open a multi page file', async () => {
 
   const window = await electronApp.firstWindow()
 
+  // Change locale to pt-br
+  const ptBrButton = window.getByTestId('pt-BR-button')
+  expect(ptBrButton).not.toBe(undefined)
+  await ptBrButton.click()
+
   const dropZoneButton = window.getByTestId('drop-zone-button')
   expect(dropZoneButton).not.toBe(undefined)
   const fileChooserPromise = new Promise<void>((resolve) => {
@@ -118,6 +133,11 @@ test('open multiple files', async () => {
   const electronApp = await electron.launch({ args: ['.'] })
 
   const window = await electronApp.firstWindow()
+
+  // Change locale to pt-br
+  const ptBrButton = window.getByTestId('pt-BR-button')
+  expect(ptBrButton).not.toBe(undefined)
+  await ptBrButton.click()
 
   const dropZoneButton = window.getByTestId('drop-zone-button')
   expect(dropZoneButton).not.toBe(undefined)
@@ -156,6 +176,11 @@ test('open multiple files with password', async () => {
   const electronApp = await electron.launch({ args: ['.'] })
 
   const window = await electronApp.firstWindow()
+
+  // Change locale to pt-br
+  const ptBrButton = window.getByTestId('pt-BR-button')
+  expect(ptBrButton).not.toBe(undefined)
+  await ptBrButton.click()
 
   const dropZoneButton = window.getByTestId('drop-zone-button')
   expect(dropZoneButton).not.toBe(undefined)
@@ -200,6 +225,11 @@ test('open multiple files, some with password', async () => {
   const electronApp = await electron.launch({ args: ['.'] })
 
   const window = await electronApp.firstWindow()
+
+  // Change locale to pt-br
+  const ptBrButton = window.getByTestId('pt-BR-button')
+  expect(ptBrButton).not.toBe(undefined)
+  await ptBrButton.click()
 
   const dropZoneButton = window.getByTestId('drop-zone-button')
   expect(dropZoneButton).not.toBe(undefined)
@@ -248,6 +278,11 @@ test('open multiple duplicated files', async () => {
   const electronApp = await electron.launch({ args: ['.'] })
 
   const window = await electronApp.firstWindow()
+
+  // Change locale to pt-br
+  const ptBrButton = window.getByTestId('pt-BR-button')
+  expect(ptBrButton).not.toBe(undefined)
+  await ptBrButton.click()
 
   const dropZoneButton = window.getByTestId('drop-zone-button')
   expect(dropZoneButton).not.toBe(undefined)
