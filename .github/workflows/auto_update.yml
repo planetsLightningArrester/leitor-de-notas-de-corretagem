@@ -1,0 +1,107 @@
+# Auto-update workflow
+name: 📡 Auto-update
+
+on:
+  # Nightly - running at 1PM UTC
+  schedule:
+    - cron: '0 13 * * *'
+
+  # Allow manual trigger
+  workflow_dispatch:
+
+jobs:
+
+  check_for_updates:
+    name: 📡 Check for updates
+    runs-on: ubuntu-latest
+    outputs:
+      RELEASE_VERSION: ${{ steps.push.outputs.RELEASE_VERSION }}
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: 🛠️ NodeJS setup
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: 🔧 Install dependencies
+        run: npm ci
+
+      - name: 📡 Install latest versions
+        run: |
+          cd backend
+          npm install parser-de-notas-de-corretagem@latest
+
+      # Electron 28 isn't working with playwright until version 1.41
+      # https://github.com/microsoft/playwright/pull/28499#issuecomment-1858698614
+      # - name: 📡 Install latest versions
+      #   run: |
+      #     (
+      #       cd backend
+      #       npm list --parseable | tail -n +2 | sed -r 's,.*node_modules/(.*),\1@latest,g' | tr '\n' ' '
+      #     )
+      #     (
+      #       cd frontend
+      #       npm list --parseable | tail -n +2 | sed -r 's,.*node_modules/(.*),\1@latest,g' | tr '\n' ' '
+      #     )
+
+      - name: 🧪 Test
+        uses: ./.github/workflows/ci.yml
+        with:
+          secrets: inherit
+
+      - name: 🤖 Update remote with changes
+        shell: bash
+        id: push
+        run: |
+
+          # Set bot
+          echo "[$(date +"%T")] [DEBUG] Setting bot";
+          git config --local user.email "github-actions[bot]@users.noreply.github.com";
+          git config --local user.name "github-actions[bot]";
+
+          # Check for changes
+          echo "[$(date +"%T")] [DEBUG] Checking for changes";
+          git add package-lock.json;
+          status=$(git status);
+
+          if [[ $status =~ "Changes to be committed" ]]; then
+            echo "[$(date +"%T")] [DEBUG] New changes detected";
+
+            # Calculate new tag version
+            echo "[$(date +"%T")] [DEBUG] Calculating new version from the tag $(git describe --tags)";
+            last_version=$(git describe --tags | sed -r -n 's/v([[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+).*/\1/p');
+            minor="${last_version##*.}";
+            major="${last_version%.*}";
+            new_version="$major.$((minor + 1))";
+            echo "[$(date +"%T")] [DEBUG] New version - v$new_version";
+
+            # Update package.json
+            echo "[$(date +"%T")] [DEBUG] Updating package.json";
+            package_json_content=$(sed -r "s/$last_version/$new_version/" < package.json);
+            echo "$package_json_content" > package.json;
+            git diff package.json;
+
+            # Update CHANGELOG.md
+            echo "[$(date +"%T")] [DEBUG] Updating CHANGELOG.md";
+            changelog_content=$(sed -r "s/## \[$last_version\](.*)/## \[$new_version\] - $(date '+%Y-%m-%d')\n### Changed\n- Update parser\n\n## \[$last_version\]\1/" < CHANGELOG.md);
+            echo "$changelog_content" > CHANGELOG.md;
+            git diff CHANGELOG.md;
+
+            # Submit the changes creating a new tag
+            echo "[$(date +"%T")] [DEBUG] Submitting changes";
+            git add package.json CHANGELOG.md;
+            git commit -m "chore: update parser";
+            git tag "v$new_version";
+            git push -u origin main --tags;
+
+          else
+            echo "[$(date +"%T")] [DEBUG] No changes detected";
+          fi
+
+          echo "[$(date +"%T")] [DEBUG] Done";
+
+# EOF
