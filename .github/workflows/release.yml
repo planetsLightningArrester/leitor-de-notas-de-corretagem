@@ -18,11 +18,8 @@ jobs:
 
   create-release:
     name: 🎁 Create release
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, windows-latest, macOS-latest]
-    runs-on: ${{ matrix.os }}
+    needs: [ci-check]
+    runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
