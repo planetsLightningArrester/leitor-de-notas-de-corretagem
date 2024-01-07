@@ -1,11 +1,12 @@
 # Leitor de notas de corretagem
+<p align="center">
+  <a href="https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/blob/main/README.zh-cn.md"><b>简体中文</b></a> |
+  <a href="https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/blob/main/README.en-us.md"><b>English</b></a> |
+  <a href="https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/blob/main/README.es-mx.md"><b>Español</b></a> |
+  <a href="https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/blob/main/README.md"><b>Português</b></a>
+</p>
 
-[![zh-cn](https://img.shields.io/badge/lang-zh-blue.svg)](https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/blob/main/README.zh-cn.md)
-[![en-us](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/blob/main/README.en-us.md)
-[![es-mx](https://img.shields.io/badge/lang-es-yellow.svg)](https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/blob/main/README.es-mx.md)
-[![pt-br](https://img.shields.io/badge/lang-pt--br-green.svg)](https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/blob/main/README.md)
-
-Interface amigável do [parser-de-notas-de-corretagem](https://www.npmjs.com/package/parser-de-notas-de-corretagem).
+<h2 align="center">Interface amigável do <a href="https://www.npmjs.com/package/parser-de-notas-de-corretagem"><b>parser-de-notas-de-corretagem</b></a></h2>
 
 ![alt](./art/demo.gif)
 

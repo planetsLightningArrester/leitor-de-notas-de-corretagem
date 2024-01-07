@@ -1,13 +1,15 @@
 # Lector de notas de corretaje
 
-[![zh-cn](https://img.shields.io/badge/lang-zh-blue.svg)](https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/blob/main/README.zh-cn.md)
-[![en-us](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/blob/main/README.en-us.md)
-[![es-mx](https://img.shields.io/badge/lang-es-yellow.svg)](https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/blob/main/README.es-mx.md)
-[![pt-br](https://img.shields.io/badge/lang-pt--br-green.svg)](https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/blob/main/README.md)
+<p align="center">
+  <a href="https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/blob/main/README.zh-cn.md"><b>简体中文</b></a> |
+  <a href="https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/blob/main/README.en-us.md"><b>English</b></a> |
+  <a href="https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/blob/main/README.es-mx.md"><b>Español</b></a> |
+  <a href="https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/blob/main/README.md"><b>Português</b></a>
+</p>
 
-Interfaz amigable para [parser-de-notas-de-corretagem](https://www.npmjs.com/package/parser-de-notas-de-corretagem).
+<h2 align="center">Interfaz amigable para <a href="https://www.npmjs.com/package/parser-de-notas-de-corretagem"><b>parser-de-notas-de-corretagem</b></a></h2>
 
-![alt](./art/demo.png)
+![alt](./art/demo.gif)
 
 ## Acerca de
 Lector de notas de corretaje que puede exportar a `.csv`. Probado principalmente con notas de las corredoras Rico y Clear, pero también cuenta con soporte para Inter. Ignora automáticamente notas duplicadas, incluso si están en diferentes archivos PDF.

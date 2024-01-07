@@ -1,13 +1,15 @@
 # 证券交易清单阅读器
 
-[![zh-cn](https://img.shields.io/badge/lang-zh-blue.svg)](https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/blob/main/README.zh-cn.md)
-[![en-us](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/blob/main/README.en-us.md)
-[![es-mx](https://img.shields.io/badge/lang-es-yellow.svg)](https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/blob/main/README.es-mx.md)
-[![pt-br](https://img.shields.io/badge/lang-pt--br-green.svg)](https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/blob/main/README.md)
+<p align="center">
+  <a href="https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/blob/main/README.zh-cn.md"><b>简体中文</b></a> |
+  <a href="https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/blob/main/README.en-us.md"><b>English</b></a> |
+  <a href="https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/blob/main/README.es-mx.md"><b>Español</b></a> |
+  <a href="https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/blob/main/README.md"><b>Português</b></a>
+</p>
 
-[parser-de-notas-de-corretagem](https://www.npmjs.com/package/parser-de-notas-de-corretagem)的友好界面。
+<h2 align="center"><a href="https://www.npmjs.com/package/parser-de-notas-de-corretagem"><b>parser-de-notas-de-corretagem</b></a> 的友好界面。</h2>
 
-![alt](./art/demo.png)
+![alt](./art/demo.gif)
 
 ## 关于
 证券交易清单阅读器，可导出为 `.csv`。主要与Rico和Clear经纪商的清单一起进行测试，但也支持Inter。即使在不同的PDF中，也会自动忽略重复的清单。
