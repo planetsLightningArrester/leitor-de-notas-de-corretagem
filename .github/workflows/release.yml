@@ -41,11 +41,11 @@ jobs:
         run: |
           RELEASE_VERSION=${{ inputs.release_version }}
           if [[ -n $RELEASE_VERSION ]] && [[ $RELEASE_VERSION =~ v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+ ]]; then
-            echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
+            echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_OUTPUT;
           else
             echo "[$(date +"%T")] [DEBUG] Calculating new version from the tag $(git describe --tags)";
             RELEASE_VERSION=v$(git describe --tags | sed -r -n 's/v([[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+).*/\1/p');
-            echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
+            echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_OUTPUT;
           fi
 
           echo "[INFO] Release version: $RELEASE_VERSION"
