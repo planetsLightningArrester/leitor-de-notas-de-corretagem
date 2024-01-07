@@ -9,7 +9,7 @@
 
 <h2 align="center">User-friendly interface for the <a href="https://www.npmjs.com/package/parser-de-notas-de-corretagem"><b>parser-de-notas-de-corretagem</b></a></h2>
 
-![alt](./art/demo.gif)
+![alt](./art/demo.en-us.gif)
 
 ## About
 Brokerage note reader that can export to `.csv`. Primarily tested with notes from Rico and Clear brokers but also supports Inter. Automatically ignores duplicate notes, even across different PDFs.

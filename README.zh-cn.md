@@ -9,7 +9,7 @@
 
 <h2 align="center"><a href="https://www.npmjs.com/package/parser-de-notas-de-corretagem"><b>parser-de-notas-de-corretagem</b></a> 的友好界面。</h2>
 
-![alt](./art/demo.gif)
+![alt](./art/demo.zh-cn.gif)
 
 ## 关于
 证券交易清单阅读器，可导出为 `.csv`。主要与Rico和Clear经纪商的清单一起进行测试，但也支持Inter。即使在不同的PDF中，也会自动忽略重复的清单。
