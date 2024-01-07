@@ -98,6 +98,7 @@ jobs:
             git tag "v$new_version";
             git push -u origin main --tags;
 
+            # Set flag to trigger the release
             echo "RELEASE_VERSION=v$new_version" >> $GITHUB_OUTPUT;
 
           else
@@ -114,7 +115,6 @@ jobs:
     uses: ./.github/workflows/release.yml
     secrets: inherit
     with:
-      skip_ci: true
       release_version: ${{ needs.check_for_updates.outputs.RELEASE_VERSION }}
 
 # EOF

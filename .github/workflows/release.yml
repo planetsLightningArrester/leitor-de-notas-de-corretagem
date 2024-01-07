@@ -15,16 +15,11 @@ on:
         type: string
         description: 'Release version formatted as "vMM.mm.pp"'
         required: true
-      skip_ci:
-        type: boolean
-        description: 'Whether to skip the CI run'
-        required: true
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
 
   ci-check:
-    if: ${{ ! inputs.skip_ci }}
     uses: ./.github/workflows/ci.yml
     secrets: inherit
 
