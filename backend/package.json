@@ -61,11 +61,6 @@
     "make": "npm run compile && electron-forge make && npm run move-output"
   },
   "devDependencies": {
-    "eslint": "^8.56.0",
-    "eslint-config-standard-with-typescript": "^43.0.0",
-    "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-n": "^16.6.1",
-    "eslint-plugin-promise": "^6.1.1",
     "@electron-forge/cli": "^7.2.0",
     "@electron-forge/maker-zip": "^7.2.0",
     "@electron-forge/plugin-auto-unpack-natives": "^7.2.0",
@@ -75,6 +70,11 @@
     "@types/node": "^20.10.6",
     "@typescript-eslint/eslint-plugin": "^6.17.0",
     "electron": "^27.2.0",
+    "eslint": "^8.56.0",
+    "eslint-config-standard-with-typescript": "^43.0.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-n": "^16.6.1",
+    "eslint-plugin-promise": "^6.1.1",
     "nodemon": "^3.0.2",
     "rimraf": "^5.0.5",
     "run-script-os": "^1.1.6",
@@ -82,7 +82,7 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "parser-de-notas-de-corretagem": "^0.9.78",
+    "parser-de-notas-de-corretagem": "^0.9.83",
     "printaeu": "^0.1.12"
   },
   "lint-staged": {
