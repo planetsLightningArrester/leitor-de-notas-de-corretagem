@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 0.4.0 - 2024-01-06
 
-# Added
+### Added
 
 - Add full-featured user interface with [ElectronJS](https://www.electronjs.org/pt/) + [Forge](https://www.electronforge.io/) as the backend and [Svelte](https://svelte.dev/) + [Vite](https://vitejs.dev/) as the frontend
 - Add multilingual support with [svelte-i18n](https://github.com/kaisermann/svelte-i18n)
@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add GitHub templates for pull requests and issues
 - Add Git hooks with [Husky](https://github.com/typicode/husky) and [commitlint](https://github.com/conventional-changelog/commitlint)
 
-# Changed
+### Changed
 
 - No need to install [NodeJS](https://nodejs.org/) locally
 - Fully portable [cross-platform](https://en.wikipedia.org/wiki/Cross-platform_software) executable
@@ -26,7 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bump to Node v20
 - Update the docs with the new user flow
 
-# Removed
+### Removed
 
 - Remove the need to move PDFs to a directory
 - Remove CLI support
