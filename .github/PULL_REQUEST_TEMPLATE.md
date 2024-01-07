@@ -1,13 +1,18 @@
-# Added
+
+### Added
+
 - List of things added
 
-# Fixed
+### Fixed
+
 - List of things fixed (refer to Issues)
 
-# Changed
+### Changed
+
 - List of things changed/refactored
 
-# Removed
+### Removed
+
 - List of things removed
 
 <!--
