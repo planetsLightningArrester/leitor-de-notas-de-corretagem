@@ -1,9 +1,9 @@
 # Lector de notas de corretaje
 
-[![zh-cn](https://img.shields.io/badge/lang-zh-blue.svg)](https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/blob/electron/README.zh-cn.md)
-[![en-us](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/blob/electron/README.en-us.md)
-[![es-mx](https://img.shields.io/badge/lang-es-yellow.svg)](https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/blob/electron/README.es-mx.md)
-[![pt-br](https://img.shields.io/badge/lang-pt--br-green.svg)](https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/blob/electron/README.md)
+[![zh-cn](https://img.shields.io/badge/lang-zh-blue.svg)](https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/blob/main/README.zh-cn.md)
+[![en-us](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/blob/main/README.en-us.md)
+[![es-mx](https://img.shields.io/badge/lang-es-yellow.svg)](https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/blob/main/README.es-mx.md)
+[![pt-br](https://img.shields.io/badge/lang-pt--br-green.svg)](https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/blob/main/README.md)
 
 Interfaz amigable para [parser-de-notas-de-corretagem](https://www.npmjs.com/package/parser-de-notas-de-corretagem).
 
