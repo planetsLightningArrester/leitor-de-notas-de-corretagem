@@ -18,7 +18,10 @@
     "csv_error": "Unable to generate the .csv for Note No. {tab}. The note seems to have been removed",
     "export": "Export {what} to .csv",
     "clean_all": "Clear all",
-    "clean_note": "Remove No. {note}"
+    "clean_note": "Remove No. {note}",
+    "note_added": "{amount} note added",
+    "notes_added": "{amount} notes added",
+    "no_note_added": "No new notes added. Duplicates are ignored"
   },
   "unknown_asset": {
     "title": "⚠️ Unknown Assets",

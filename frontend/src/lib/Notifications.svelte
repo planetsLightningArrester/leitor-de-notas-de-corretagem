@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { locale } from 'svelte-i18n'
   import { Icon } from '@sveltestrap/sveltestrap'
 
   export let message: string
@@ -8,7 +9,7 @@
   let div: HTMLDivElement
   let show: boolean = false
   let hiding: boolean = false
-  let timeout: number | undefined
+  let timeout: number | undefined | NodeJS.Timeout
 
   /** Animate the notification out of the screen */
   function onHide(): void {
@@ -37,8 +38,7 @@
     data-testid="push-notification"
     bind:this={div}
     class="push {type} push-down"
-    style="width: {message.length *
-      14}px; animation-duration: {animationDuration}ms;"
+    style="width: {$locale !== 'zh-CN' ? message.length * 14 : message.length * 25}px; animation-duration: {animationDuration}ms;"
   >
     <span class="push-text">
       {#if type === 'success'}
@@ -50,11 +50,7 @@
       {/if}
       {message}
     </span>
-    <button
-      data-testid="push-notification-close"
-      class="close-icon"
-      on:click={onHide}>×</button
-    >
+    <button data-testid="push-notification-close" class="close-icon" on:click={onHide}>×</button>
   </div>
 {/if}
 

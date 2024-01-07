@@ -112,7 +112,7 @@
         target: mainDiv,
         props: {
           type: 'success',
-          message: `${amount} nota${amount > 1 ? 's' : ''} adicionada${amount > 1 ? 's' : ''}`,
+          message: $_({ id: amount > 1 ? 'notes_page.notes_added' : 'notes_page.note_added', values: { amount } }),
         },
       })
     } else {
@@ -120,7 +120,7 @@
         target: mainDiv,
         props: {
           type: 'warning',
-          message: 'Nenhuma nova nota adicionada. Duplicatas são ignoradas',
+          message: $_('notes_page.no_note_added'),
         },
       })
     }
@@ -252,15 +252,15 @@
             } else {
               const note = notes.find((n) => n.number === tab)
               if (typeof note === 'undefined') {
-                const notificaion = new Notifications({
+                const notification = new Notifications({
                   target: mainDiv,
                   props: {
                     type: 'error',
                     message: $_({ id: 'csv_error', values: { tab } }),
                   },
                 })
-                notificaion.$on('destroy', () => {
-                  notificaion.$destroy()
+                notification.$on('destroy', () => {
+                  notification.$destroy()
                 })
               } else {
                 data = note.deals.map((d) => `${d.code}\t${d.cnpj}\t${d.date}\t${d.type === 'buy' ? $_('words.buy') : $_('words.sell')}\t${d.quantity}\t${formatMoneyToDisplay(d.price)}`).join('\n')

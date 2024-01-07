@@ -18,7 +18,10 @@
     "csv_error": "无法生成第 {tab} 号清单的 .csv 文件。该清单似乎已被移除",
     "export": "将 {what} 导出为 .csv",
     "clean_all": "清除全部",
-    "clean_note": "移除第 {note} 号"
+    "clean_note": "移除第 {note} 号",
+    "note_added": "{amount} 个清单已添加",
+    "notes_added": "{amount} 个清单已添加",
+    "no_note_added": "未添加新清单。重复项将被忽略"
   },
   "unknown_asset": {
     "title": "⚠️ 未知资产",

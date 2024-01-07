@@ -18,7 +18,10 @@
     "csv_error": "Não foi possível gerar o .csv da nota Nº {tab}. A nota parece ter sido removida",
     "export": "Exportar {what} para .csv",
     "clean_all": "Limpar tudo",
-    "clean_note": "Remover Nº {note}"
+    "clean_note": "Remover Nº {note}",
+    "note_added": "{amount} nota adicionada",
+    "notes_added": "{amount} notas adicionadas",
+    "no_note_added": "Nenhuma nova nota adicionada. Duplicatas são ignoradas"
   },
   "unknown_asset": {
     "title": "⚠️ Ativos desconhecidos",

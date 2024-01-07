@@ -26,7 +26,7 @@
 <Modal bind:this={nodeRef} header={note === 'all' ? $_('clear_notes.clear_all_notes.header') : $_({ id: 'clear_notes.clear_note.header', values: { note } })} isOpen={showModal} toggle={onDismiss}>
   <ModalBody>
     <p style="user-select: none;">
-      {note === 'all' ? $_('clear_notes.clear_all_notes.info') : $_({ id: 'clear_notes.clear_note.info', values: { note } })}?
+      {note === 'all' ? $_('clear_notes.clear_all_notes.info') : $_({ id: 'clear_notes.clear_note.info', values: { note } })}
     </p>
   </ModalBody>
   <ModalFooter>
