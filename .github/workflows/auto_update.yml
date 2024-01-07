@@ -79,21 +79,21 @@ jobs:
             new_version="$major.$((minor + 1))";
             echo "[$(date +"%T")] [DEBUG] New version - v$new_version";
 
-            # Update package.json
-            echo "[$(date +"%T")] [DEBUG] Updating package.json";
-            package_json_content=$(sed -r "s/$last_version/$new_version/" < package.json);
-            echo "$package_json_content" > package.json;
-            git diff package.json;
+            # Update backend/package.json
+            echo "[$(date +"%T")] [DEBUG] Updating backend/package.json";
+            package_json_content=$(sed -r "s/$last_version/$new_version/" < backend/package.json);
+            echo "$package_json_content" > backend/package.json;
+            git diff backend/package.json;
 
             # Update CHANGELOG.md
             echo "[$(date +"%T")] [DEBUG] Updating CHANGELOG.md";
-            changelog_content=$(sed -r "s/## \[$last_version\](.*)/## \[$new_version\] - $(date '+%Y-%m-%d')\n### Changed\n- Update parser\n\n## \[$last_version\]\1/" < CHANGELOG.md);
+            changelog_content=$(sed -r "s/## \[$last_version\](.*)/## \[$new_version\] - $(date '+%Y-%m-%d')\n\n### Changed\n\n- Update parser\n\n## \[$last_version\]\1/" < CHANGELOG.md);
             echo "$changelog_content" > CHANGELOG.md;
             git diff CHANGELOG.md;
 
             # Submit the changes creating a new tag
             echo "[$(date +"%T")] [DEBUG] Submitting changes";
-            git add package.json CHANGELOG.md;
+            git add .;
             git commit -m "chore: update parser";
             git tag "v$new_version";
             git push -u origin main --tags;
