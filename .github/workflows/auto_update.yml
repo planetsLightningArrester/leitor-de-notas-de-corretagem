@@ -65,7 +65,7 @@ jobs:
 
           # Check for changes
           echo "[$(date +"%T")] [DEBUG] Checking for changes";
-          git add package-lock.json;
+          git add .;
           status=$(git status);
 
           if [[ $status =~ "Changes to be committed" ]]; then
