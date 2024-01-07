@@ -36,11 +36,7 @@
   },
   "lint-staged": {
     "*.{ts,js,svelte}": [
-      "npx eslint --fix",
-      "npx prettier --write"
-    ],
-    "*.json": [
-      "npx prettier --write"
+      "npx eslint --fix"
     ]
   }
 }
