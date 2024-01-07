@@ -1,3 +1,43 @@
 {
-  "cSpell.language": "en,pt-BR"
+  "debug.allowBreakpointsEverywhere": true,
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "cSpell.words": [
+    "ABEV",
+    "cnpj",
+    "commitlint",
+    "Electronegativity",
+    "pdfs",
+    "preinstall",
+    "sveltestrap",
+    "testid"
+  ],
+  "cSpell.language": "en,pt-BR",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+  },
+  "eslint.validate": [
+    "javascript"
+  ],
+  "[typescript]": {
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true
+  },
+  "[json]": {
+    "editor.quickSuggestions": {
+      "strings": true
+    },
+    "editor.suggest.insertMode": "replace",
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true
+  },
+  "[javascript]": {
+    "editor.maxTokenizationLineLength": 2500,
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true
+  },
+  "[svelte]": {
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true
+  }
 }

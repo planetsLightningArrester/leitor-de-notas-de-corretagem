@@ -1,0 +1,97 @@
+{
+  "name": "leitor-de-notas-de-corretagem",
+  "displayName": "Leitor de Notas de Corretagem",
+  "version": "0.4.0",
+  "description": "Electron app for the backend of the leitor de notas de corretagem",
+  "main": "dist/main.js",
+  "author": "Planet's Lightning Arrester",
+  "homepage": "https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem#readme",
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "notas",
+    "corretagem",
+    "negociação",
+    "brokerage",
+    "brazil",
+    "brasil",
+    "parser"
+  ],
+  "license": "GNU GPLv3",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem.git"
+  },
+  "bugs": {
+    "url": "https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/issues"
+  },
+  "scripts": {
+    "clean": "rimraf dist src/client node_modules playwright-report test-results",
+    "compile": "rimraf dist && tsc -b && npm run copy-assets && npm run copy-client",
+    "compile:test": "rimraf dist && tsc -b && npm run copy-assets",
+    "start": "npm run compile:test && electron-forge start",
+    "start:dev": "run-script-os",
+    "start:dev:default": "NODE_ENV=development nodemon -L",
+    "start:dev:win32": "set NODE_ENV=development && nodemon -L",
+    "copy-assets": "run-script-os",
+    "copy-assets:default": "cp -rf src/images dist",
+    "copy-assets:win32": "xcopy src\\images dist\\images /e /i /h /y",
+    "copy-client": "run-script-os",
+    "copy-client:default": "cp -rf src/client dist/client && cp -rf src/images dist",
+    "copy-client:win32": "xcopy src\\client dist\\client /e /i /h /y && xcopy src\\images dist\\images /e /i /h /y",
+    "move-output": "run-script-os",
+    "move-output:default": "rimraf ../dist && mv out ../dist",
+    "move-output:win32": "rimraf ../dist && move out ..\\dist",
+    "lint": "run-script-os",
+    "lint:default": "npx electronegativity -e 27.2.0 -r -i src -x PreloadJsCheck | tee /dev/tty | grep -q \"No issues were found\" && eslint --ext .js,.ts src",
+    "lint:win32": "npx electronegativity -e 27.2.0 -r -i src -x PreloadJsCheck | findstr /R /C:\"No issues were found\" && eslint --ext .js,.ts src",
+    "pretest": "npm run compile:test",
+    "test": "run-script-os",
+    "test:default": "NODE_ENV=testing playwright test --reporter line",
+    "test:linux": "NODE_ENV=testing xvfb-run -s \"-screen 0, 1024x768x24\" playwright test --reporter line",
+    "test:win32": "set NODE_ENV=testing && playwright test --reporter line",
+    "test:dev": "run-script-os",
+    "test:dev:default": "NODE_ENV=development nodemon --config nodemon.test.json",
+    "test:dev:win32": "set NODE_ENV=development && nodemon --config nodemon.test.json",
+    "test-ui": "run-script-os",
+    "test-ui:default": "NODE_ENV=development playwright test --ui",
+    "test-ui:win32": "set NODE_ENV=development && playwright test --ui",
+    "package": "npm run compile && electron-forge package && npm run move-output",
+    "make": "npm run compile && electron-forge make && npm run move-output"
+  },
+  "devDependencies": {
+    "eslint": "^8.56.0",
+    "eslint-config-standard-with-typescript": "^43.0.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-n": "^16.6.1",
+    "eslint-plugin-promise": "^6.1.1",
+    "@electron-forge/cli": "^7.2.0",
+    "@electron-forge/maker-zip": "^7.2.0",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.2.0",
+    "@electron-forge/plugin-electronegativity": "^7.2.0",
+    "@eslint/create-config": "^0.4.6",
+    "@playwright/test": "^1.40.1",
+    "@types/node": "^20.10.6",
+    "@typescript-eslint/eslint-plugin": "^6.17.0",
+    "electron": "^27.2.0",
+    "nodemon": "^3.0.2",
+    "rimraf": "^5.0.5",
+    "run-script-os": "^1.1.6",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "parser-de-notas-de-corretagem": "^0.9.78",
+    "printaeu": "^0.1.12"
+  },
+  "lint-staged": {
+    "*.{ts,js}": [
+      "npx eslint --fix",
+      "npx prettier --write"
+    ],
+    "*.json": [
+      "npx prettier --write"
+    ]
+  }
+}

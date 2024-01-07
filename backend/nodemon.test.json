@@ -1,0 +1,8 @@
+{
+  "restartable": "rs",
+  "watch": [
+    "src"
+  ],
+  "exec": "playwright test",
+  "ext": "js, json, ts, proto, css, html, png, jpeg, jpg, ico"
+}

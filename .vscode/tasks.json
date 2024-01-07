@@ -1,0 +1,54 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "start-frontend-server",
+			"detail": "Start the frontend server by npm run dev",
+			"type": "npm",
+			"script": "dev",
+			"path": "frontend",
+			"isBackground": true,
+			"problemMatcher": {
+				"background": {
+					"beginsPattern": "^[ \\t]*> vite",
+					"endsPattern": "^[ \\t]*VITE[ \\t]+[v\\d.]+[ \\t]+ready in"
+				},
+				"pattern": {
+					"regexp": "^[:\\d]+[ \\t]*[vite-plugin-svelte] $",
+				}
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "silent",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": false
+			}
+		},
+		{
+			"label": "compile-backend-and-start-frontend",
+			"detail": "Compile backend and start the frontend server",
+			"dependsOrder": "parallel",
+			"dependsOn": [
+				"compile-backend",
+				"start-frontend-server"
+			]
+		},
+		{
+			"label": "compile-backend",
+			"detail": "Compile backend",
+			"path": "backend",
+			"type": "npm",
+			"script": "compile",
+			"presentation": {
+				"echo": true,
+				"reveal": "silent",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": false
+			}
+		}
+	]
+}

@@ -5,24 +5,64 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "command": "npm start",
-      "name": "Parse",
+      // Launches the frontend as standalone in debug mode
+      "name": "Svelte-launch",
       "request": "launch",
-      "type": "node-terminal"
+      "type": "chrome",
+      "url": "http://localhost:5173",
+      "webRoot": "${workspaceFolder}/frontend",
+      "cwd": "${workspaceFolder}/frontend",
+      "preLaunchTask": "start-frontend-server"
     },
     {
-      "name": "Jest",
+      // Attach the debugger to a "Electron: Main + Svelte" instance
+      "name": "Svelte-attach",
+      "request": "attach",
+      "type": "chrome",
+      "webRoot": "${workspaceFolder}/frontend",
+      "port": 9223,
+      "timeout": 30000
+    },
+    {
+      // Launches the backend in development mode, rendering the client from http://localhost:5173
+      "name": "Electron rendering frontend",
       "type": "node",
       "request": "launch",
+      "cwd": "${workspaceFolder}/backend",
+      "runtimeExecutable": "${workspaceFolder}/backend/node_modules/.bin/electron",
+      "windows": {
+        "runtimeExecutable": "${workspaceFolder}/backend/node_modules/.bin/electron.cmd"
+      },
       "runtimeArgs": [
-        "--inspect-brk",
-        "${workspaceRoot}/node_modules/jest/bin/jest.js",
-        "--runInBand",
-        "inter.test.ts"
+        "--remote-debugging-port=9223" // open debugging port for renderer process
       ],
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
-      "port": 9229
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "args": [
+        "."
+      ],
+      "outputCapture": "std",
+      "sourceMaps": true,
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/backend/dist/**", // use source maps for files in workspace folder
+        "!**/node_modules/**" // but ignore everything in the node_modules folder
+      ],
+      "preLaunchTask": "compile-backend-and-start-frontend",
+    }
+  ],
+  "compounds": [ // launch multiple configurations concurrently
+    {
+      "name": "Electron & Svelte debug",
+      "configurations": [
+        "Electron rendering frontend",
+        "Svelte-attach",
+      ],
+      "presentation": {
+        "hidden": false,
+        "group": "",
+        "order": 1
+      }
     }
   ]
 }

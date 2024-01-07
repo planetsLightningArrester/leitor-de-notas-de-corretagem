@@ -1,0 +1,8 @@
+{
+  "restartable": "rs",
+  "watch": [
+    "src"
+  ],
+  "exec": "npm run compile:test && electron .",
+  "ext": "js, json, ts, proto, css, html, png, jpeg, jpg, ico"
+}

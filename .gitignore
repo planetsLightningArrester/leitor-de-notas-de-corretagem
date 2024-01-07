@@ -1,5 +1,16 @@
+out
 node_modules
 dist
-*.pdf
 *.csv
 !src/tests/notes/**/*
+
+*.png
+!**/src/**/*.png
+!art/**/*.png
+!frontend/**/*.png
+backend/src/client/**
+
+# Playwright
+**/test-results/**
+**/playwright-report/**
+**/playwright/.cache/

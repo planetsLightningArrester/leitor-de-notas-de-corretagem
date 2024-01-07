@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+[ -n "$CI" ] && exit 0
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo '[INFO] Linting frontend'
+npx lint-staged --cwd frontend
+echo '[INFO] Linting backend'
+npx lint-staged --cwd backend
