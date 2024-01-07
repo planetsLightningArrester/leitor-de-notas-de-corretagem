@@ -1,0 +1,3 @@
+default: true
+no-duplicate-heading: false
+line_length: false
