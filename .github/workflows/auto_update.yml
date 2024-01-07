@@ -48,10 +48,10 @@ jobs:
       #       npm list --parseable | tail -n +2 | sed -r 's,.*node_modules/(.*),\1@latest,g' | tr '\n' ' '
       #     )
 
+      # TODO: this is testing only against linux, so it's not safe once the code above is uncommented
+      # https://stackoverflow.com/questions/75733616/github-actions-how-to-call-a-reusable-workflow-as-a-step
       - name: 🧪 Test
-        uses: ./.github/workflows/ci.yml
-        with:
-          secrets: inherit
+        run: npm run test && npm run build
 
       - name: 🤖 Update remote with changes
         shell: bash
