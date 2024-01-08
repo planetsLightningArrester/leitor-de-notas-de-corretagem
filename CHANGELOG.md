@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix update flow now downloading correctly in Linux
 - Fix images not loading in built version
 - Fix fonts not loading in built version
-- Fix auto-update on Windows machines
+- Fix auto-update on Windows and Linux machines
 
 ### Changed
 

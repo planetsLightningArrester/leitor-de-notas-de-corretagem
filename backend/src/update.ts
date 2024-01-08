@@ -112,8 +112,6 @@ export async function installUpdate({ version, name, url }: Update): Promise<voi
 
       break
     case 'win32':
-      // Closes the app
-      app.quit()
       command = 'powershell -command "'
       command += `Remove-Item -Recurse -Force '${installDir}';`
       command += `mkdir '${installDir}';`
