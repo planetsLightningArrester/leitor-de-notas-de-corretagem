@@ -118,8 +118,8 @@ app.on('web-contents-created', (_, contents) => {
       responseHeaders: { /* eng-disable CSP_GLOBAL_CHECK */
         ...details.responseHeaders,
         'Content-Security-Policy': [
-          "style-src 'unsafe-inline' 'self' https://cdn.jsdelivr.net",
-          "font-src 'unsafe-inline' 'self' https://cdn.jsdelivr.net",
+          "style-src 'unsafe-inline' 'self' https://cdn.jsdelivr.net https://fonts.googleapis.com",
+          "font-src 'unsafe-inline' 'self' https://cdn.jsdelivr.net https://fonts.gstatic.com",
           "img-src 'self' data: ",
           "script-src 'self'",
           "object-src 'none'",
