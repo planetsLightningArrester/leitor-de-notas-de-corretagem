@@ -5,6 +5,7 @@
   import usFlag from '../assets/us-flag.svg'
   import mxFlag from '../assets/mx-flag.png'
   import brFlag from '../assets/br-flag.png'
+  import { resolveImgPath } from './common'
   let zhLoaded = false
   let enLoaded = false
   let esLoaded = false
@@ -53,7 +54,7 @@
     }}
   >
     <img
-      src={mxFlag}
+      src={resolveImgPath(mxFlag)}
       alt="Español"
       hidden={!$isLoading && !esLoaded}
       data-testid="es-MX-button"
@@ -70,7 +71,7 @@
     }}
   >
     <img
-      src={brFlag}
+      src={resolveImgPath(brFlag)}
       alt="Português"
       hidden={!$isLoading && !ptLoaded}
       data-testid="pt-BR-button"

@@ -1,8 +1,7 @@
 <script lang="ts">
   import { _ } from 'svelte-i18n'
-  import { Tooltip } from '@sveltestrap/sveltestrap'
-  import { resolveImgPath } from './common'
   import githubSvg from '../assets/github.svg'
+  import { Tooltip } from '@sveltestrap/sveltestrap'
 
   let footerTextLeftTextContent = `Planet's Lightning Arrester - ${new Date().getFullYear()}`
 </script>
@@ -14,7 +13,7 @@
     <span class="footer-text">|</span>
     <Tooltip target="github-icon-anchor">{$_('footer.github_page')}</Tooltip>
     <a id="github-icon-anchor" style="display: flex;" href="https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem">
-      <img id="github-icon-image" class="github-cat" src={resolveImgPath(githubSvg)} alt={$_('footer.github_page')} height="20px" />
+      <img id="github-icon-image" class="github-cat" src={githubSvg} alt={$_('footer.github_page')} height="20px" />
     </a>
   </footer>
 </div>
