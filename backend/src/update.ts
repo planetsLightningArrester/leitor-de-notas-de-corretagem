@@ -40,21 +40,6 @@ export async function getUpdates(): Promise<Update | undefined> {
   info.log(`App current version is v${currentVersion}`)
   const [currentMajor, currentMinor, currentPatch] = currentVersion.split('.').map(Number)
   const latestReleaseUrl = new URL('https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/releases/latest')
-  let fileName: string
-  switch (process.platform) {
-    case 'darwin':
-      fileName = 'leitor-de-notas-de-corretagem_macos.tar.gz'
-      break
-    case 'win32':
-      fileName = 'leitor-de-notas-de-corretagem_win64.zip'
-      break
-    case 'linux':
-      fileName = 'leitor-de-notas-de-corretagem_linux64.tar.gz'
-      break
-    default:
-      err.log(`Unsupported OS '${process.platform}'`)
-      return
-  }
   try {
     const res = await fetch(latestReleaseUrl, { redirect: 'follow' })
     const match = res.url.match(/\/tag\/v(.*)/)
@@ -67,6 +52,21 @@ export async function getUpdates(): Promise<Update | undefined> {
         (latestMajor === currentMajor && latestMinor > currentMinor) ||
         (latestMajor === currentMajor && latestMinor === currentMinor && latestPatch > currentPatch)
       ) {
+        let fileName: string
+        switch (process.platform) {
+          case 'darwin':
+            fileName = `Leitor.de.notas.de.corretagem-darwin-x64-${latestVersion}.zip`
+            break
+          case 'win32':
+            fileName = `Leitor.de.notas.de.corretagem-win32-x64-${latestVersion}.zip`
+            break
+          case 'linux':
+            fileName = `Leitor.de.notas.de.corretagem-linux-x64-${latestVersion}.zip`
+            break
+          default:
+            err.log(`Unsupported OS '${process.platform}'`)
+            return
+        }
         info.log(`Newer version found: v${latestVersion}`)
         return {
           version: latestVersion,
@@ -91,7 +91,7 @@ export async function getUpdates(): Promise<Update | undefined> {
 export async function installUpdate({ version, name, url }: Update): Promise<void> {
   // Donwload
   info.log(`Downloading new version v${version}`)
-  const compressedFullPath = path.join(tempDir, name)
+  const compressedFullPath = path.join(tempDir, `leitor-update-${version}.zip`)
   await downloadFile(url, compressedFullPath)
   info.log('New version downloaded successfully')
 
@@ -105,16 +105,16 @@ export async function installUpdate({ version, name, url }: Update): Promise<voi
   }
 
   // Decompress downloaded install
-  info.log(`Decompressing file '${name}'`)
-  const decompressDirectory = path.join(app.getPath('temp'), 'leitor-de-notas-de-corretagem', version)
+  const decompressDirectory = path.join(path.dirname(process.execPath), '..')
+  info.log(`Decompressing file '${name}' into '${decompressDirectory}'`)
   if (!fs.existsSync(decompressDirectory)) fs.mkdirSync(decompressDirectory, { recursive: true })
   switch (process.platform) {
     case 'linux':
     case 'darwin':
-      execSync(`tar -xzvf ${compressedFullPath} -C ${decompressDirectory}`)
+      execSync(`unzip -o -d "${decompressDirectory}" "${compressedFullPath}"`)
       break
     case 'win32':
-      execSync(`powerhsell -Command Expand-Archive ${compressedFullPath} -DestinationPath ${decompressDirectory}`)
+      execSync(`powerhsell -Command Expand-Archive "${compressedFullPath}" -DestinationPath "${decompressDirectory}"`)
       break
     default:
       err.log(`Unsupported OS to update '${process.platform}'`)
@@ -133,7 +133,6 @@ export async function installUpdate({ version, name, url }: Update): Promise<voi
 async function downloadFile(url: string, outputFullPath: string): Promise<void> {
   const res = await fetch(url)
   if (res.status !== 200) throw new Error(`Error downloading ${url}: (${res.status}) ${res.statusText}`)
-  info.log(outputFullPath)
   if (!fs.existsSync(outputFullPath)) {
     const fileStream = fs.createWriteStream(outputFullPath, { flags: 'wx' })
 
