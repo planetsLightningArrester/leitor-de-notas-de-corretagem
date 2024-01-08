@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.4.3] - 2024-01-08
 
+### Fixed
+- Fix update flow now downloading correctly in Linux
+- Fix images not loading in built version
+
 ### Changed
 
 - Update parser
@@ -19,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.4.1] - 2024-01-07
 
-### Fix
+### Fixed
 - Fix some translations
 
 ### Changed
@@ -59,7 +63,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.3.1] - 2023-07-25
 
-### Fix
+### Fixed
 
 - Bump parser version to fix the real estate parser for Inter notes
 - Fix `COSAN` not identified
