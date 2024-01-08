@@ -38,6 +38,7 @@ export interface Update {
 export async function getUpdates(): Promise<Update | undefined> {
   const currentVersion = app.getVersion()
   info.log(`App current version is v${currentVersion}`)
+  const [currentMajor, currentMinor, currentPatch] = currentVersion.split('.').map(Number)
   const latestReleaseUrl = new URL('https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/releases/latest')
   let fileName: string
   switch (process.platform) {
@@ -60,7 +61,12 @@ export async function getUpdates(): Promise<Update | undefined> {
     if (match === null || match.length < 1 || match[1] === '') throw new Error(`Unexpected URL without version number: ${res.url}`)
     else {
       const latestVersion = match[1]
-      if (parseFloat(latestVersion) > parseFloat(currentVersion)) {
+      const [latestMajor, latestMinor, latestPatch] = latestVersion.split('.').map(Number)
+      if (
+        latestMajor > currentMajor ||
+        (latestMajor === currentMajor && latestMinor > currentMinor) ||
+        (latestMajor === currentMajor && latestMinor === currentMinor && latestPatch > currentPatch)
+      ) {
         info.log(`Newer version found: v${latestVersion}`)
         return {
           version: latestVersion,
