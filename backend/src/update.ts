@@ -3,7 +3,7 @@ import path from 'path'
 import { URL } from 'url'
 import stream from 'stream'
 import { app } from 'electron'
-import { spawn } from 'child_process'
+import { execSync, spawn } from 'child_process'
 import { Print, color } from 'printaeu'
 import { finished } from 'stream/promises'
 import type { ReadableStream } from 'stream/web'
@@ -95,9 +95,6 @@ export async function installUpdate({ version, name, url }: Update): Promise<voi
   await downloadFile(url, compressedFullPath)
   info.log('New version downloaded successfully')
 
-  // Closes the app
-  app.quit()
-
   // Clean previous install, unzip, and run again
   const installDir = path.dirname(process.execPath)
   let command: string = ''
@@ -105,20 +102,25 @@ export async function installUpdate({ version, name, url }: Update): Promise<voi
     case 'linux':
     case 'darwin':
       // ? INFO: unzip -d is the destination with the same name as the directory
-      command = `rm -rf ${installDir}`
-      command += ` && mkdir -p "${compressedFullPath}"`
+      command = `rm -rf "${installDir}"`
+      command += ` && mkdir -p "${path.join(installDir, '..')}"`
       command += ` && unzip -o -d "${path.join(installDir, '..')}" "${compressedFullPath}"`
-      command += ` && "${process.execPath}"`
-      spawn(command, { shell: true, detached: true, cwd: tempDir, windowsHide: true })
+
+      // ? INFO: had to split it otherwise the cascade command are killed before the app closes
+      execSync(command)
+      spawn(process.execPath, { detached: true })
+
       break
     case 'win32':
+      // Closes the app
+      app.quit()
       command = 'powershell -command "'
       command += `Remove-Item -Recurse -Force '${installDir}';`
       command += `mkdir '${installDir}';`
       command += `Expand-Archive '${compressedFullPath}' -DestinationPath '${installDir}';`
       command += `& '${process.execPath}';`
       command += '"'
-      spawn(command, { shell: true, detached: true, cwd: tempDir, windowsHide: true })
+      spawn(command, { shell: true, detached: true, cwd: tempDir })
       break
     default:
       err.log(`Unsupported OS to update '${process.platform}'`)
@@ -126,6 +128,7 @@ export async function installUpdate({ version, name, url }: Update): Promise<voi
   }
 
   info.log('File decompressed successfully')
+  app.quit()
 }
 
 /**
