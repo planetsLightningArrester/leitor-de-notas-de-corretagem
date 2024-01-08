@@ -5,12 +5,20 @@ import { server } from './server'
 import { Print, color } from 'printaeu'
 import { app, BrowserWindow } from 'electron'
 
+const tempDir = app.getPath('temp')
 const logDir = app.getPath('logs')
 
+/** Logs an info */
+const info = Print.create()
+info.preAppend(`[${color.orange}MAIN${color.reset}] [${color.cyan}INFO${color.reset}] `)
+info.logToFile(path.join(logDir, 'app.log'))
 /** Logs an error */
 const err = Print.create()
-err.preAppend(`[${color.orange}APP${color.reset}] [${color.red}ERROR${color.reset}] `)
+err.preAppend(`[${color.orange}MAIN${color.reset}] [${color.red}ERROR${color.reset}] `)
 err.logToFile(path.join(logDir, 'app.log'))
+
+info.log(`Temp directory: ${tempDir}`)
+info.log(`Log directory: ${logDir}`)
 
 /** Creates a new window and starts the server. Called by `app.whenReady()` */
 function createWindow(): void {
@@ -84,6 +92,7 @@ app.whenReady()
   })
 
 app.on('window-all-closed', () => {
+  info.log('Closing app')
   // INFO: Quit when all windows are closed, except on macOS. There, it's common
   // for applications and their menu bar to stay active until the user quits
   // explicitly with Cmd + Q.

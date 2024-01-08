@@ -3,7 +3,7 @@ import path from 'path'
 import { URL } from 'url'
 import stream from 'stream'
 import { app } from 'electron'
-import { execSync } from 'child_process'
+import { spawn } from 'child_process'
 import { Print, color } from 'printaeu'
 import { finished } from 'stream/promises'
 import type { ReadableStream } from 'stream/web'
@@ -83,38 +83,42 @@ export async function getUpdates(): Promise<Update | undefined> {
 }
 
 /**
- * Download and install the latest update
+ * Download, closes the current app, and install the latest update
  * @param update the `Update` object with version, name, and url to download
  * @throws Error on download failure
  * @copyright modified from https://stackoverflow.com/a/51302466/9139005
  */
 export async function installUpdate({ version, name, url }: Update): Promise<void> {
-  // Donwload
+  // Download
   info.log(`Downloading new version v${version}`)
   const compressedFullPath = path.join(tempDir, `leitor-update-${version}.zip`)
   await downloadFile(url, compressedFullPath)
   info.log('New version downloaded successfully')
 
-  // Clean previous build
-  try {
-    fs.rmSync(path.dirname(process.execPath), { recursive: true, force: true })
-  } catch (error: unknown) {
-    err.log('Error removing previous build')
-    if (error instanceof Error) err.log(error.message)
-    else err.log(error)
-  }
+  // Closes the app
+  app.quit()
 
-  // Decompress downloaded install
-  const decompressDirectory = path.join(path.dirname(process.execPath), '..')
-  info.log(`Decompressing file '${name}' into '${decompressDirectory}'`)
-  if (!fs.existsSync(decompressDirectory)) fs.mkdirSync(decompressDirectory, { recursive: true })
+  // Clean previous install, unzip, and run again
+  const installDir = path.dirname(process.execPath)
+  let command: string = ''
   switch (process.platform) {
     case 'linux':
     case 'darwin':
-      execSync(`unzip -o -d "${decompressDirectory}" "${compressedFullPath}"`)
+      // ? INFO: unzip -d is the destination with the same name as the directory
+      command = `rm -rf ${installDir}`
+      command += ` && mkdir -p "${compressedFullPath}"`
+      command += ` && unzip -o -d "${path.join(installDir, '..')}" "${compressedFullPath}"`
+      command += ` && "${process.execPath}"`
+      spawn(command, { shell: true, detached: true, cwd: tempDir, windowsHide: true })
       break
     case 'win32':
-      execSync(`powerhsell -Command Expand-Archive "${compressedFullPath}" -DestinationPath "${decompressDirectory}"`)
+      command = 'powershell -command "'
+      command += `Remove-Item -Recurse -Force '${installDir}';`
+      command += `mkdir '${installDir}';`
+      command += `Expand-Archive '${compressedFullPath}' -DestinationPath '${installDir}';`
+      command += `& '${process.execPath}';`
+      command += '"'
+      spawn(command, { shell: true, detached: true, cwd: tempDir, windowsHide: true })
       break
     default:
       err.log(`Unsupported OS to update '${process.platform}'`)

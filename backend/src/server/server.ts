@@ -1,9 +1,8 @@
 import path from 'path'
-import { app, type BrowserWindow, ipcMain } from 'electron'
-import { spawn } from 'child_process'
 import { Print, color } from 'printaeu'
-import { ProcessNotesResult, type CustomAsset, type NoteToBeParsed } from '../types'
+import { app, type BrowserWindow, ipcMain } from 'electron'
 import { type Update, getUpdates, installUpdate } from '../update'
+import { ProcessNotesResult, type CustomAsset, type NoteToBeParsed } from '../types'
 import { type NegotiationNote, NoteParser, WrongPassword as _WrongPassword, UnknownAsset as _UnknownAsset } from 'parser-de-notas-de-corretagem'
 
 const logDir = app.getPath('logs')
@@ -133,8 +132,6 @@ export async function server(win: BrowserWindow): Promise<void> {
       const update: Update = args[0]
 
       await installUpdate(update)
-      spawn(process.execPath, { detached: true })
-      app.quit()
     } catch (error: unknown) {
       err.log('Error on proceeding with the update')
       if (error instanceof Error) err.log(error.message)
