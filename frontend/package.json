@@ -13,7 +13,7 @@
     "copy-client": "run-script-os",
     "copy-client:default": "mkdir -p ../backend/src/client && cp -rf dist/* ../backend/src/client/",
     "copy-client:win32": "xcopy dist\\* ..\\backend\\src\\client\\ /e /i /h",
-    "lint": "eslint --ext .js,.ts,.svelte src"
+    "lint": "npm run check && eslint --ext .js,.ts,.svelte src"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^3.0.1",
