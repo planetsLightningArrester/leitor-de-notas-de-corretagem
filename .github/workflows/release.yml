@@ -60,12 +60,19 @@ jobs:
       - name: 📥 Checkout code
         uses: actions/checkout@v3
 
+      - name: 📰 Generate RELEASE.md
+        run: |
+          # Generate a RELEASE.md with only the first section of the CHANGELOG.md
+          line=$(cat CHANGELOG.md | grep -n -m 2 "## \[" | tail -n 1 | sed -r 's/([[:digit:]]*):.*/\1/g')
+          head -n $((line - 1)) CHANGELOG.md > RELEASE.md
+          echo "See the full [CHANGELOG.md](https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/blob/main/CHANGELOG.md)" >> RELEASE.md
+
       - name: 🚀 Publish release
         id: create_release
         uses: ncipollo/release-action@v1.13.0
         with:
           tag: ${{ needs.calculate-release-version.outputs.RELEASE_VERSION }}
-          bodyFile: ./CHANGELOG.md
+          bodyFile: ./RELEASE.md
 
   upload-artifacts:
     name: 📦 Upload artifacts
