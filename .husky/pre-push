@@ -6,5 +6,5 @@ echo '[INFO] Running tests'
 npm run test
 echo '[INFO] Running linters'
 npm run lint
-echo '[INFO] Running build'
-npm run build
+echo '[INFO] Running package'
+(cd backend && npm run package)

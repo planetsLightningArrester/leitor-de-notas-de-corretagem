@@ -57,7 +57,7 @@
     "test-ui": "run-script-os",
     "test-ui:default": "NODE_ENV=development playwright test --ui",
     "test-ui:win32": "set NODE_ENV=development && playwright test --ui",
-    "package": "npm run compile && electron-forge package && npm run move-output",
+    "package": "npm run compile && npm run lint && electron-forge package && npm run move-output",
     "make": "npm run compile && npm run lint && electron-forge make && npm run move-output"
   },
   "devDependencies": {
