@@ -25,7 +25,7 @@ jobs:
 
   calculate-release-version:
     name: 🧮 Calculate release version
-    # needs: ci-check
+    needs: ci-check
     runs-on: ubuntu-latest
     outputs:
       RELEASE_VERSION: ${{ steps.result.outputs.RELEASE_VERSION }}
