@@ -9,9 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.4.3] - 2024-01-08
 
 ### Added
+
 - Docs for frontend
 
 ### Fixed
+
 - Fix update flow now downloading correctly in Linux
 - Fix images not loading in built version
 - Fix fonts not loading in built version
@@ -26,15 +28,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.4.2] - 2024-01-07
 
-### Fix
+### Fixed
+
 - Auto-update versioning
 
 ## [0.4.1] - 2024-01-07
 
 ### Fixed
+
 - Fix some translations
 
 ### Changed
+
 - Update parser
 - Improve docs
 
