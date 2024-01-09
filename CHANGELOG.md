@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.4.3] - [0.4.4] - 2024-01-09
+## [0.4.3] - 2024-01-08
 
 ### Added
 
@@ -21,7 +21,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Update parser
 - Improve logs
 - Improve backend docs
 - Improve git hooks checks and linters (fix #3 and #4)
