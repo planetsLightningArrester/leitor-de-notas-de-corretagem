@@ -104,6 +104,7 @@ jobs:
               changelog_content=$(sed -r "s/(## .* - )\[$last_version\]/\1\[$new_version\]/" <CHANGELOG.md)
               echo "$changelog_content" >CHANGELOG.md
             fi
+            git diff CHANGELOG.md;
 
             # Submit the changes creating a new tag
             echo "[$(date +"%T")] [DEBUG] Submitting changes";

@@ -19,13 +19,13 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
 
-  ci-check:
-    uses: ./.github/workflows/ci.yml
-    secrets: inherit
+  # ci-check:
+  #   uses: ./.github/workflows/ci.yml
+  #   secrets: inherit
 
   calculate-release-version:
     name: 🧮 Calculate release version
-    needs: ci-check
+    # needs: ci-check
     runs-on: ubuntu-latest
     outputs:
       RELEASE_VERSION: ${{ steps.result.outputs.RELEASE_VERSION }}
@@ -59,6 +59,9 @@ jobs:
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: tags/v${{ needs.calculate-release-version.outputs.RELEASE_VERSION }}
 
       - name: 📰 Generate RELEASE.md
         run: |
@@ -87,6 +90,9 @@ jobs:
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: tags/v${{ needs.calculate-release-version.outputs.RELEASE_VERSION }}
 
       - name: 🛠️ NodeJS setup
         uses: actions/setup-node@v3
