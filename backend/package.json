@@ -30,7 +30,7 @@
     "clean": "rimraf dist src/client node_modules playwright-report test-results",
     "compile": "rimraf dist && tsc -b && npm run copy-assets && npm run copy-client",
     "compile:test": "rimraf dist && tsc -b && npm run copy-assets",
-    "start": "npm run compile:test && electron-forge start",
+    "start": "npm run compile && electron-forge start",
     "start:dev": "run-script-os",
     "start:dev:default": "NODE_ENV=development nodemon -L",
     "start:dev:win32": "set NODE_ENV=development && nodemon -L",
