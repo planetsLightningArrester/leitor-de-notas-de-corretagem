@@ -6,6 +6,7 @@
     "ABEV",
     "cnpj",
     "commitlint",
+    "electronegativity",
     "Electronegativity",
     "filechooser",
     "pdfs",
@@ -19,6 +20,11 @@
   },
   "eslint.validate": [
     "javascript"
+  ],
+  "eslint.workingDirectories": [
+    {
+      "mode": "auto"
+    }
   ],
   "[typescript]": {
     "editor.formatOnSave": true,

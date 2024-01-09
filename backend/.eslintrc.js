@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 /** @type {import('eslint'.Linter.Config)} */
 // eslint-disable-next-line no-undef
 module.exports = {
@@ -12,6 +11,9 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   plugins: ['@typescript-eslint'],
   root: true,
+  parserOptions: {
+    project: './tsconfig.eslint.json'
+  },
   rules: {
     '@typescript-eslint/space-before-function-paren': 'off',
     '@typescript-eslint/no-misused-promises': 'off',

@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "playwright.config.ts",
+    "forge.config.ts",
+    ".eslintrc.js",
+    "src"
+  ],
+  "exclude": [
+    "src/client",
+  ]
+}
