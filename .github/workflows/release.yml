@@ -19,9 +19,9 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
 
-  # ci-check:
-  #   uses: ./.github/workflows/ci.yml
-  #   secrets: inherit
+  ci-check:
+    uses: ./.github/workflows/ci.yml
+    secrets: inherit
 
   calculate-release-version:
     name: 🧮 Calculate release version
