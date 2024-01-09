@@ -87,9 +87,23 @@ jobs:
 
             # Update CHANGELOG.md
             echo "[$(date +"%T")] [DEBUG] Updating CHANGELOG.md";
-            changelog_content=$(sed -r "s/## \[$last_version\](.*)/## \[$new_version\] - $(date '+%Y-%m-%d')\n\n### Changed\n\n- Update parser\n\n## \[$last_version\]\1/" < CHANGELOG.md);
-            echo "$changelog_content" > CHANGELOG.md;
-            git diff CHANGELOG.md;
+            if grep -q "## \[$last_version\]" <CHANGELOG.md; then
+              last_but_one_release_line=$(grep -n -m 2 "## \[" <CHANGELOG.md | tail -n 1 | sed -r 's/([[:digit:]]*):.*/\1/g')
+              changelog_release_only_content=$(head -n $((last_but_one_release_line - 1)) CHANGELOG.md)
+              if [[ "${changelog_release_only_content}" =~ "### Changed" ]]; then
+                if [[ ! "${changelog_release_only_content}" =~ "- Update parser" ]]; then
+                  changelog_release_only_content=$(echo "${changelog_release_only_content}" | sed ':a;N;$!ba;s/\n/爨/g' | sed -r "s/### Changed爨+/### Changed爨爨- Update parser爨/" | sed 's/爨/\n/g')
+                fi
+              else
+                changelog_release_only_content="$(printf "%s\n\n%s\n\n%s" "${changelog_release_only_content}" "### Changed" "- Update parser")"
+              fi
+              changelog_content="$(printf "%s\n%s" "${changelog_release_only_content}" "$(tail -n +"$((last_but_one_release_line - 1))" CHANGELOG.md)")"
+              changelog_content=$(echo "${changelog_content}" | sed -r "s/## \[$last_version\].*/## \[$last_version\] - \[$new_version\] - $(date '+%Y-%m-%d')/")
+              echo "$changelog_content" >CHANGELOG.md
+            elif grep -q "## .* - \[$last_version\]" <CHANGELOG.md; then
+              changelog_content=$(sed -r "s/(## .* - )\[$last_version\]/\1\[$new_version\]/" <CHANGELOG.md)
+              echo "$changelog_content" >CHANGELOG.md
+            fi
 
             # Submit the changes creating a new tag
             echo "[$(date +"%T")] [DEBUG] Submitting changes";
