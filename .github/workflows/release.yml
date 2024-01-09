@@ -61,7 +61,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          ref: tags/${{ needs.calculate-release-version.outputs.RELEASE_VERSION }}
+          ref: ${{ needs.calculate-release-version.outputs.RELEASE_VERSION }}
 
       - name: 📰 Generate RELEASE.md
         run: |
@@ -92,7 +92,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          ref: tags/${{ needs.calculate-release-version.outputs.RELEASE_VERSION }}
+          ref: ${{ needs.calculate-release-version.outputs.RELEASE_VERSION }}
 
       - name: 🛠️ NodeJS setup
         uses: actions/setup-node@v3
