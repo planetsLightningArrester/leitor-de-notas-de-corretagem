@@ -18,6 +18,11 @@
   document.body.style.backgroundImage = `url(${resolveImgPath(backgroundImage)})`
   document.body.style.backgroundSize = 'cover'
 
+  $: {
+    // Set title
+    document.title = $_('main_page.title')
+  }
+
   /** List of user defined assets */
   let customAssets: CustomAsset[] = []
   /** List of possible passwords */
