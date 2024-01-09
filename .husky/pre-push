@@ -6,21 +6,23 @@ git hash-object --stdin </dev/null | tr '0-9a-f' '0' >/dev/null
 
 run_checks=false
 while read -r _ local_sha __ remote_sha; do
-	# Get the files being pushed
-	files=$(git diff --name-only "${local_sha}" "${remote_sha}")
+	if [ "${remote_sha}" = "0000000000000000000000000000000000000000" ]; then
+		run_checks=true
+	else
+		# Get the files being pushed
+		files=$(git diff --name-only "${local_sha}" "${remote_sha}")
 
-	# INFO: Only run checks if one of the following
-	# extensions are being submitted
-	expr "${files}" : ".*\.ts" >/dev/null && run_checks=true
-	expr "${files}" : ".*\.js" >/dev/null && run_checks=true
-	expr "${files}" : ".*\.cjs" >/dev/null && run_checks=true
-	expr "${files}" : ".*\.json" >/dev/null && run_checks=true
-	expr "${files}" : ".*\.svelte" >/dev/null && run_checks=true
-	expr "${files}" : ".*\.html" >/dev/null && run_checks=true
-	expr "${files}" : ".*\.png" >/dev/null && run_checks=true
-	expr "${files}" : ".*\.jpg" >/dev/null && run_checks=true
+		expr "${files}" : ".*\.ts" >/dev/null && run_checks=true
+		expr "${files}" : ".*\.js" >/dev/null && run_checks=true
+		expr "${files}" : ".*\.cjs" >/dev/null && run_checks=true
+		expr "${files}" : ".*\.json" >/dev/null && run_checks=true
+		expr "${files}" : ".*\.svelte" >/dev/null && run_checks=true
+		expr "${files}" : ".*\.html" >/dev/null && run_checks=true
+		expr "${files}" : ".*\.png" >/dev/null && run_checks=true
+		expr "${files}" : ".*\.jpg" >/dev/null && run_checks=true
 
-	[ "${run_checks}" = true ] && break
+		[ "${run_checks}" = true ] && break
+	fi
 
 done
 
