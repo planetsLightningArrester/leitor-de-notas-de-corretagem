@@ -7,7 +7,7 @@
     "dev": "run-script-os",
     "dev:default": "NODE_ENV=development && vite",
     "dev:win32": "set NODE_ENV=development && vite",
-    "build": "vite build && node scripts/parsePath.js dist/index.html && rimraf ../backend/src/client/ && npm run copy-client",
+    "build": "npm run lint && vite build && node scripts/parsePath.js dist/index.html && rimraf ../backend/src/client/ && npm run copy-client",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "copy-client": "run-script-os",

@@ -58,13 +58,13 @@
     "test-ui:default": "NODE_ENV=development playwright test --ui",
     "test-ui:win32": "set NODE_ENV=development && playwright test --ui",
     "package": "npm run compile && electron-forge package && npm run move-output",
-    "make": "npm run compile && electron-forge make && npm run move-output"
+    "make": "npm run compile && npm run lint && electron-forge make && npm run move-output"
   },
   "devDependencies": {
+    "@doyensec/electronegativity": "^1.10.3",
     "@electron-forge/cli": "^7.2.0",
     "@electron-forge/maker-zip": "^7.2.0",
     "@electron-forge/plugin-auto-unpack-natives": "^7.2.0",
-    "@electron-forge/plugin-electronegativity": "^7.2.0",
     "@eslint/create-config": "^0.4.6",
     "@playwright/test": "^1.40.1",
     "@types/node": "^20.10.6",
