@@ -1,8 +1,8 @@
 import path from 'path'
 import { Print, color } from 'printaeu'
 import { app, type BrowserWindow, ipcMain } from 'electron'
-import { type Update, getUpdates, installUpdate } from '../update'
-import { ProcessNotesResult, type CustomAsset, type NoteToBeParsed } from '../types'
+import { type Update, getUpdates, installUpdate } from './update'
+import { ProcessNotesResult, type CustomAsset, type NoteToBeParsed } from './types'
 import { type NegotiationNote, NoteParser, WrongPassword as _WrongPassword, UnknownAsset as _UnknownAsset } from 'parser-de-notas-de-corretagem'
 
 const logDir = app.getPath('logs')
