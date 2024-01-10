@@ -61,6 +61,12 @@ Para rodar no WSL, é necessário instalar alguns pacotes:
 sudo apt install libgconf-2-4 libatk1.0-0 libatk-bridge2.0-0 libgdk-pixbuf2.0-0 libgtk-3-0 libgbm-dev libnss3-dev libxss-dev libasound2 zip
 ```
 
+Para reduzir o ruído por causa do `dbus` no WSL:
+
+```bash
+source scripts/dbus.sh
+```
+
 ### Testes
 
 ```bash

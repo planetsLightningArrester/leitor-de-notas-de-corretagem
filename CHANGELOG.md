@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Bump dependencies
+- Update docs
 
 ## [0.4.3] - [0.4.5] - 2024-01-09
 

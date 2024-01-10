@@ -62,6 +62,12 @@ Para ejecutar en WSL, es necesario instalar algunos paquetes:
 sudo apt install libgconf-2-4 libatk1.0-0 libatk-bridge2.0-0 libgdk-pixbuf2.0-0 libgtk-3-0 libgbm-dev libnss3-dev libxss-dev libasound2 zip
 ```
 
+Para reducir el ruido causado por `dbus` en WSL:
+
+```bash
+source scripts/dbus.sh
+```
+
 ### Pruebas
 
 ```bash
