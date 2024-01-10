@@ -38,7 +38,7 @@
     data-testid="push-notification"
     bind:this={div}
     class="push {type} push-down"
-    style="width: {$locale !== 'zh-CN' ? message.length * 14 : message.length * 25}px; animation-duration: {animationDuration}ms;"
+    style="width: {$locale !== 'zh-CN' ? message.length * 16 : message.length * 25}px; animation-duration: {animationDuration}ms;"
   >
     <span class="push-text">
       {#if type === 'success'}

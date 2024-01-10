@@ -166,7 +166,7 @@
         <div class="container title-container">
           <Row>
             <Col>
-              <p class="title-text position-relative">
+              <p data-testid="main-page-title" class="title-text position-relative">
                 <b>{$_('main_page.title')}</b>
               </p>
             </Col>

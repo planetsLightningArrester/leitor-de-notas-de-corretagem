@@ -1,9 +1,9 @@
 <script lang="ts">
   import { _ } from 'svelte-i18n'
   import Find, { clearMatches } from './Find.svelte'
+  import { type NegotiationNote, type Deal } from 'parser-de-notas-de-corretagem'
   import { type TableHeader, noTypeCheck, sortDeals, formatMoneyToDisplay } from './common'
   import { Container, Table, TabContent, TabPane, Icon, Row, Col, Button } from '@sveltestrap/sveltestrap'
-  import { type NegotiationNote, type Deal } from 'parser-de-notas-de-corretagem'
 
   /** All `NegotiationNotes` */
   export let notes: NegotiationNote[] = []
@@ -52,9 +52,9 @@
 </script>
 
 <Find />
-<Container id="table-container">
+<Container data-testid="table-container" id="table-container">
   <!-- Arrow to go back to the initial screen -->
-  <button on:click={onClickBack} style="background-color: transparent; border: none">
+  <button data-testid="go-to-initial-screen-button" on:click={onClickBack} style="background-color: transparent; border: none">
     <Icon style="font-size: 24px; color: white; cursor: pointer" name="arrow-left" />
   </button>
   <!-- Tabs -->
