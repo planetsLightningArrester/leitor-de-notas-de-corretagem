@@ -39,7 +39,7 @@ test.describe.serial('open a single page file', () => {
     expect(await pushNotification.innerText()).toContain('1 note added')
   })
 
-  test('check if notes the note was added', async () => {
+  test('check if the note was added', async () => {
     const noteTab = window.getByTestId('tab-11111')
     await noteTab.waitFor({ state: 'visible', timeout: 2000 })
     await noteTab.click()
@@ -128,7 +128,7 @@ test.describe.serial('open a single page file with password', async () => {
     expect(await pushNotification.innerText()).toContain('1 note added')
   })
 
-  test('check if notes the note was added', async () => {
+  test('check if the note was added', async () => {
     const noteTab = window.getByTestId('tab-44444')
     await noteTab.waitFor({ state: 'visible', timeout: 2000 })
     await noteTab.click()
@@ -175,7 +175,7 @@ test.describe.serial('open a multi page file', () => {
     expect(await pushNotification.innerText()).toContain('1 note added')
   })
 
-  test('check if notes the note was added', async () => {
+  test('check if the note was added', async () => {
     // Click on the tab and check its content
     const noteTab = window.getByTestId('tab-33333')
     await noteTab.waitFor({ state: 'visible', timeout: 2000 })
