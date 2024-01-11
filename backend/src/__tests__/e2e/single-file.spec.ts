@@ -176,11 +176,134 @@ test.describe.serial('open a multi page file', () => {
   })
 
   test('check if the note was added', async () => {
-    // Click on the tab and check its content
     const noteTab = window.getByTestId('tab-33333')
     await noteTab.waitFor({ state: 'visible', timeout: 2000 })
     await noteTab.click()
     const noteTabXPML = window.getByTestId('tab-33333-XPML11')
     await noteTabXPML.waitFor({ state: 'visible', timeout: 2000 })
+  })
+})
+
+test.describe.serial('open a file with unknown assets', () => {
+  let electronApp: ElectronApplication
+  let window: Page
+
+  test.beforeAll(async () => {
+    electronApp = await electron.launch({ args: ['.'] })
+    window = await electronApp.firstWindow()
+  })
+
+  test('change locale to en-us', async () => {
+    const enUsButton = window.getByTestId('en-US-button')
+    expect(enUsButton).not.toBe(undefined)
+    await enUsButton.click()
+    expect(await window.getByTestId('main-page-title').innerText()).toBe('Brokerage note reader')
+  })
+
+  test('select file from file chooser', async () => {
+    const dropZoneButton = window.getByTestId('drop-zone-button')
+    expect(dropZoneButton).not.toBe(undefined)
+    const fileChooserPromise = new Promise<void>((resolve) => {
+      const fileChooserListener = async (fileChooser: FileChooser): Promise<void> => {
+        window.off('filechooser', fileChooserListener)
+        await fileChooser.setFiles(path.join(__dirname, '..', 'notes', 'inter_cpti_kdif.pdf'))
+        resolve()
+      }
+      window.on('filechooser', fileChooserListener)
+    })
+    await dropZoneButton.click()
+    await fileChooserPromise
+    await window.getByTestId('table-container').waitFor({ state: 'visible' })
+  })
+
+  test('check if the push notification is shown without a warning', async () => {
+    const pushNotification = window.getByTestId('push-notification')
+    await pushNotification.waitFor({ state: 'visible', timeout: 10000 })
+    expect(await pushNotification.innerText()).toContain('1 note added')
+    const pushNotificationCloseButton = window.getByTestId('push-notification-close')
+    await pushNotificationCloseButton.click()
+    await pushNotification.waitFor({ state: 'hidden', timeout: 2000 })
+  })
+
+  test('enter the info about the missing asset', async () => {
+    const codeField = window.getByTestId('FIC IE CAP CI ER-code')
+    const cnpjField = window.getByTestId('FIC IE CAP CI ER-cnpj')
+    await codeField.waitFor({ state: 'visible', timeout: 2000 })
+    await codeField.fill('CPTI11')
+    await cnpjField.fill('38.065.012/0001-77')
+
+    const retryUnknownAssetButton = window.getByTestId('retry-unknown-asset-button')
+    await retryUnknownAssetButton.waitFor({ state: 'visible', timeout: 2000 })
+    await retryUnknownAssetButton.click()
+
+    await codeField.waitFor({ state: 'hidden', timeout: 2000 })
+  })
+
+  test('check if the note was added with the correct info', async () => {
+    const noteTab = window.getByTestId('tab-24402609')
+    await noteTab.waitFor({ state: 'visible', timeout: 2000 })
+    await noteTab.click()
+    const noteTabCPTI = window.getByTestId('tab-24402609-CPTI11')
+    await noteTabCPTI.waitFor({ state: 'visible', timeout: 2000 })
+  })
+})
+
+test.describe.serial('open a file with unknown assets and ignore it', () => {
+  let electronApp: ElectronApplication
+  let window: Page
+
+  test.beforeAll(async () => {
+    electronApp = await electron.launch({ args: ['.'] })
+    window = await electronApp.firstWindow()
+  })
+
+  test('change locale to en-us', async () => {
+    const enUsButton = window.getByTestId('en-US-button')
+    expect(enUsButton).not.toBe(undefined)
+    await enUsButton.click()
+    expect(await window.getByTestId('main-page-title').innerText()).toBe('Brokerage note reader')
+  })
+
+  test('select file from file chooser', async () => {
+    const dropZoneButton = window.getByTestId('drop-zone-button')
+    expect(dropZoneButton).not.toBe(undefined)
+    const fileChooserPromise = new Promise<void>((resolve) => {
+      const fileChooserListener = async (fileChooser: FileChooser): Promise<void> => {
+        window.off('filechooser', fileChooserListener)
+        await fileChooser.setFiles(path.join(__dirname, '..', 'notes', 'inter_cpti_kdif.pdf'))
+        resolve()
+      }
+      window.on('filechooser', fileChooserListener)
+    })
+    await dropZoneButton.click()
+    await fileChooserPromise
+    await window.getByTestId('table-container').waitFor({ state: 'visible' })
+  })
+
+  test('check if the push notification is shown without a warning', async () => {
+    const pushNotification = window.getByTestId('push-notification')
+    await pushNotification.waitFor({ state: 'visible', timeout: 10000 })
+    expect(await pushNotification.innerText()).toContain('1 note added')
+    const pushNotificationCloseButton = window.getByTestId('push-notification-close')
+    await pushNotificationCloseButton.click()
+    await pushNotification.waitFor({ state: 'hidden', timeout: 2000 })
+  })
+
+  test('ignore the unknown asset', async () => {
+    const codeField = window.getByTestId('FIC IE CAP CI ER-code')
+
+    const ignoreUnknownAssetButton = window.getByTestId('ignore-unknown-asset-button')
+    await ignoreUnknownAssetButton.waitFor({ state: 'visible', timeout: 2000 })
+    await ignoreUnknownAssetButton.click()
+
+    await codeField.waitFor({ state: 'hidden', timeout: 2000 })
+  })
+
+  test('check if the note was added with the UNDEF name', async () => {
+    const noteTab = window.getByTestId('tab-24402609')
+    await noteTab.waitFor({ state: 'visible', timeout: 2000 })
+    await noteTab.click()
+    const noteTabCPTI = window.getByTestId('tab-24402609-UNDEF: FIC IE CAP CI ER')
+    await noteTabCPTI.waitFor({ state: 'visible', timeout: 2000 })
   })
 })

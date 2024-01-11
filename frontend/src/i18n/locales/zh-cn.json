@@ -21,12 +21,14 @@
     "clean_note": "移除第 {note} 号",
     "note_added": "{amount} 个清单已添加",
     "notes_added": "{amount} 个清单已添加",
-    "no_note_added": "未添加新清单。重复项将被忽略"
+    "no_note_added": "未添加新清单。重复项将被忽略",
+    "note_reloaded": "清单已重新加载"
   },
   "unknown_asset": {
     "title": "⚠️ 未知资产",
     "info": "一个或多个PDF包含不在数据库中的资产。请手动输入。",
-    "fii": "房地产投资基金 (FII)",
+    "fii": "FII",
+    "fii_info": "房地产投资基金 ",
     "code_placeholder": "代码（例如：ABEV3）",
     "retry": "重试",
     "ignore": "忽略"

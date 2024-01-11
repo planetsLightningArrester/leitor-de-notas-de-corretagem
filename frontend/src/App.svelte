@@ -10,7 +10,7 @@
   import LocaleSwitches from './lib/LocaleSwitches.svelte'
   import ClearNotesModal from './lib/ClearNotesModal.svelte'
   import UnknownAssetModal from './lib/UnknownAssetModal.svelte'
-  import { type NegotiationNote, type Deal } from 'parser-de-notas-de-corretagem'
+  import { type NegotiationNote, type Deal, type UnknownAsset, type WrongPassword } from 'parser-de-notas-de-corretagem'
   import { formatMoneyToDisplay, resolveImgPath, sortDeals } from './lib/common'
   import { Button, Carousel, CarouselItem, Col, Container, Icon, Row, Styles } from '@sveltestrap/sveltestrap'
 
@@ -25,6 +25,8 @@
 
   /** List of user defined assets */
   let customAssets: CustomAsset[] = []
+  /** List of user defined assets */
+  const ignoreCustomAssets: string[] = []
   /** List of possible passwords */
   const passwords: string[] = []
   /** Parsed notes */
@@ -62,9 +64,12 @@
    * @param response an `Array` with the server response, where the first
    * position are possible password errors, and the second position are the
    * successfully parsed `NegotiationNote[]` results
+   * @param replace whether the result should replace an already parsed note
+   * or be discarded if duplicated. Default is `false` (discard)
    */
-  function handleProcessNotesResponse(request: NoteToBeParsed[], response: ProcessNotesResult): void {
-    const { errors, results } = response
+  function handleProcessNotesResponse(request: NoteToBeParsed[], response: ProcessNotesResult, replace = false): void {
+    const errors: Array<WrongPassword | UnknownAsset> = response.errors
+    const results: NegotiationNote[] = response.results
     notesWithWrongPassword = []
     notesWithUnknownAssets = []
     customAssets = []
@@ -80,16 +85,18 @@
       } else if (e.name === 'UnknownAsset' && 'asset' in e) {
         const prevRequest = request.find((p) => p.name === e.file)
         if (typeof prevRequest !== 'undefined') {
-          notesWithUnknownAssets.push({
-            ...prevRequest,
-            missingAsset: e.asset,
-          })
-          customAssets.push({
-            name: e.asset,
-            cnpj: '',
-            code: '',
-            isFII: false,
-          })
+          if (!ignoreCustomAssets.some((code) => code === e.asset)) {
+            notesWithUnknownAssets.push({
+              ...prevRequest,
+              missingAsset: e.asset,
+            })
+            customAssets.push({
+              name: e.asset,
+              cnpj: '',
+              code: '',
+              isFII: false,
+            })
+          }
         } else {
           console.warn(`Couldn't find a previous request matching ${e.file} in the list of requests below`)
           console.log(request)
@@ -98,8 +105,28 @@
     })
     results.forEach((n) => n.deals.sort(sortDeals))
     const previousLength = notes.length
-    notes.push(...Array.from<NegotiationNote>(results.filter((r) => !notes.some((n) => n.number === r.number))))
-    pushNotificationsOfNewNotes(notes.length - previousLength)
+    if (replace) {
+      results.forEach((r) => {
+        const existentIndex = notes.findIndex((n) => n.number === r.number)
+        if (existentIndex !== -1) {
+          notes.splice(existentIndex, 1, r)
+        } else notes.push(r)
+      })
+      const notification = new Notifications({
+        target: mainDiv,
+        props: {
+          type: 'success',
+          message: $_('notes_page.note_reloaded'),
+        },
+      })
+      notification.$on('destroy', () => {
+        notification.$destroy()
+      })
+    } else {
+      notes.push(...Array.from<NegotiationNote>(results.filter((r) => !notes.some((n) => n.number === r.number))))
+      pushNotificationsOfNewNotes(notes.length - previousLength)
+    }
+
     notes = notes
     flatDeals = notes.flatMap((n) => n.deals)
     flatDeals.sort(sortDeals)
@@ -316,7 +343,7 @@
       window.api
         .processNotes(notesWithUnknownAssets, passwords, customAssets)
         .then((response) => {
-          handleProcessNotesResponse(notesWithUnknownAssets, response)
+          handleProcessNotesResponse(notesWithUnknownAssets, response, true)
         })
         .catch((reason) => {
           console.error('Error on processing notes')
@@ -326,6 +353,9 @@
     }}
     onDismiss={() => {
       notesWithUnknownAssets = []
+      customAssets.forEach((c) => {
+        if (!ignoreCustomAssets.some((name) => name === c.name)) ignoreCustomAssets.push(c.name)
+      })
     }}
   />
 </main>

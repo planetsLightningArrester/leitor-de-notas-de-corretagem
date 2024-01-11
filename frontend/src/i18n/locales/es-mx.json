@@ -21,12 +21,14 @@
     "clean_note": "Eliminar N.º {note}",
     "note_added": "{amount} nota agregada",
     "notes_added": "{amount} notas agregadas",
-    "no_note_added": "No se agregó ninguna nota nueva. Se ignoran duplicados"
+    "no_note_added": "No se agregó ninguna nota nueva. Se ignoran duplicados",
+    "note_reloaded": "Nota recargada"
   },
   "unknown_asset": {
     "title": "⚠️ Activos desconocidos",
     "info": "Uno o más PDFs contienen activos que no están en la base de datos. Ingréselos manualmente.",
-    "fii": "Fondo de Inversión Inmobiliaria (FII)",
+    "fii": "FII",
+    "fii_info": "Fondo de Inversión Inmobiliaria",
     "code_placeholder": "Código (Ej: ABEV3)",
     "retry": "Intentar nuevamente",
     "ignore": "Ignorar"

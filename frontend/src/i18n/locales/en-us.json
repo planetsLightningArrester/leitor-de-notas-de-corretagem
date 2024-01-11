@@ -21,12 +21,14 @@
     "clean_note": "Remove No. {note}",
     "note_added": "{amount} note added",
     "notes_added": "{amount} notes added",
-    "no_note_added": "No new notes added. Duplicates are ignored"
+    "no_note_added": "No new notes added. Duplicates are ignored",
+    "note_reloaded": "Note reloaded"
   },
   "unknown_asset": {
     "title": "⚠️ Unknown Assets",
     "info": "One or more PDFs contain assets not in the database. Enter manually.",
-    "fii": "Real Estate Investment Fund (FII)",
+    "fii": "FII",
+    "fii_info": "Real Estate Investment Fund ",
     "code_placeholder": "Code (e.g., ABEV3)",
     "retry": "Retry",
     "ignore": "Ignore"

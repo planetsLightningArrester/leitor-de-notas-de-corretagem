@@ -15,7 +15,7 @@
   $: if (!showModal) {
     // Wait for modal fade-out
     setTimeout(() => {
-      if (typeof nodeRef !== 'undefined' && nodeRef.parentNode !== null) {
+      if (typeof nodeRef !== 'undefined' && typeof nodeRef.parentNode !== 'undefined') {
         nodeRef.parentNode.removeChild(nodeRef)
       }
     }, 1000)

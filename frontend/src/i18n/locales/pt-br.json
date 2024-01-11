@@ -21,12 +21,14 @@
     "clean_note": "Remover Nº {note}",
     "note_added": "{amount} nota adicionada",
     "notes_added": "{amount} notas adicionadas",
-    "no_note_added": "Nenhuma nova nota adicionada. Duplicatas são ignoradas"
+    "no_note_added": "Nenhuma nova nota adicionada. Duplicatas são ignoradas",
+    "note_reloaded": "Nota recarregada"
   },
   "unknown_asset": {
     "title": "⚠️ Ativos desconhecidos",
     "info": "Um ou mais PDFs possuem ativos que não estão na base de dados. Entre manualmente.",
-    "fii": "Fundo de Investimento Imobiliário (FII)",
+    "fii": "FII",
+    "fii_info": "Fundo de Investimento Imobiliário",
     "code_placeholder": "Código (Ex: ABEV3)",
     "retry": "Tentar novamente",
     "ignore": "Ignorar"

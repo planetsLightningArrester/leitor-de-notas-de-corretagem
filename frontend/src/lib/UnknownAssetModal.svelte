@@ -1,6 +1,6 @@
 <script lang="ts">
   import { _ } from 'svelte-i18n'
-  import { Button, Input, InputGroup, Modal, ModalBody, ModalFooter } from '@sveltestrap/sveltestrap'
+  import { Button, Icon, Input, InputGroup, Modal, ModalBody, ModalFooter, Tooltip } from '@sveltestrap/sveltestrap'
 
   /** List of custom assets */
   export let customAssets: CustomAsset[]
@@ -23,20 +23,37 @@
 </script>
 
 <!-- Unknown assets modal -->
-<Modal header={$_('unkown_asset.title')} isOpen={!(notesWithUnknownAssets.length === 0)} toggle={onDismiss}>
+<Modal header={$_('unknown_asset.title')} isOpen={!(notesWithUnknownAssets.length === 0)} toggle={onDismiss}>
   <ModalBody>
-    <p>{$_('unkown_asset.info')}</p>
+    <p>{$_('unknown_asset.info')}</p>
     {#each notesWithUnknownAssets as error, i}
       🏛️ <b>{error.missingAsset}</b>
       <InputGroup class="align-items-center mb-3">
-        <Input type="text" class="form-control" placeholder={$_('unkown_asset.code_placeholder')} bind:value={customAssets[i].code} on:keydown={keyDownHandler} />
-        <Input type="text" style="margin-left: 10px; margin-right: 10px" class="form-control" placeholder={$_('words.cnpj')} bind:value={customAssets[i].cnpj} on:keydown={keyDownHandler} />
-        <Input type="checkbox" label={$_('unkown_asset.fii')} bind:value={customAssets[i].isFII} />
+        <Input
+          data-testid={error.missingAsset + '-code'}
+          type="text"
+          class="form-control"
+          placeholder={$_('unknown_asset.code_placeholder')}
+          bind:value={customAssets[i].code}
+          on:keydown={keyDownHandler}
+        />
+        <Input
+          data-testid={error.missingAsset + '-cnpj'}
+          type="text"
+          style="margin-left: 10px; margin-right: 10px"
+          class="form-control"
+          placeholder={$_('words.cnpj')}
+          bind:value={customAssets[i].cnpj}
+          on:keydown={keyDownHandler}
+        />
+        <Input data-testid={error.missingAsset + '-is-fii'} type="checkbox" label={$_('unknown_asset.fii')} bind:value={customAssets[i].isFII} />
+        <Icon id={(error.missingAsset ?? '').replaceAll(' ', '-') + '-is-fii'} name="info-circle" style="margin-left: 5px" />
       </InputGroup>
+      <Tooltip target={(error.missingAsset ?? '').replaceAll(' ', '-') + '-is-fii'}>{$_('unknown_asset.fii_info')}</Tooltip>
     {/each}
   </ModalBody>
   <ModalFooter>
-    <Button color="primary" on:click={onRetry}>{$_('unkown_asset.retry')}</Button>
-    <Button on:click={onDismiss}>{$_('unkown_asset.ignore')}</Button>
+    <Button data-testid="retry-unknown-asset-button" color="primary" on:click={onRetry}>{$_('unknown_asset.retry')}</Button>
+    <Button data-testid="ignore-unknown-asset-button" on:click={onDismiss}>{$_('unknown_asset.ignore')}</Button>
   </ModalFooter>
 </Modal>

@@ -86,7 +86,7 @@ export async function server(win: BrowserWindow): Promise<void> {
     const _passwords: string[] = args[1]
     const customAssets: CustomAsset[] = args[2]
     customAssets.forEach(a => {
-      noteParser.defineStock(a.code, a.name, a.cnpj, a.isFII)
+      if (a.code !== '' && a.name !== '') noteParser.defineStock(a.code, a.name, a.cnpj, a.isFII)
     })
     passwords.push(..._passwords.filter(i => !passwords.includes(i)))
     info.log(`Got ${pdfs.length} notes to parse`)
@@ -95,11 +95,17 @@ export async function server(win: BrowserWindow): Promise<void> {
     let results: NegotiationNote[] = []
     for await (const pdf of pdfs) {
       try {
-        results.push(...await noteParser.parseNote(
-          pdf.name,
-          Buffer.from(pdf.content),
-          passwords
-        ))
+        const _results = await noteParser.parseNote(pdf.name, Buffer.from(pdf.content), passwords, true)
+        _results.forEach(result => {
+          result.deals.forEach(deal => {
+            if (deal.code === '') warn.log(`Empty code in note '${pdf.name}'`)
+            if (deal.code.match(/UNDEF: .*/) !== null) {
+              const title = deal.code.replace(/UNDEF: (.*)/, '$1')
+              if (!errors.some(e => e.message.includes(title))) errors.push(new UnknownAsset(`Can't find ${title}`, pdf.name, title))
+            }
+          })
+        })
+        results.push(..._results)
       } catch (error) {
         if (error instanceof _WrongPassword) {
           warn.log(`No provided password could open the file '${error.file}'`)
