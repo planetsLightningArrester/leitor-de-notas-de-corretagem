@@ -99,9 +99,18 @@ export async function installUpdate({ version, name, url }: Update): Promise<voi
   const installDir = path.dirname(process.execPath)
   let command: string = ''
   switch (process.platform) {
-    case 'linux':
     case 'darwin':
-      // ? INFO: unzip -d is the destination with the same name as the directory
+      // INFO: MacOS path is `Leitor de notas de corretagem.app/Contents/MacOS/leitor`
+      command = `rm -rf "${installDir}"`
+      command += ` && mkdir -p "${path.join(installDir, '..', '..', '..')}"`
+      command += ` && unzip -o -d "${path.join(installDir, '..', '..', '..')}" "${compressedFullPath}"`
+
+      // ? INFO: had to split it otherwise the cascade command are killed before the app closes
+      execSync(command)
+      spawn(process.execPath, { detached: true })
+
+      break
+    case 'linux':
       command = `rm -rf "${installDir}"`
       command += ` && mkdir -p "${path.join(installDir, '..')}"`
       command += ` && unzip -o -d "${path.join(installDir, '..')}" "${compressedFullPath}"`
