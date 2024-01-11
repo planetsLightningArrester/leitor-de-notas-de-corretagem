@@ -1,7 +1,7 @@
 {
   "name": "leitor-de-notas-de-corretagem",
   "displayName": "Leitor de Notas de Corretagem",
-  "version": "0.4.7",
+  "version": "0.4.8",
   "description": "Electron app for the backend of the leitor de notas de corretagem",
   "main": "dist/main.js",
   "author": "Planet's Lightning Arrester",
@@ -49,7 +49,7 @@
     "pretest": "npm run compile:test",
     "test": "run-script-os",
     "test:default": "NODE_ENV=testing playwright test --reporter line",
-    "test:linux": "NODE_ENV=testing xvfb-run -s \"-screen 0, 1024x768x24\" playwright test --reporter line",
+    "test:linux": "NODE_ENV=testing xvfb-run -s \"-screen 0, 10.4.868x24\" playwright test --reporter line",
     "test:win32": "set NODE_ENV=testing && playwright test --reporter line",
     "test:dev": "run-script-os",
     "test:dev:default": "NODE_ENV=development nodemon --config nodemon.test.json",
@@ -82,7 +82,7 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "parser-de-notas-de-corretagem": "^0.9.85",
+    "parser-de-notas-de-corretagem": "^0.10.1",
     "printaeu": "^0.1.12"
   },
   "lint-staged": {
