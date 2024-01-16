@@ -12,7 +12,7 @@
     <span id="footer-text-left" class="footer-text" spellcheck="false" contenteditable bind:textContent={footerTextLeftTextContent} />
     <span class="footer-text">|</span>
     <Tooltip target="github-icon-anchor">{$_('footer.github_page')}</Tooltip>
-    <a id="github-icon-anchor" style="display: flex;" href="https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem">
+    <a id="github-icon-anchor" style="display: flex; user-select: none" href="https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem">
       <img id="github-icon-image" class="github-cat" src={githubSvg} alt={$_('footer.github_page')} height="20px" />
     </a>
   </footer>
@@ -31,6 +31,7 @@
     color: #d6d6d6;
     font-size: 15px;
     margin-right: 20px;
+    user-select: none;
   }
 
   .github-cat {

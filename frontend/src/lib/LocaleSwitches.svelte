@@ -12,7 +12,7 @@
   let ptLoaded = false
 </script>
 
-<Container style="display: flex; justify-content: center;">
+<Container style="display: flex; justify-content: center; user-select: none">
   <button
     class="transparent-button"
     on:click={async () => {

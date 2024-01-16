@@ -64,7 +64,7 @@
     }}
   >
     <TabPane id="all-pane" tabId="all" style="overflow: auto!important; max-height: 70vh!important" active={currentTab === 'all'}>
-      <span slot="tab">
+      <span slot="tab" style="user-select: none">
         {$_('words.all')}
         <Icon name="clipboard-data" />
       </span>
@@ -117,7 +117,7 @@
     </TabPane>
     {#each notes as note}
       <TabPane tabId={note.number} style="overflow: auto!important; max-height: 70vh!important" active={currentTab === note.number}>
-        <span {...noTypeCheck({ 'data-testid': `tab-${note.number}` })} slot="tab">
+        <span {...noTypeCheck({ 'data-testid': `tab-${note.number}` })} slot="tab" style="user-select: none">
           Nº {note.number}
         </span>
         <Table responsive>
