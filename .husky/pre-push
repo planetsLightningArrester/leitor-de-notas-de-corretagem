@@ -6,7 +6,7 @@ git hash-object --stdin </dev/null | tr '0-9a-f' '0' >/dev/null
 
 run_checks=false
 while read -r _ local_sha __ remote_sha; do
-	if [ "${remote_sha}" = "0000000000000000000000000000000000000000" ]; then
+	if [ "${remote_sha}" = "0000000000000000000000000000000000000000" ] || [ "${local_sha}" = "0000000000000000000000000000000000000000" ]; then
 		run_checks=true
 	else
 		# Get the files being pushed
