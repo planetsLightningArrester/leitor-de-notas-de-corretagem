@@ -49,6 +49,7 @@ jobs:
           node-version: 20
 
       - name: 📡 Install latest dependencies
+        shell: bash
         run: |
           npm ci  
           if [[ "${{ needs.ci_check_latest_deps.result }}" == "success" ]]; then

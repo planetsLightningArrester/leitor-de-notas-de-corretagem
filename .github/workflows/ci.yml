@@ -51,6 +51,7 @@ jobs:
           node-version: 20
 
       - name: 🔧 Install dependencies
+        shell: bash
         run:  |
           npm ci
           if [[ "${{ inputs.latest_deps }}" == "true" ]]; then
@@ -94,6 +95,7 @@ jobs:
           node-version: 20
 
       - name: 🔧 Install dependencies
+        shell: bash
         run:  |
           npm ci
           if [[ "${{ inputs.latest_deps }}" == "true" ]]; then
@@ -137,6 +139,7 @@ jobs:
           node-version: 20
 
       - name: 🔧 Install dependencies
+        shell: bash
         run:  |
           npm ci
           if [[ "${{ inputs.latest_deps }}" == "true" ]]; then
