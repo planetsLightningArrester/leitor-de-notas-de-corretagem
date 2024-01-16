@@ -17,21 +17,21 @@
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^3.0.1",
-    "@sveltestrap/sveltestrap": "^6.1.1",
+    "@sveltestrap/sveltestrap": "^6.2.2",
     "@tsconfig/svelte": "^5.0.2",
     "eslint": "^8.56.0",
     "eslint-config-standard-with-typescript": "^43.0.0",
     "eslint-plugin-svelte": "^2.35.1",
-    "parser-de-notas-de-corretagem": "^0.9.78",
+    "parser-de-notas-de-corretagem": "^0.10.5",
     "rimraf": "^5.0.5",
     "run-script-os": "^1.1.6",
     "sass": "^1.69.7",
     "svelte": "^4.2.8",
-    "svelte-check": "^3.6.2",
+    "svelte-check": "^3.6.3",
     "svelte-i18n": "^4.0.0",
     "tslib": "^2.6.2",
     "typescript": "^5.3.3",
-    "vite": "^5.0.10"
+    "vite": "^5.0.11"
   },
   "lint-staged": {
     "*.{ts,js,svelte}": [
