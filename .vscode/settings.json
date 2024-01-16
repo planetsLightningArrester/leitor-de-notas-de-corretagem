@@ -9,6 +9,7 @@
     "electronegativity",
     "Electronegativity",
     "filechooser",
+    "github",
     "pdfs",
     "preinstall",
     "sveltestrap",
@@ -46,5 +47,8 @@
   "[svelte]": {
     "editor.formatOnSave": true,
     "editor.formatOnPaste": true
-  }
+  },
+  "cSpell.enableFiletypes": [
+    "github-actions-workflow"
+  ]
 }

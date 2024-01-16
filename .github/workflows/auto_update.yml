@@ -11,8 +11,29 @@ on:
 
 jobs:
 
-  check_for_updates:
-    name: 📡 Check for updates
+  # Test if we can update all dependencies
+  ci_check_latest_deps:
+    name: ⚗️ Test with latest dependencies
+    uses: ./.github/workflows/ci.yml
+    secrets: inherit
+    with:
+      latest_deps: true
+
+  # If all dependencies can't be updated, test only against the latest parser
+  ci_check_latest_parser:
+    name: ⚗️ Test with latest parser
+    needs: ci_check_latest_deps
+    if: ${{ always() && contains(needs.*.result, 'failure') }}
+    uses: ./.github/workflows/ci.yml
+    secrets: inherit
+    with:
+      latest_parser: true
+
+  # Update either all the dependencies or only the parser
+  update_all_deps:
+    name: 📡 Update dependencies
+    needs: [ci_check_latest_deps, ci_check_latest_parser]
+    if: ${{ always() && contains(needs.*.result, 'success') }}
     runs-on: ubuntu-latest
     outputs:
       RELEASE_VERSION: ${{ steps.push.outputs.RELEASE_VERSION }}
@@ -27,31 +48,29 @@ jobs:
         with:
           node-version: 20
 
-      - name: 🔧 Install dependencies
-        run: npm ci
-
-      - name: 📡 Install latest versions
+      - name: 📡 Install latest dependencies
         run: |
-          cd backend
-          npm install parser-de-notas-de-corretagem@latest
-
-      # Electron 28 isn't working with playwright until version 1.41
-      # https://github.com/microsoft/playwright/pull/28499#issuecomment-1858698614
-      # - name: 📡 Install latest versions
-      #   run: |
-      #     (
-      #       cd backend
-      #       npm list --parseable | tail -n +2 | sed -r 's,.*node_modules/(.*),\1@latest,g' | tr '\n' ' '
-      #     )
-      #     (
-      #       cd frontend
-      #       npm list --parseable | tail -n +2 | sed -r 's,.*node_modules/(.*),\1@latest,g' | tr '\n' ' '
-      #     )
-
-      # TODO: this is testing only against linux, so it's not safe once the code above is uncommented
-      # https://stackoverflow.com/questions/75733616/github-actions-how-to-call-a-reusable-workflow-as-a-step
-      - name: 🧪 Test
-        run: npm run test && npm run build
+          npm ci  
+          if [[ "${{ needs.ci_check_latest_deps.result }}" == "success" ]]; then
+            (
+              cd backend
+              ../scripts/force_update.sh
+            )
+            (
+              cd frontend
+              ../scripts/force_update.sh
+            )
+          elif [[ "${{ needs.ci_check_latest_parser.result }}" == "success" ]]; then
+            npm ci
+            (
+              cd backend
+              npm i parser-de-notas-de-corretagem@latest
+            )
+            (
+              cd frontend
+              npm i -D parser-de-notas-de-corretagem@latest
+            )            
+          fi
 
       - name: 🤖 Update remote with changes
         shell: bash
@@ -91,11 +110,21 @@ jobs:
               last_but_one_release_line=$(grep -n -m 2 "## \[" <CHANGELOG.md | tail -n 1 | sed -r 's/([[:digit:]]*):.*/\1/g')
               changelog_release_only_content=$(head -n $((last_but_one_release_line - 1)) CHANGELOG.md)
               if [[ "${changelog_release_only_content}" =~ "### Changed" ]]; then
-                if [[ ! "${changelog_release_only_content}" =~ "- Update parser" ]]; then
-                  changelog_release_only_content=$(echo "${changelog_release_only_content}" | sed ':a;N;$!ba;s/\n/爨/g' | sed -r "s/### Changed爨+/### Changed爨爨- Update parser爨/" | sed 's/爨/\n/g')
+                if [[ "${{ needs.ci_check_latest_parser.result }}" == "success" ]]; then
+                  if [[ ! "${changelog_release_only_content}" =~ "- Update parser" ]]; then
+                    changelog_release_only_content=$(echo "${changelog_release_only_content}" | sed ':a;N;$!ba;s/\n/爨/g' | sed -r "s/### Changed爨+/### Changed爨爨- Update parser爨/" | sed 's/爨/\n/g')
+                  fi
+                else
+                  if [[ ! "${changelog_release_only_content}" =~ "- Update dependencies" ]]; then
+                    changelog_release_only_content=$(echo "${changelog_release_only_content}" | sed ':a;N;$!ba;s/\n/爨/g' | sed -r "s/### Changed爨+/### Changed爨爨- Update dependencies爨/" | sed 's/爨/\n/g')
+                  fi
                 fi
               else
-                changelog_release_only_content="$(printf "%s\n\n%s\n\n%s" "${changelog_release_only_content}" "### Changed" "- Update parser")"
+                if [[ "${{ needs.ci_check_latest_parser.result }}" == "success" ]]; then
+                  changelog_release_only_content="$(printf "%s\n\n%s\n\n%s" "${changelog_release_only_content}" "### Changed" "- Update parser")"
+                else
+                  changelog_release_only_content="$(printf "%s\n\n%s\n\n%s" "${changelog_release_only_content}" "### Changed" "- Update dependencies")"
+                fi
               fi
               changelog_content="$(printf "%s\n%s" "${changelog_release_only_content}" "$(tail -n +"$((last_but_one_release_line - 1))" CHANGELOG.md)")"
               changelog_content=$(echo "${changelog_content}" | sed -r "s/## \[$last_version\].*/## \[$last_version\] - \[$new_version\] - $(date '+%Y-%m-%d')/")
@@ -109,7 +138,11 @@ jobs:
             # Submit the changes creating a new tag
             echo "[$(date +"%T")] [DEBUG] Submitting changes";
             git add .;
-            git commit -m "chore: update parser";
+            if [[ "${{ needs.ci_check_latest_parser.result }}" == "success" ]]; then
+              git commit -m "chore: update parser";
+            else
+              git commit -m "chore: update dependencies";
+            fi
             git tag "v$new_version";
             git push -u origin main --tags;
 
@@ -125,11 +158,11 @@ jobs:
   # Trigger the release if a version tag was submitted
   # This is required because submits done by bot won't trigger workflows
   make_release:
-    needs: check_for_updates
-    if: ${{ needs.check_for_updates.outputs.RELEASE_VERSION }}
+    needs: update_all_deps
+    if: ${{ needs.update_all_deps.outputs.RELEASE_VERSION }}
     uses: ./.github/workflows/release.yml
     secrets: inherit
     with:
-      release_version: ${{ needs.check_for_updates.outputs.RELEASE_VERSION }}
+      release_version: ${{ needs.update_all_deps.outputs.RELEASE_VERSION }}
 
 # EOF
