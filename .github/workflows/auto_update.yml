@@ -160,7 +160,7 @@ jobs:
   # This is required because submits done by bot won't trigger workflows
   make_release:
     needs: update_all_deps
-    if: ${{ needs.update_all_deps.outputs.RELEASE_VERSION }}
+    if: ${{ always() && needs.update_all_deps.outputs.RELEASE_VERSION }}
     uses: ./.github/workflows/release.yml
     secrets: inherit
     with:
