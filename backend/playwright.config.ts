@@ -1,16 +1,11 @@
-import process from 'process';
-import { defineConfig, devices } from '@playwright/test';
+import process from 'process'
+import { defineConfig, devices } from '@playwright/test'
 
-const development = process.env['NODE_ENV'] == 'development';
+const development = process.env.NODE_ENV === 'development'
 
 // Set mode to development, so we can run electron tests with the Playwright extension
 const webSever =
-  development ? undefined :
-    {
-      command: 'cd ../frontend && npm run dev',
-      url: 'http://localhost:5173/',
-      reuseExistingServer: false,
-    };
+  development ? undefined : { command: 'cd ../frontend && npm run dev', url: 'http://localhost:5173/', reuseExistingServer: false, }
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -46,4 +41,4 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: webSever,
-});
+})
