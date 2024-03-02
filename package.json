@@ -29,10 +29,10 @@
   },
   "homepage": "https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem#readme",
   "devDependencies": {
-    "@commitlint/cli": "^18.4.4",
-    "@commitlint/config-conventional": "^18.4.4",
+    "@commitlint/cli": "^19.0.3",
+    "@commitlint/config-conventional": "^19.0.3",
     "concurrently": "^8.2.2",
-    "husky": "^8.0.3",
+    "husky": "^9.0.11",
     "lint-staged": "^15.2.0",
     "rimraf": "^5.0.5"
   }
