@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.4.58] - 2024-03-02
 
+### Fixed
+
+- Fix Unknown Asset modal dismissing Password modal ([#6](https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem/issues/6))
+
 ### Changed
 
 - Update dependencies
