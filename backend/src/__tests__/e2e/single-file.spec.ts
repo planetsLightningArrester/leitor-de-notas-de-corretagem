@@ -10,6 +10,10 @@ test.describe.serial('open a single page file', () => {
     window = await electronApp.firstWindow()
   })
 
+  test.afterAll(async () => {
+    await electronApp.close()
+  })
+
   test('change locale to en-us', async () => {
     const enUsButton = window.getByTestId('en-US-button')
     expect(enUsButton).not.toBe(undefined)
@@ -55,6 +59,10 @@ test.describe.serial('open a single page file with password', async () => {
   test.beforeAll(async () => {
     electronApp = await electron.launch({ args: ['.'] })
     window = await electronApp.firstWindow()
+  })
+
+  test.afterAll(async () => {
+    await electronApp.close()
   })
 
   test('change locale to en-us', async () => {
@@ -146,6 +154,10 @@ test.describe.serial('open a multi page file', () => {
     window = await electronApp.firstWindow()
   })
 
+  test.afterAll(async () => {
+    await electronApp.close()
+  })
+
   test('change locale to en-us', async () => {
     const enUsButton = window.getByTestId('en-US-button')
     expect(enUsButton).not.toBe(undefined)
@@ -191,6 +203,10 @@ test.describe.serial('open a file with unknown assets', () => {
   test.beforeAll(async () => {
     electronApp = await electron.launch({ args: ['.'] })
     window = await electronApp.firstWindow()
+  })
+
+  test.afterAll(async () => {
+    await electronApp.close()
   })
 
   test('change locale to en-us', async () => {
@@ -255,6 +271,10 @@ test.describe.serial('open a file with unknown assets and ignore it', () => {
   test.beforeAll(async () => {
     electronApp = await electron.launch({ args: ['.'] })
     window = await electronApp.firstWindow()
+  })
+
+  test.afterAll(async () => {
+    await electronApp.close()
   })
 
   test('change locale to en-us', async () => {

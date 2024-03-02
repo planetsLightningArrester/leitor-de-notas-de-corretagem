@@ -10,6 +10,10 @@ test.describe.serial('open multiple files', () => {
     window = await electronApp.firstWindow()
   })
 
+  test.afterAll(async () => {
+    await electronApp.close()
+  })
+
   test('change locale to en-us', async () => {
     const enUsButton = window.getByTestId('en-US-button')
     expect(enUsButton).not.toBe(undefined)
@@ -63,6 +67,10 @@ test.describe.serial('open multiple files with password', () => {
   test.beforeAll(async () => {
     electronApp = await electron.launch({ args: ['.'] })
     window = await electronApp.firstWindow()
+  })
+
+  test.afterAll(async () => {
+    await electronApp.close()
   })
 
   test('change locale to en-us', async () => {
@@ -145,6 +153,10 @@ test.describe.serial('open multiple files with password and ignore one', () => {
     window = await electronApp.firstWindow()
   })
 
+  test.afterAll(async () => {
+    await electronApp.close()
+  })
+
   test('change locale to en-us', async () => {
     const enUsButton = window.getByTestId('en-US-button')
     expect(enUsButton).not.toBe(undefined)
@@ -219,6 +231,10 @@ test.describe.serial('open multiple files, some with password', async () => {
   test.beforeAll(async () => {
     electronApp = await electron.launch({ args: ['.'] })
     window = await electronApp.firstWindow()
+  })
+
+  test.afterAll(async () => {
+    await electronApp.close()
   })
 
   test('change locale to en-us', async () => {
@@ -304,6 +320,10 @@ test.describe.serial('open multiple duplicated files', () => {
   test.beforeAll(async () => {
     electronApp = await electron.launch({ args: ['.'] })
     window = await electronApp.firstWindow()
+  })
+
+  test.afterAll(async () => {
+    await electronApp.close()
   })
 
   test('change locale to en-us', async () => {
