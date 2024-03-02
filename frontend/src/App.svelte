@@ -322,9 +322,9 @@
     {notesWithWrongPassword}
     onRetry={() => {
       window.api
-        .processNotes(notesWithWrongPassword, passwords, customAssets)
+        .processNotes([...notesWithUnknownAssets, ...notesWithWrongPassword], passwords, customAssets)
         .then((response) => {
-          handleProcessNotesResponse(notesWithWrongPassword, response)
+          handleProcessNotesResponse([...notesWithUnknownAssets, ...notesWithWrongPassword], response)
         })
         .catch((reason) => {
           console.error('Error on processing notes')
@@ -341,9 +341,9 @@
     {notesWithUnknownAssets}
     onRetry={() => {
       window.api
-        .processNotes(notesWithUnknownAssets, passwords, customAssets)
+        .processNotes([...notesWithUnknownAssets, ...notesWithWrongPassword], passwords, customAssets)
         .then((response) => {
-          handleProcessNotesResponse(notesWithUnknownAssets, response, true)
+          handleProcessNotesResponse([...notesWithUnknownAssets, ...notesWithWrongPassword], response, true)
         })
         .catch((reason) => {
           console.error('Error on processing notes')

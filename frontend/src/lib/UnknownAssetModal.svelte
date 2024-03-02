@@ -30,7 +30,7 @@
       🏛️ <b>{error.missingAsset}</b>
       <InputGroup class="align-items-center mb-3">
         <Input
-          data-testid={error.missingAsset + '-code'}
+          data-testid={error.missingAsset + '-code-input'}
           type="text"
           class="form-control"
           placeholder={$_('unknown_asset.code_placeholder')}
@@ -38,7 +38,7 @@
           on:keydown={keyDownHandler}
         />
         <Input
-          data-testid={error.missingAsset + '-cnpj'}
+          data-testid={error.missingAsset + '-cnpj-input'}
           type="text"
           style="margin-left: 10px; margin-right: 10px"
           class="form-control"
