@@ -242,8 +242,8 @@ test.describe.serial('open a file with unknown assets', () => {
   })
 
   test('enter the info about the missing asset', async () => {
-    const codeField = window.getByTestId('FIC IE CAP CI ER-code')
-    const cnpjField = window.getByTestId('FIC IE CAP CI ER-cnpj')
+    const codeField = window.getByTestId('FIC IE CAP CI ER-code-input')
+    const cnpjField = window.getByTestId('FIC IE CAP CI ER-cnpj-input')
     await codeField.waitFor({ state: 'visible', timeout: 2000 })
     await codeField.fill('CPTI11')
     await cnpjField.fill('38.065.012/0001-77')
