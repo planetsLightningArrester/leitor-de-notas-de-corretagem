@@ -55,11 +55,21 @@ jobs:
           if [[ "${{ needs.ci_check_latest_deps.result }}" == "success" ]]; then
             (
               cd backend
-              ../scripts/force_update.sh
+              # Get dev dependencies
+              npm i -D $(npm ls --parseable | grep -vxF -f <(npm list --parseable --omit=dev) | sed -r 's,.*node_modules/(.*),\1@latest,g' | tr '\n' ' ')
+              # Get prod dependencies
+              npm i $(npm list --omit dev --parseable | tail -n +2 | sed -r 's,.*node_modules/(.*),\1@latest,g' | tr '\n' ' ')
+              # Remove unused
+              npm update
             )
             (
               cd frontend
-              ../scripts/force_update.sh
+              # Get dev dependencies
+              npm i -D $(npm ls --parseable | grep -vxF -f <(npm list --parseable --omit=dev) | sed -r 's,.*node_modules/(.*),\1@latest,g' | tr '\n' ' ')
+              # Get prod dependencies
+              npm i $(npm list --omit dev --parseable | tail -n +2 | sed -r 's,.*node_modules/(.*),\1@latest,g' | tr '\n' ' ')
+              # Remove unused
+              npm update
             )
           elif [[ "${{ needs.ci_check_latest_parser.result }}" == "success" ]]; then
             npm ci
