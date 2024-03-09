@@ -1,7 +1,7 @@
 {
   "name": "leitor-de-notas-de-corretagem",
   "displayName": "Leitor de Notas de Corretagem",
-  "version": "0.4.64",
+  "version": "0.4.65",
   "description": "Electron app for the backend of the leitor de notas de corretagem",
   "main": "dist/main.js",
   "author": "Planet's Lightning Arrester",
@@ -68,7 +68,6 @@
     "@eslint/create-config": "^0.4.6",
     "@playwright/test": "^1.41.0",
     "@types/node": "^20.11.4",
-    "@typescript-eslint/eslint-plugin": "^6.19.0",
     "electron": "^29.1.0",
     "eslint": "^8.56.0",
     "eslint-config-standard-with-typescript": "^43.0.0",
