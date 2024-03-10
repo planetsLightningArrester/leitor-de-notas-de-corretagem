@@ -50,42 +50,34 @@ jobs:
         with:
           node-version: 20
 
+      - name: 🔧 Install latest dependencies
+        if: ${{ always() && contains(inputs.latest_deps, 'true') }}
+        shell: bash
+        run: |
+          npm ci
+          cd backend
+          ../scripts/force_update.sh
+          cd ../frontend
+          ../scripts/force_update.sh
+
+      - name: 🔧 Install latest parser
+        if: ${{ always() && !contains(inputs.latest_deps, 'true') && contains(inputs.latest_parser, 'true') }}
+        shell: bash
+        run: |
+          npm ci
+          cd backend
+          npm i parser-de-notas-de-corretagem@latest
+          cd ../frontend
+          npm i -D parser-de-notas-de-corretagem@latest
+
       - name: 🔧 Install dependencies
+        if: ${{ always() && !contains(inputs.latest_deps, 'true') && !contains(inputs.latest_parser, 'true') }}
         shell: bash
         run:  |
           npm ci
-          if [[ "${{ inputs.latest_deps }}" == "true" ]]; then
-            (
-              cd backend
-              # Get dev dependencies
-              npm i -D $(npm ls --parseable | grep -vxF -f <(npm list --parseable --omit=dev) | sed -r 's,.*node_modules/(.*),\1@latest,g' | tr '\n' ' ')
-              # Get prod dependencies
-              npm i $(npm list --omit dev --parseable | tail -n +2 | sed -r 's,.*node_modules/(.*),\1@latest,g' | tr '\n' ' ')
-              # Remove unused
-              npm update
-            )
-            (
-              cd frontend
-              # Get dev dependencies
-              npm i -D $(npm ls --parseable | grep -vxF -f <(npm list --parseable --omit=dev) | sed -r 's,.*node_modules/(.*),\1@latest,g' | tr '\n' ' ')
-              # Get prod dependencies
-              npm i $(npm list --omit dev --parseable | tail -n +2 | sed -r 's,.*node_modules/(.*),\1@latest,g' | tr '\n' ' ')
-              # Remove unused
-              npm update
-            )
-          elif [[ "${{ inputs.latest_parser }}" == "true" ]]; then
-            npm ci
-            (
-              cd backend
-              npm i parser-de-notas-de-corretagem@latest
-            )
-            (
-              cd frontend
-              npm i -D parser-de-notas-de-corretagem@latest
-            )
-          fi
 
       - name: 🧹 Run linters
+        shell: bash
         run:  npm run lint
 
   test:
@@ -93,6 +85,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macOS-latest]
+        force_update_script: [../scripts/force_update.sh, ../scripts/force_update.ps1, ../scripts/force_update.sh]
     name: "🧪 Test (${{ matrix.os }})"
     runs-on: ${{ matrix.os }}
     steps:
@@ -104,40 +97,28 @@ jobs:
         with:
           node-version: 20
 
+      - name: 🔧 Install latest dependencies
+        if: ${{ always() && contains(inputs.latest_deps, 'true') }}
+        run: |
+          npm ci
+          cd backend
+          ${{ matrix.force_update_script }}
+          cd ../frontend
+          ${{ matrix.force_update_script }}
+
+      - name: 🔧 Install latest parser
+        if: ${{ always() && !contains(inputs.latest_deps, 'true') && contains(inputs.latest_parser, 'true') }}
+        run: |
+          npm ci
+          cd backend
+          npm i parser-de-notas-de-corretagem@latest
+          cd ../frontend
+          npm i -D parser-de-notas-de-corretagem@latest
+
       - name: 🔧 Install dependencies
-        shell: bash
+        if: ${{ always() && !contains(inputs.latest_deps, 'true') && !contains(inputs.latest_parser, 'true') }}
         run:  |
           npm ci
-          if [[ "${{ inputs.latest_deps }}" == "true" ]]; then
-            (
-              cd backend
-              # Get dev dependencies
-              npm i -D $(npm ls --parseable | grep -vxF -f <(npm list --parseable --omit=dev) | sed -r 's,.*node_modules/(.*),\1@latest,g' | tr '\n' ' ')
-              # Get prod dependencies
-              npm i $(npm list --omit dev --parseable | tail -n +2 | sed -r 's,.*node_modules/(.*),\1@latest,g' | tr '\n' ' ')
-              # Remove unused
-              npm update
-            )
-            (
-              cd frontend
-              # Get dev dependencies
-              npm i -D $(npm ls --parseable | grep -vxF -f <(npm list --parseable --omit=dev) | sed -r 's,.*node_modules/(.*),\1@latest,g' | tr '\n' ' ')
-              # Get prod dependencies
-              npm i $(npm list --omit dev --parseable | tail -n +2 | sed -r 's,.*node_modules/(.*),\1@latest,g' | tr '\n' ' ')
-              # Remove unused
-              npm update
-            )
-          elif [[ "${{ inputs.latest_parser }}" == "true" ]]; then
-            npm ci
-            (
-              cd backend
-              npm i parser-de-notas-de-corretagem@latest
-            )
-            (
-              cd frontend
-              npm i -D parser-de-notas-de-corretagem@latest
-            )
-          fi
 
       - name: 🧪 Run test
         run:  npm run test
@@ -147,6 +128,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macOS-latest]
+        force_update_script: [../scripts/force_update.sh, ../scripts/force_update.ps1, ../scripts/force_update.sh]
     name: "📦 Build (${{ matrix.os }})"
     runs-on: ${{ matrix.os }}
     steps:
@@ -158,40 +140,28 @@ jobs:
         with:
           node-version: 20
 
+      - name: 🔧 Install latest dependencies
+        if: ${{ always() && contains(inputs.latest_deps, 'true') }}
+        run: |
+          npm ci
+          cd backend
+          ${{ matrix.force_update_script }}
+          cd ../frontend
+          ${{ matrix.force_update_script }}
+
+      - name: 🔧 Install latest parser
+        if: ${{ always() && !contains(inputs.latest_deps, 'true') && contains(inputs.latest_parser, 'true') }}
+        run: |
+          npm ci
+          cd backend
+          npm i parser-de-notas-de-corretagem@latest
+          cd ../frontend
+          npm i -D parser-de-notas-de-corretagem@latest
+
       - name: 🔧 Install dependencies
-        shell: bash
+        if: ${{ always() && !contains(inputs.latest_deps, 'true') && !contains(inputs.latest_parser, 'true') }}
         run:  |
           npm ci
-          if [[ "${{ inputs.latest_deps }}" == "true" ]]; then
-            (
-              cd backend
-              # Get dev dependencies
-              npm i -D $(npm ls --parseable | grep -vxF -f <(npm list --parseable --omit=dev) | sed -r 's,.*node_modules/(.*),\1@latest,g' | tr '\n' ' ')
-              # Get prod dependencies
-              npm i $(npm list --omit dev --parseable | tail -n +2 | sed -r 's,.*node_modules/(.*),\1@latest,g' | tr '\n' ' ')
-              # Remove unused
-              npm update
-            )
-            (
-              cd frontend
-              # Get dev dependencies
-              npm i -D $(npm ls --parseable | grep -vxF -f <(npm list --parseable --omit=dev) | sed -r 's,.*node_modules/(.*),\1@latest,g' | tr '\n' ' ')
-              # Get prod dependencies
-              npm i $(npm list --omit dev --parseable | tail -n +2 | sed -r 's,.*node_modules/(.*),\1@latest,g' | tr '\n' ' ')
-              # Remove unused
-              npm update
-            )
-          elif [[ "${{ inputs.latest_parser }}" == "true" ]]; then
-            npm ci
-            (
-              cd backend
-              npm i parser-de-notas-de-corretagem@latest
-            )
-            (
-              cd frontend
-              npm i -D parser-de-notas-de-corretagem@latest
-            )
-          fi
 
       - name: 📦 Run build
         run:  npm run build

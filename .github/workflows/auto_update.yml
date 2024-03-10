@@ -49,39 +49,24 @@ jobs:
           node-version: 20
 
       - name: 📡 Install latest dependencies
+        if: ${{ always() && contains(needs.ci_check_latest_deps.result, 'success') }}
         shell: bash
         run: |
-          npm ci  
-          if [[ "${{ needs.ci_check_latest_deps.result }}" == "success" ]]; then
-            (
-              cd backend
-              # Get dev dependencies
-              npm i -D $(npm ls --parseable | grep -vxF -f <(npm list --parseable --omit=dev) | sed -r 's,.*node_modules/(.*),\1@latest,g' | tr '\n' ' ')
-              # Get prod dependencies
-              npm i $(npm list --omit dev --parseable | tail -n +2 | sed -r 's,.*node_modules/(.*),\1@latest,g' | tr '\n' ' ')
-              # Remove unused
-              npm update
-            )
-            (
-              cd frontend
-              # Get dev dependencies
-              npm i -D $(npm ls --parseable | grep -vxF -f <(npm list --parseable --omit=dev) | sed -r 's,.*node_modules/(.*),\1@latest,g' | tr '\n' ' ')
-              # Get prod dependencies
-              npm i $(npm list --omit dev --parseable | tail -n +2 | sed -r 's,.*node_modules/(.*),\1@latest,g' | tr '\n' ' ')
-              # Remove unused
-              npm update
-            )
-          elif [[ "${{ needs.ci_check_latest_parser.result }}" == "success" ]]; then
-            npm ci
-            (
-              cd backend
-              npm i parser-de-notas-de-corretagem@latest
-            )
-            (
-              cd frontend
-              npm i -D parser-de-notas-de-corretagem@latest
-            )            
-          fi
+          npm ci
+          cd backend
+          ../scripts/force_update.sh
+          cd ../frontend
+          ../scripts/force_update.sh
+
+      - name: 📡 Install latest parser (if latest deps fail)
+        if: ${{ always() && !contains(needs.ci_check_latest_deps.result, 'success') && contains(needs.ci_check_latest_parser.result, 'success') }}
+        shell: bash
+        run: |
+          npm ci
+          cd backend
+          npm i parser-de-notas-de-corretagem@latest
+          cd ../frontend
+          npm i parser-de-notas-de-corretagem@latest
 
       - name: 🤖 Update remote with changes
         shell: bash
