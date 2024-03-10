@@ -39,7 +39,7 @@ jobs:
       RELEASE_VERSION: ${{ steps.push.outputs.RELEASE_VERSION }}
     steps:
       - name: 📥 Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 

@@ -31,7 +31,7 @@ jobs:
       RELEASE_VERSION: ${{ steps.result.outputs.RELEASE_VERSION }}
     steps:
       - name: 📥 Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -58,7 +58,7 @@ jobs:
       contents: write
     steps:
       - name: 📥 Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{ needs.calculate-release-version.outputs.RELEASE_VERSION }}
@@ -89,7 +89,7 @@ jobs:
       contents: write
     steps:
       - name: 📥 Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{ needs.calculate-release-version.outputs.RELEASE_VERSION }}
