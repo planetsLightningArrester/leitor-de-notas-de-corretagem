@@ -84,10 +84,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macOS-latest]
-        force_update_script: [../scripts/force_update.sh, ../scripts/force_update.ps1, ../scripts/force_update.sh]
-    name: "🧪 Test (${{ matrix.os }})"
-    runs-on: ${{ matrix.os }}
+        os: [{ version: ubuntu-latest, script: ../scripts/force_update.sh }, { version: windows-latest, script: ../scripts/force_update.ps1 }, { version: macOS-latest, script: ../scripts/force_update.sh }]
+    name: "🧪 Test (${{ matrix.os.version }})"
+    runs-on: ${{ matrix.os.version }}
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v3
@@ -102,9 +101,9 @@ jobs:
         run: |
           npm ci
           cd backend
-          ${{ matrix.force_update_script }}
+          ${{ matrix.os.script }}
           cd ../frontend
-          ${{ matrix.force_update_script }}
+          ${{ matrix.os.script }}
 
       - name: 🔧 Install latest parser
         if: ${{ always() && !contains(inputs.latest_deps, 'true') && contains(inputs.latest_parser, 'true') }}
@@ -127,10 +126,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macOS-latest]
-        force_update_script: [../scripts/force_update.sh, ../scripts/force_update.ps1, ../scripts/force_update.sh]
-    name: "📦 Build (${{ matrix.os }})"
-    runs-on: ${{ matrix.os }}
+        os: [{ version: ubuntu-latest, script: ../scripts/force_update.sh }, { version: windows-latest, script: ../scripts/force_update.ps1 }, { version: macOS-latest, script: ../scripts/force_update.sh }]
+    name: "📦 Build (${{ matrix.os.version }})"
+    runs-on: ${{ matrix.os.version }}
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v3
@@ -145,9 +143,9 @@ jobs:
         run: |
           npm ci
           cd backend
-          ${{ matrix.force_update_script }}
+          ${{ matrix.os.script }}
           cd ../frontend
-          ${{ matrix.force_update_script }}
+          ${{ matrix.os.script }}
 
       - name: 🔧 Install latest parser
         if: ${{ always() && !contains(inputs.latest_deps, 'true') && contains(inputs.latest_parser, 'true') }}
@@ -167,3 +165,4 @@ jobs:
         run:  npm run build
 
 # EOF
+
