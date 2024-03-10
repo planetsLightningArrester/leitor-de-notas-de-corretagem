@@ -13,9 +13,9 @@
     "build:backend": "cd backend && npm run make",
     "update-assets": "cd backend && npm i parser-de-notas-de-corretagem@latest",
     "preinstall": "cd backend && npm ci && cd ../frontend && npm ci",
-    "postinstall": "npx husky install",
+    "postinstall": "npx husky",
     "lint": "cd backend && npm run lint && cd ../frontend && npm run lint",
-    "prepare": "husky install"
+    "prepare": "husky"
   },
   "repository": {
     "type": "git",
