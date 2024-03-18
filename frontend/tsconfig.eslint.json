@@ -3,6 +3,8 @@
   "include": [
     ".eslintrc.cjs",
     "vite.config.ts",
+    "svelte.config.js",
+    "scripts/**/*.js",
     "src/**/*.d.ts",
     "src/**/*.ts",
     "src/**/*.js",
