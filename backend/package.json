@@ -1,7 +1,7 @@
 {
   "name": "leitor-de-notas-de-corretagem",
   "displayName": "Leitor de Notas de Corretagem",
-  "version": "0.4.86",
+  "version": "0.4.87",
   "description": "Electron app for the backend of the leitor de notas de corretagem",
   "main": "dist/main.js",
   "author": "Planet's Lightning Arrester",
@@ -67,8 +67,8 @@
     "@electron-forge/plugin-auto-unpack-natives": "^7.3.1",
     "@eslint/create-config": "^0.4.6",
     "@playwright/test": "^1.42.1",
-    "@types/node": "^20.12.2",
-    "electron": "^29.1.6",
+    "@types/node": "^20.12.4",
+    "electron": "^29.2.0",
     "eslint": "^8.57.0",
     "eslint-config-standard-with-typescript": "^43.0.1",
     "eslint-plugin-import": "^2.29.1",
@@ -81,7 +81,7 @@
     "typescript": "^5.4.3"
   },
   "dependencies": {
-    "parser-de-notas-de-corretagem": "^0.10.59",
+    "parser-de-notas-de-corretagem": "^0.10.60",
     "printaeu": "^0.1.12"
   },
   "lint-staged": {
