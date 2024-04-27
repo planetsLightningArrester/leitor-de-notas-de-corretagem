@@ -1,6 +1,10 @@
 # Continuos Integration workflow
 name: 🔄 CI
 
+defaults:
+  run:
+    shell: bash
+
 # Controls when the workflow will run
 on:
   pull_request: 
@@ -31,9 +35,30 @@ on:
         type: boolean
         default: false
         description: Whether the latest parser available should be used
+      success_on_failure:
+        type: boolean
+        default: false
+        description: Whether the workflow should be marked as success even on failures. Relevant for auto-update checks.
+    outputs:
+      success:
+        description: Whether this workflow failed or success. Only relevant if `inputs.success_on_failure` is `true`.
+        value: ${{ jobs.set_success_output.outputs.success }}
   
   # Allow manual trigger
   workflow_dispatch:
+    inputs:
+      latest_deps:
+        type: boolean
+        default: false
+        description: Whether the latest dependencies should be used.
+      latest_parser:
+        type: boolean
+        default: false
+        description: Whether the latest parser available should be used
+      success_on_failure:
+        type: boolean
+        default: false
+        description: Whether the workflow should be marked as success even on failures. Relevant for auto-update checks.  
 
 # Jobs
 jobs:
@@ -41,6 +66,8 @@ jobs:
   sanitize:
     name: "🧹 Sanitize"
     runs-on: ubuntu-latest
+    outputs:
+      success: ${{ steps.result.outputs.success }}
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
@@ -52,41 +79,78 @@ jobs:
 
       - name: 🔧 Install latest dependencies
         if: ${{ always() && contains(inputs.latest_deps, 'true') }}
-        shell: bash
+        id: install-latest-deps
         run: |
-          npm ci
-          cd backend
-          ../scripts/force_update.sh
-          cd ../frontend
-          ../scripts/force_update.sh
+          {
+            npm ci
+            cd backend
+            ../scripts/force_update.sh
+            cd ../frontend
+            ../scripts/force_update.sh
+          } || {
+            [[ "${{ inputs.success_on_failure }}" != "true" ]] && exit 1
+            echo "success=false" >> $GITHUB_OUTPUT
+          }
 
       - name: 🔧 Install latest parser
         if: ${{ always() && !contains(inputs.latest_deps, 'true') && contains(inputs.latest_parser, 'true') }}
-        shell: bash
+        id: install-latest-parser
         run: |
-          npm ci
-          cd backend
-          npm i parser-de-notas-de-corretagem@latest
-          cd ../frontend
-          npm i -D parser-de-notas-de-corretagem@latest
+          {
+            npm ci
+            cd backend
+            npm i parser-de-notas-de-corretagem@latest
+            cd ../frontend
+            npm i -D parser-de-notas-de-corretagem@latest
+          } || {
+            [[ "${{ inputs.success_on_failure }}" != "true" ]] && exit 1
+            echo "success=false" >> $GITHUB_OUTPUT
+          }
 
       - name: 🔧 Install dependencies
         if: ${{ always() && !contains(inputs.latest_deps, 'true') && !contains(inputs.latest_parser, 'true') }}
-        shell: bash
+        id: install-deps
         run:  |
-          npm ci
+          npm ci || {
+            [[ "${{ inputs.success_on_failure }}" != "true" ]] && exit 1
+            echo "success=false" >> $GITHUB_OUTPUT
+          }
 
       - name: 🧹 Run linters
-        shell: bash
-        run:  npm run lint
+        if: ${{ steps.install-latest-deps.outputs.success != 'false' && steps.install-deps.outputs.success != 'false' && steps.install-latest-parser.outputs.success != 'false' }}
+        id: linter
+        run: |
+          npm run lint || {
+            [[ "${{ inputs.success_on_failure }}" != "true" ]] && exit 1
+            echo "success=false" >> $GITHUB_OUTPUT
+          }
+
+      - name: 🎯 Check if the job succeeded
+        if: ${{ always() }}
+        id: result
+        run: |
+          [[ "${{ steps.install-latest-deps.outputs.success }}" != "false" ]] && \
+          [[ "${{ steps.install-latest-parser.outputs.success }}" != "false" ]] && \
+          [[ "${{ steps.install-deps.outputs.success }}" != "false" ]] && \
+          [[ "${{ steps.linter.outputs.success }}" != "false" ]] && \
+          echo "success=true" >> $GITHUB_OUTPUT || echo "success=false" >> $GITHUB_OUTPUT
 
   test:
     strategy:
       fail-fast: false
       matrix:
-        os: [{ version: ubuntu-latest, script: ../scripts/force_update.sh }, { version: windows-latest, script: ../scripts/force_update.ps1 }, { version: macOS-latest, script: ../scripts/force_update.sh }]
+        os: [
+          { version: ubuntu-latest, script: ../scripts/force_update.sh },
+          { version: windows-latest, script: ../scripts/force_update.ps1 },
+          { version: macOS-latest, script: ../scripts/force_update.sh }
+          ]
     name: "🧪 Test (${{ matrix.os.version }})"
     runs-on: ${{ matrix.os.version }}
+    outputs:
+      ubuntu-latest-success: ${{ steps.result.outputs.ubuntu-latest-success }}
+      windows-latest-success: ${{ steps.result.outputs.windows-latest-success }}
+      macOS-latest-success: ${{ steps.result.outputs.macOS-latest-success }}
+
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
@@ -98,37 +162,78 @@ jobs:
 
       - name: 🔧 Install latest dependencies
         if: ${{ always() && contains(inputs.latest_deps, 'true') }}
+        id: install-latest-deps
         run: |
-          npm ci
-          cd backend
-          ${{ matrix.os.script }}
-          cd ../frontend
-          ${{ matrix.os.script }}
+          {
+            npm ci
+            cd backend
+            ${{ matrix.os.script }}
+            cd ../frontend
+            ${{ matrix.os.script }}
+          } || {
+            [[ "${{ inputs.success_on_failure }}" != "true" ]] && exit 1
+            echo "success=false" >> $GITHUB_OUTPUT
+          }
 
       - name: 🔧 Install latest parser
         if: ${{ always() && !contains(inputs.latest_deps, 'true') && contains(inputs.latest_parser, 'true') }}
+        id: install-latest-parser
         run: |
-          npm ci
-          cd backend
-          npm i parser-de-notas-de-corretagem@latest
-          cd ../frontend
-          npm i -D parser-de-notas-de-corretagem@latest
+          {
+            npm ci
+            cd backend
+            npm i parser-de-notas-de-corretagem@latest
+            cd ../frontend
+            npm i -D parser-de-notas-de-corretagem@latest
+          } || {
+            [[ "${{ inputs.success_on_failure }}" != "true" ]] && exit 1
+            echo "success=false" >> $GITHUB_OUTPUT
+          }
 
       - name: 🔧 Install dependencies
         if: ${{ always() && !contains(inputs.latest_deps, 'true') && !contains(inputs.latest_parser, 'true') }}
+        id: install-deps
         run:  |
-          npm ci
+          npm ci || {
+            [[ "${{ inputs.success_on_failure }}" != "true" ]] && exit 1
+            echo "success=false" >> $GITHUB_OUTPUT
+          }
 
       - name: 🧪 Run test
-        run:  npm run test
+        if: ${{ steps.install-latest-deps.outputs.success != 'false' && steps.install-deps.outputs.success != 'false' && steps.install-latest-parser.outputs.success != 'false' }}
+        id: test
+        run: |
+          npm run test || {
+            [[ "${{ inputs.success_on_failure }}" != "true" ]] && exit 1
+            echo "success=false" >> $GITHUB_OUTPUT
+          }
+
+      - name: 🎯 Check if the job succeeded
+        if: ${{ always() }}
+        id: result
+        run: |
+          [[ "${{ steps.install-latest-deps.outputs.success }}" != "false" ]] && \
+          [[ "${{ steps.install-latest-parser.outputs.success }}" != "false" ]] && \
+          [[ "${{ steps.install-deps.outputs.success }}" != "false" ]] && \
+          [[ "${{ steps.test.outputs.success }}" != "false" ]] && \
+          echo "${{ matrix.os.version }}-success=true" >> $GITHUB_OUTPUT || echo "${{ matrix.os.version }}-success=false" >> $GITHUB_OUTPUT
 
   build:
     strategy:
       fail-fast: false
       matrix:
-        os: [{ version: ubuntu-latest, script: ../scripts/force_update.sh }, { version: windows-latest, script: ../scripts/force_update.ps1 }, { version: macOS-latest, script: ../scripts/force_update.sh }]
+        os: [
+          { version: ubuntu-latest, script: ../scripts/force_update.sh },
+          { version: windows-latest, script: ../scripts/force_update.ps1 },
+          { version: macOS-latest, script: ../scripts/force_update.sh }
+          ]
     name: "📦 Build (${{ matrix.os.version }})"
     runs-on: ${{ matrix.os.version }}
+    outputs:
+      ubuntu-latest-success: ${{ steps.result.outputs.ubuntu-latest-success }}
+      windows-latest-success: ${{ steps.result.outputs.windows-latest-success }}
+      macOS-latest-success: ${{ steps.result.outputs.macOS-latest-success }}
+
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
@@ -140,29 +245,85 @@ jobs:
 
       - name: 🔧 Install latest dependencies
         if: ${{ always() && contains(inputs.latest_deps, 'true') }}
+        id: install-latest-deps
         run: |
-          npm ci
-          cd backend
-          ${{ matrix.os.script }}
-          cd ../frontend
-          ${{ matrix.os.script }}
+          {
+            npm ci
+            cd backend
+            ${{ matrix.os.script }}
+            cd ../frontend
+            ${{ matrix.os.script }}
+          } || {
+            [[ "${{ inputs.success_on_failure }}" != "true" ]] && exit 1
+            echo "success=false" >> $GITHUB_OUTPUT
+          }
 
       - name: 🔧 Install latest parser
         if: ${{ always() && !contains(inputs.latest_deps, 'true') && contains(inputs.latest_parser, 'true') }}
+        id: install-latest-parser
         run: |
-          npm ci
-          cd backend
-          npm i parser-de-notas-de-corretagem@latest
-          cd ../frontend
-          npm i -D parser-de-notas-de-corretagem@latest
+          {
+            npm ci
+            cd backend
+            npm i parser-de-notas-de-corretagem@latest
+            cd ../frontend
+            npm i -D parser-de-notas-de-corretagem@latest
+          } || {
+            [[ "${{ inputs.success_on_failure }}" != "true" ]] && exit 1
+            echo "success=false" >> $GITHUB_OUTPUT
+          }
 
       - name: 🔧 Install dependencies
         if: ${{ always() && !contains(inputs.latest_deps, 'true') && !contains(inputs.latest_parser, 'true') }}
+        id: install-deps
         run:  |
-          npm ci
+          npm ci || {
+            [[ "${{ inputs.success_on_failure }}" != "true" ]] && exit 1
+            echo "success=false" >> $GITHUB_OUTPUT
+          }
 
       - name: 📦 Run build
-        run:  npm run build
+        if: ${{ steps.install-latest-deps.outputs.success != 'false' && steps.install-deps.outputs.success != 'false' && steps.install-latest-parser.outputs.success != 'false' }}
+        id: build
+        run: |
+          npm run build || {
+            [[ "${{ inputs.success_on_failure }}" != "true" ]] && exit 1
+            echo "success=false" >> $GITHUB_OUTPUT
+          }
+
+      - name: 🎯 Check if the job succeeded
+        if: ${{ always() }}
+        id: result
+        run: |
+          [[ "${{ steps.install-latest-deps.outputs.success }}" != "false" ]] && \
+          [[ "${{ steps.install-latest-parser.outputs.success }}" != "false" ]] && \
+          [[ "${{ steps.install-deps.outputs.success }}" != "false" ]] && \
+          [[ "${{ steps.build.outputs.success }}" != "false" ]] && \
+          echo "${{ matrix.os.version }}-success=true" >> $GITHUB_OUTPUT || echo "${{ matrix.os.version }}-success=false" >> $GITHUB_OUTPUT
+
+  set_success_output:
+    name: 🎯 Set success output
+    needs: [sanitize, test, build]
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    outputs:
+      success: ${{ steps.set-success.outputs.success }}
+    steps:
+      - name: 🎯 Set success output
+        id: set-success
+        run: |
+          success_result=''
+          [[ "${{ needs.sanitize.outputs.success }}" != "false" ]] && \
+            [[ "${{ needs.test.outputs.ubuntu-latest-success }}" != "false" ]] && \
+            [[ "${{ needs.test.outputs.windows-latest-success }}" != "false" ]] && \
+            [[ "${{ needs.test.outputs.macOS-latest-success }}" != "false" ]] && \
+            [[ "${{ needs.build.outputs.ubuntu-latest-success }}" != "false" ]] && \
+            [[ "${{ needs.build.outputs.windows-latest-success }}" != "false" ]] && \
+            [[ "${{ needs.build.outputs.macOS-latest-success }}" != "false" ]] && \
+            success_result='true'|| success_result='false'
+
+          echo "[INFO] success result: ${success_result}"
+          echo "success=${success_result}" >> $GITHUB_OUTPUT || echo "success=${success_result}" >> $GITHUB_OUTPUT
 
 # EOF
 
