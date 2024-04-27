@@ -1,6 +1,10 @@
 # Auto-update workflow
 name: 📡 Auto-update
 
+defaults:
+  run:
+    shell: bash
+
 on:
   # Nightly - running at 1PM UTC
   schedule:
@@ -18,22 +22,24 @@ jobs:
     secrets: inherit
     with:
       latest_deps: true
+      success_on_failure: true
 
   # If all dependencies can't be updated, test only against the latest parser
   ci_check_latest_parser:
     name: ⚗️ Test with latest parser
     needs: ci_check_latest_deps
-    if: ${{ always() && contains(needs.*.result, 'failure') }}
+    if: ${{ always() && contains(needs.ci_check_latest_deps.outputs.success, 'false') }}
     uses: ./.github/workflows/ci.yml
     secrets: inherit
     with:
       latest_parser: true
+      success_on_failure: true
 
   # Update either all the dependencies or only the parser
   update_all_deps:
     name: 📡 Update dependencies
     needs: [ci_check_latest_deps, ci_check_latest_parser]
-    if: ${{ always() && contains(needs.*.result, 'success') }}
+    if: ${{ always() && (contains(needs.ci_check_latest_deps.outputs.success, 'true') || contains(needs.ci_check_latest_parser.outputs.success, 'true')) }}
     runs-on: ubuntu-latest
     outputs:
       RELEASE_VERSION: ${{ steps.push.outputs.RELEASE_VERSION }}
@@ -49,8 +55,7 @@ jobs:
           node-version: 20
 
       - name: 📡 Install latest dependencies
-        if: ${{ always() && contains(needs.ci_check_latest_deps.result, 'success') }}
-        shell: bash
+        if: ${{ always() && contains(needs.ci_check_latest_deps.outputs.success, 'true') }}
         run: |
           npm ci
           cd backend
@@ -59,8 +64,7 @@ jobs:
           ../scripts/force_update.sh
 
       - name: 📡 Install latest parser (if latest deps fail)
-        if: ${{ always() && !contains(needs.ci_check_latest_deps.result, 'success') && contains(needs.ci_check_latest_parser.result, 'success') }}
-        shell: bash
+        if: ${{ always() && contains(needs.ci_check_latest_deps.outputs.success, 'false') && contains(needs.ci_check_latest_parser.outputs.success, 'true') }}
         run: |
           npm ci
           cd backend
@@ -69,7 +73,6 @@ jobs:
           npm i parser-de-notas-de-corretagem@latest
 
       - name: 🤖 Update remote with changes
-        shell: bash
         id: push
         run: |
 
