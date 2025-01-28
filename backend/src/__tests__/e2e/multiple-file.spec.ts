@@ -1,7 +1,7 @@
 import path from 'path'
 import { test, expect, _electron as electron, type FileChooser, type ElectronApplication, type Page } from '@playwright/test'
 
-test.describe.serial('open multiple files', () => {
+test.describe.serial('open multiple files (clear)', () => {
   let electronApp: ElectronApplication
   let window: Page
 
@@ -56,6 +56,65 @@ test.describe.serial('open multiple files', () => {
     await noteTab.waitFor({ state: 'visible', timeout: 2000 })
     await noteTab.click()
     const noteTabITSA = window.getByTestId('tab-44444-ITSA3')
+    await noteTabITSA.waitFor({ state: 'visible', timeout: 2000 })
+  })
+})
+
+test.describe.serial('open multiple files (nubank, rico)', () => {
+  let electronApp: ElectronApplication
+  let window: Page
+
+  test.beforeAll(async () => {
+    electronApp = await electron.launch({ args: ['.'] })
+    window = await electronApp.firstWindow()
+  })
+
+  test.afterAll(async () => {
+    await electronApp.close()
+  })
+
+  test('change locale to en-us', async () => {
+    const enUsButton = window.getByTestId('en-US-button')
+    expect(enUsButton).not.toBe(undefined)
+    await enUsButton.click()
+    expect(await window.getByTestId('main-page-title').innerText()).toBe('Brokerage note reader')
+  })
+  test('select file from file chooser', async () => {
+    const dropZoneButton = window.getByTestId('drop-zone-button')
+    expect(dropZoneButton).not.toBe(undefined)
+    const fileChooserPromise = new Promise<void>((resolve) => {
+      const fileChooserListener = async (fileChooser: FileChooser): Promise<void> => {
+        window.off('filechooser', fileChooserListener)
+        await fileChooser.setFiles([
+          path.join(__dirname, '..', 'notes', 'rico_multi_page.pdf'),
+          path.join(__dirname, '..', 'notes', 'nubank_single_page.pdf')
+        ])
+        resolve()
+      }
+      window.on('filechooser', fileChooserListener)
+    })
+    await dropZoneButton.click()
+    await fileChooserPromise
+    await window.getByTestId('table-container').waitFor({ state: 'visible' })
+  })
+
+  test('check if the push notification is shown', async () => {
+    const pushNotification = window.getByTestId('push-notification')
+    await pushNotification.waitFor({ state: 'visible', timeout: 10000 })
+    expect(await pushNotification.innerText()).toContain('2 notes added')
+  })
+
+  test('check if the notes were added', async () => {
+    let noteTab = window.getByTestId('tab-8242')
+    await noteTab.waitFor({ state: 'visible', timeout: 2000 })
+    await noteTab.click()
+    const noteTabXPML = window.getByTestId('tab-8242-XPML11')
+    await noteTabXPML.waitFor({ state: 'visible', timeout: 2000 })
+
+    noteTab = window.getByTestId('tab-22222')
+    await noteTab.waitFor({ state: 'visible', timeout: 2000 })
+    await noteTab.click()
+    const noteTabITSA = window.getByTestId('tab-22222-FLRY3')
     await noteTabITSA.waitFor({ state: 'visible', timeout: 2000 })
   })
 })

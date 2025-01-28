@@ -4,12 +4,14 @@
   "editor.formatOnPaste": true,
   "cSpell.words": [
     "ABEV",
+    "ALZR",
     "cnpj",
     "commitlint",
     "electronegativity",
     "Electronegativity",
     "filechooser",
     "github",
+    "nubank",
     "pdfs",
     "preinstall",
     "sveltestrap",
@@ -17,7 +19,7 @@
   ],
   "cSpell.language": "en,pt-BR",
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit",
+    "source.fixAll.eslint": "explicit"
   },
   "eslint.validate": [
     "javascript"
