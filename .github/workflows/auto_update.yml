@@ -40,7 +40,7 @@ jobs:
     name: 📡 Update dependencies
     needs: [ci_check_latest_deps, ci_check_latest_parser]
     if: ${{ always() && (contains(needs.ci_check_latest_deps.outputs.success, 'true') || contains(needs.ci_check_latest_parser.outputs.success, 'true')) }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     outputs:
       RELEASE_VERSION: ${{ steps.push.outputs.RELEASE_VERSION }}
     steps:

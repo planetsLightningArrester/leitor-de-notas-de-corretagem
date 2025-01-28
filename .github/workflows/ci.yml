@@ -65,7 +65,7 @@ jobs:
 
   sanitize:
     name: "🧹 Sanitize"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     outputs:
       success: ${{ steps.result.outputs.success }}
     steps:
@@ -140,7 +140,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [
-          { version: ubuntu-latest, script: ../scripts/force_update.sh },
+          { version: ubuntu-22.04, script: ../scripts/force_update.sh },
           { version: windows-latest, script: ../scripts/force_update.ps1 },
           { version: macOS-latest, script: ../scripts/force_update.sh }
           ]
@@ -223,7 +223,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [
-          { version: ubuntu-latest, script: ../scripts/force_update.sh },
+          { version: ubuntu-22.04, script: ../scripts/force_update.sh },
           { version: windows-latest, script: ../scripts/force_update.ps1 },
           { version: macOS-latest, script: ../scripts/force_update.sh }
           ]
@@ -305,7 +305,7 @@ jobs:
     name: 🎯 Set success output
     needs: [sanitize, test, build]
     if: ${{ always() }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     outputs:
       success: ${{ steps.set-success.outputs.success }}
     steps:

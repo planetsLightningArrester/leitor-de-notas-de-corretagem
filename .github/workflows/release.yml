@@ -26,7 +26,7 @@ jobs:
   calculate-release-version:
     name: 🧮 Calculate release version
     needs: ci-check
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     outputs:
       RELEASE_VERSION: ${{ steps.result.outputs.RELEASE_VERSION }}
     steps:
@@ -53,7 +53,7 @@ jobs:
   create-release:
     name: 🎁 Create release
     needs: calculate-release-version
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     permissions:
       contents: write
     steps:
@@ -83,7 +83,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macOS-latest]
+        os: [ubuntu-22.04, windows-latest, macOS-latest]
     runs-on: ${{ matrix.os }}
     permissions:
       contents: write
