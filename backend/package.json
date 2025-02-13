@@ -80,7 +80,7 @@
     "typescript": "^5.4.4"
   },
   "dependencies": {
-    "parser-de-notas-de-corretagem": "^0.12.14",
+    "parser-de-notas-de-corretagem": "^0.12.15",
     "printaeu": "^0.1.12"
   },
   "lint-staged": {
