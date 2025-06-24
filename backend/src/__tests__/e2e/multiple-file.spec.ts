@@ -1,7 +1,7 @@
 import path from 'path'
 import { test, expect, _electron as electron, type FileChooser, type ElectronApplication, type Page } from '@playwright/test'
 
-test.describe.serial('open multiple files (clear)', () => {
+test.describe.serial('open multiple files (clear) with unknown data', () => {
   let electronApp: ElectronApplication
   let window: Page
 
@@ -43,6 +43,41 @@ test.describe.serial('open multiple files (clear)', () => {
     const pushNotification = window.getByTestId('push-notification')
     await pushNotification.waitFor({ state: 'visible', timeout: 10000 })
     expect(await pushNotification.innerText()).toContain('2 notes added')
+    const pushNotificationCloseButton = window.getByTestId('push-notification-close')
+    await pushNotificationCloseButton.waitFor({ state: 'visible', timeout: 10000 })
+    await pushNotificationCloseButton.click()
+    await pushNotificationCloseButton.waitFor({ state: 'hidden', timeout: 10000 })
+  })
+
+  test('insert the unknown asset data', async () => {
+    let codeInput = window.getByTestId('BANCO INTER ON-code-input')
+    await codeInput.waitFor({ state: 'visible', timeout: 2000 })
+    await codeInput.fill('BIDI3')
+
+    let cnpjInput = window.getByTestId('BANCO INTER ON-cnpj-input')
+    await cnpjInput.waitFor({ state: 'visible', timeout: 2000 })
+    await cnpjInput.fill('00.416.968/0001-01')
+
+    codeInput = window.getByTestId('BANCO INTER UNT-code-input')
+    await codeInput.waitFor({ state: 'visible', timeout: 2000 })
+    await codeInput.fill('BIDI11')
+
+    cnpjInput = window.getByTestId('BANCO INTER UNT-cnpj-input')
+    await cnpjInput.waitFor({ state: 'visible', timeout: 2000 })
+    await cnpjInput.fill('00.416.968/0001-01')
+
+    const retryPasswordButton = window.getByTestId('retry-unknown-asset-button')
+    await retryPasswordButton.waitFor({ state: 'visible', timeout: 2000 })
+    await retryPasswordButton.click()
+  })
+
+  test('check if the push notification is shown after updating unknown data', async () => {
+    const pushNotification = window.getByTestId('push-notification')
+    await pushNotification.waitFor({ state: 'visible', timeout: 10000 })
+    expect(await pushNotification.innerText()).toContain('Note reloaded')
+    const pushNotificationCloseButton = window.getByTestId('push-notification-close')
+    await pushNotificationCloseButton.click()
+    await pushNotification.waitFor({ state: 'hidden', timeout: 2000 })
   })
 
   test('check if the notes were added', async () => {
@@ -119,7 +154,7 @@ test.describe.serial('open multiple files (nubank, rico)', () => {
   })
 })
 
-test.describe.serial('open multiple files with password', () => {
+test.describe.serial('open multiple files with password and ignore unknown data', () => {
   let electronApp: ElectronApplication
   let window: Page
 
@@ -186,6 +221,18 @@ test.describe.serial('open multiple files with password', () => {
     const pushNotification = window.getByTestId('push-notification')
     await pushNotification.waitFor({ state: 'visible', timeout: 10000 })
     expect(await pushNotification.innerText()).toContain('2 notes added')
+  })
+
+  test('ignore the unknown asset', async () => {
+    const codeField1 = window.getByTestId('BANCO INTER ON-code')
+    const codeField2 = window.getByTestId('BANCO INTER UNT-code')
+
+    const ignoreUnknownAssetButton = window.getByTestId('ignore-unknown-asset-button')
+    await ignoreUnknownAssetButton.waitFor({ state: 'visible', timeout: 2000 })
+    await ignoreUnknownAssetButton.click()
+
+    await codeField1.waitFor({ state: 'hidden', timeout: 2000 })
+    await codeField2.waitFor({ state: 'hidden', timeout: 2000 })
   })
 
   test('check if the notes were added', async () => {
@@ -283,7 +330,7 @@ test.describe.serial('open multiple files with password and ignore one', () => {
   })
 })
 
-test.describe.serial('open multiple files, some with password', async () => {
+test.describe.serial('open multiple files, some with password, and ignore unknown data', async () => {
   let electronApp: ElectronApplication
   let window: Page
 
@@ -330,6 +377,18 @@ test.describe.serial('open multiple files, some with password', async () => {
     const pushNotificationCloseButton = window.getByTestId('push-notification-close')
     await pushNotificationCloseButton.click()
     await pushNotification.waitFor({ state: 'hidden', timeout: 2000 })
+  })
+
+  test('ignore the unknown asset', async () => {
+    const codeField1 = window.getByTestId('BANCO INTER ON-code')
+    const codeField2 = window.getByTestId('BANCO INTER UNT-code')
+
+    const ignoreUnknownAssetButton = window.getByTestId('ignore-unknown-asset-button')
+    await ignoreUnknownAssetButton.waitFor({ state: 'visible', timeout: 2000 })
+    await ignoreUnknownAssetButton.click()
+
+    await codeField1.waitFor({ state: 'hidden', timeout: 2000 })
+    await codeField2.waitFor({ state: 'hidden', timeout: 2000 })
   })
 
   test('insert a valid password', async () => {
@@ -417,21 +476,7 @@ test.describe.serial('open multiple files, some with password, some with unknown
     expect(await pushNotification.innerText()).toContain('1 note added')
     const pushNotificationCloseButton = window.getByTestId('push-notification-close')
     await pushNotificationCloseButton.click()
-    await pushNotification.waitFor({ state: 'hidden', timeout: 2000 })
-  })
-
-  test('insert the unknown asset data', async () => {
-    const codeInput = window.getByTestId('FIC IE CAP CI ER-code-input')
-    await codeInput.waitFor({ state: 'visible', timeout: 2000 })
-    await codeInput.fill('CPTI11')
-
-    const cnpjInput = window.getByTestId('FIC IE CAP CI ER-cnpj-input')
-    await cnpjInput.waitFor({ state: 'visible', timeout: 2000 })
-    await cnpjInput.fill('41.319.970/0001-31')
-
-    const retryPasswordButton = window.getByTestId('retry-unknown-asset-button')
-    await retryPasswordButton.waitFor({ state: 'visible', timeout: 2000 })
-    await retryPasswordButton.click()
+    await pushNotification.waitFor({ state: 'hidden', timeout: 10000 })
   })
 
   test('insert a valid password', async () => {
@@ -445,6 +490,46 @@ test.describe.serial('open multiple files, some with password, some with unknown
     const retryPasswordButton = window.getByTestId('retry-password-button')
     await retryPasswordButton.waitFor({ state: 'visible', timeout: 2000 })
     await retryPasswordButton.click()
+  })
+
+  test('check if the push notification show that some notes were added after password', async () => {
+    const pushNotification = window.getByTestId('push-notification')
+    await pushNotification.waitFor({ state: 'visible', timeout: 10000 })
+    expect(await pushNotification.innerText()).toContain('1 note added')
+    const pushNotificationCloseButton = window.getByTestId('push-notification-close')
+    await pushNotificationCloseButton.click()
+    await pushNotification.waitFor({ state: 'hidden', timeout: 10000 })
+  })
+
+  test('insert the unknown asset data', async () => {
+    let codeInput = window.getByTestId('BANCO INTER ON-code-input')
+    await codeInput.waitFor({ state: 'visible', timeout: 2000 })
+    await codeInput.fill('BIDI3')
+
+    let cnpjInput = window.getByTestId('BANCO INTER ON-cnpj-input')
+    await cnpjInput.waitFor({ state: 'visible', timeout: 2000 })
+    await cnpjInput.fill('00.416.968/0001-01')
+
+    codeInput = window.getByTestId('BANCO INTER UNT-code-input')
+    await codeInput.waitFor({ state: 'visible', timeout: 2000 })
+    await codeInput.fill('BIDI11')
+
+    cnpjInput = window.getByTestId('BANCO INTER UNT-cnpj-input')
+    await cnpjInput.waitFor({ state: 'visible', timeout: 2000 })
+    await cnpjInput.fill('00.416.968/0001-01')
+
+    const retryPasswordButton = window.getByTestId('retry-unknown-asset-button')
+    await retryPasswordButton.waitFor({ state: 'visible', timeout: 2000 })
+    await retryPasswordButton.click()
+  })
+
+  test('check if the push notification is shown after updating unknown data', async () => {
+    const pushNotification = window.getByTestId('push-notification')
+    await pushNotification.waitFor({ state: 'visible', timeout: 10000 })
+    expect(await pushNotification.innerText()).toContain('Note reloaded')
+    const pushNotificationCloseButton = window.getByTestId('push-notification-close')
+    await pushNotificationCloseButton.click()
+    await pushNotification.waitFor({ state: 'hidden', timeout: 2000 })
   })
 
   test('check if notes were added', async () => {
@@ -462,7 +547,7 @@ test.describe.serial('open multiple files, some with password, some with unknown
   })
 })
 
-test.describe.serial('open multiple duplicated files', () => {
+test.describe.serial('open multiple duplicated files and unknown data', () => {
   let electronApp: ElectronApplication
   let window: Page
 
@@ -504,6 +589,37 @@ test.describe.serial('open multiple duplicated files', () => {
     const pushNotification = window.getByTestId('push-notification')
     await pushNotification.waitFor({ state: 'visible', timeout: 10000 })
     expect(await pushNotification.innerText()).toContain('1 note added')
+    const pushNotificationCloseButton = window.getByTestId('push-notification-close')
+    await pushNotificationCloseButton.click()
+    await pushNotification.waitFor({ state: 'hidden', timeout: 2000 })
+  })
+
+  test('insert the unknown asset data', async () => {
+    let codeInput = window.getByTestId('BANCO INTER ON-code-input')
+    await codeInput.waitFor({ state: 'visible', timeout: 2000 })
+    await codeInput.fill('BIDI3')
+
+    let cnpjInput = window.getByTestId('BANCO INTER ON-cnpj-input')
+    await cnpjInput.waitFor({ state: 'visible', timeout: 2000 })
+    await cnpjInput.fill('00.416.968/0001-01')
+
+    codeInput = window.getByTestId('BANCO INTER UNT-code-input')
+    await codeInput.waitFor({ state: 'visible', timeout: 2000 })
+    await codeInput.fill('BIDI11')
+
+    cnpjInput = window.getByTestId('BANCO INTER UNT-cnpj-input')
+    await cnpjInput.waitFor({ state: 'visible', timeout: 2000 })
+    await cnpjInput.fill('00.416.968/0001-01')
+
+    const retryPasswordButton = window.getByTestId('retry-unknown-asset-button')
+    await retryPasswordButton.waitFor({ state: 'visible', timeout: 2000 })
+    await retryPasswordButton.click()
+  })
+
+  test('check if the push notification is shown after updating unknown data', async () => {
+    const pushNotification = window.getByTestId('push-notification')
+    await pushNotification.waitFor({ state: 'visible', timeout: 10000 })
+    expect(await pushNotification.innerText()).toContain('Note reloaded')
     const pushNotificationCloseButton = window.getByTestId('push-notification-close')
     await pushNotificationCloseButton.click()
     await pushNotification.waitFor({ state: 'hidden', timeout: 2000 })

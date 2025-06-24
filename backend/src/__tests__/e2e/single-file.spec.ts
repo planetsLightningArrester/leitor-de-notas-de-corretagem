@@ -103,7 +103,7 @@ test.describe.serial('open a single page file (nubank)', () => {
   })
 })
 
-test.describe.serial('open a single page file with password', async () => {
+test.describe.serial('open a single page file with password and unknown data', async () => {
   let electronApp: ElectronApplication
   let window: Page
 
@@ -185,6 +185,40 @@ test.describe.serial('open a single page file with password', async () => {
     const pushNotification = window.getByTestId('push-notification')
     await pushNotification.waitFor({ state: 'visible', timeout: 10000 })
     expect(await pushNotification.innerText()).toContain('1 note added')
+    const pushNotificationCloseButton = window.getByTestId('push-notification-close')
+    await pushNotificationCloseButton.click()
+    await pushNotification.waitFor({ state: 'hidden', timeout: 2000 })
+  })
+
+  test('insert the unknown asset data', async () => {
+    let codeInput = window.getByTestId('BANCO INTER ON-code-input')
+    await codeInput.waitFor({ state: 'visible', timeout: 2000 })
+    await codeInput.fill('BIDI3')
+
+    let cnpjInput = window.getByTestId('BANCO INTER ON-cnpj-input')
+    await cnpjInput.waitFor({ state: 'visible', timeout: 2000 })
+    await cnpjInput.fill('00.416.968/0001-01')
+
+    codeInput = window.getByTestId('BANCO INTER UNT-code-input')
+    await codeInput.waitFor({ state: 'visible', timeout: 2000 })
+    await codeInput.fill('BIDI11')
+
+    cnpjInput = window.getByTestId('BANCO INTER UNT-cnpj-input')
+    await cnpjInput.waitFor({ state: 'visible', timeout: 2000 })
+    await cnpjInput.fill('00.416.968/0001-01')
+
+    const retryPasswordButton = window.getByTestId('retry-unknown-asset-button')
+    await retryPasswordButton.waitFor({ state: 'visible', timeout: 2000 })
+    await retryPasswordButton.click()
+  })
+
+  test('check if the push notification is shown after updating unknown data', async () => {
+    const pushNotification = window.getByTestId('push-notification')
+    await pushNotification.waitFor({ state: 'visible', timeout: 10000 })
+    expect(await pushNotification.innerText()).toContain('Note reloaded')
+    const pushNotificationCloseButton = window.getByTestId('push-notification-close')
+    await pushNotificationCloseButton.click()
+    await pushNotification.waitFor({ state: 'hidden', timeout: 2000 })
   })
 
   test('check if the note was added', async () => {
@@ -273,7 +307,7 @@ test.describe.serial('open a file with unknown assets', () => {
     const fileChooserPromise = new Promise<void>((resolve) => {
       const fileChooserListener = async (fileChooser: FileChooser): Promise<void> => {
         window.off('filechooser', fileChooserListener)
-        await fileChooser.setFiles(path.join(__dirname, '..', 'notes', 'inter_cpti_kdif.pdf'))
+        await fileChooser.setFiles(path.join(__dirname, '..', 'notes', 'clear_single_page_sell.pdf'))
         resolve()
       }
       window.on('filechooser', fileChooserListener)
@@ -293,29 +327,37 @@ test.describe.serial('open a file with unknown assets', () => {
   })
 
   test('enter the info about the missing asset', async () => {
-    const codeField = window.getByTestId('FIC IE CAP CI ER-code-input')
-    const cnpjField = window.getByTestId('FIC IE CAP CI ER-cnpj-input')
-    await codeField.waitFor({ state: 'visible', timeout: 2000 })
-    await codeField.fill('CPTI11')
-    await cnpjField.fill('38.065.012/0001-77')
+    const codeField1 = window.getByTestId('BANCO INTER ON-code-input')
+    const cnpjField1 = window.getByTestId('BANCO INTER ON-cnpj-input')
+    const codeField2 = window.getByTestId('BANCO INTER UNT-code-input')
+    const cnpjField2 = window.getByTestId('BANCO INTER UNT-cnpj-input')
+    await codeField1.waitFor({ state: 'visible', timeout: 2000 })
+    await codeField1.fill('BIDI3')
+    await cnpjField1.fill('00.416.968/0001-01')
+    await codeField2.waitFor({ state: 'visible', timeout: 2000 })
+    await codeField2.fill('BIDI11')
+    await cnpjField2.fill('00.416.968/0001-01')
 
     const retryUnknownAssetButton = window.getByTestId('retry-unknown-asset-button')
     await retryUnknownAssetButton.waitFor({ state: 'visible', timeout: 2000 })
     await retryUnknownAssetButton.click()
 
-    await codeField.waitFor({ state: 'hidden', timeout: 2000 })
+    await codeField1.waitFor({ state: 'hidden', timeout: 2000 })
+    await codeField2.waitFor({ state: 'hidden', timeout: 2000 })
   })
 
   test('check if the note was added with the correct info', async () => {
-    const noteTab = window.getByTestId('tab-24402609')
+    const noteTab = window.getByTestId('tab-44444')
     await noteTab.waitFor({ state: 'visible', timeout: 2000 })
     await noteTab.click()
-    const noteTabCPTI = window.getByTestId('tab-24402609-CPTI11')
-    await noteTabCPTI.waitFor({ state: 'visible', timeout: 2000 })
+    const noteTabBIDI3 = window.getByTestId('tab-44444-BIDI3')
+    await noteTabBIDI3.waitFor({ state: 'visible', timeout: 2000 })
+    const noteTabBIDI11 = window.getByTestId('tab-44444-BIDI11')
+    await noteTabBIDI11.waitFor({ state: 'visible', timeout: 2000 })
   })
 })
 
-test.describe.serial('open a file with unknown assets and ignore it', () => {
+test.describe.serial('open a file with unknown assets and add it', () => {
   let electronApp: ElectronApplication
   let window: Page
 
@@ -360,21 +402,11 @@ test.describe.serial('open a file with unknown assets and ignore it', () => {
     await pushNotification.waitFor({ state: 'hidden', timeout: 2000 })
   })
 
-  test('ignore the unknown asset', async () => {
-    const codeField = window.getByTestId('FIC IE CAP CI ER-code')
-
-    const ignoreUnknownAssetButton = window.getByTestId('ignore-unknown-asset-button')
-    await ignoreUnknownAssetButton.waitFor({ state: 'visible', timeout: 2000 })
-    await ignoreUnknownAssetButton.click()
-
-    await codeField.waitFor({ state: 'hidden', timeout: 2000 })
-  })
-
-  test('check if the note was added with the UNDEF name', async () => {
+  test('check if the note was added with the correct name', async () => {
     const noteTab = window.getByTestId('tab-24402609')
     await noteTab.waitFor({ state: 'visible', timeout: 2000 })
     await noteTab.click()
-    const noteTabCPTI = window.getByTestId('tab-24402609-UNDEF: FIC IE CAP CI ER')
-    await noteTabCPTI.waitFor({ state: 'visible', timeout: 2000 })
+    const noteTabCPTI11 = window.getByTestId('tab-24402609-CPTI11')
+    await noteTabCPTI11.waitFor({ state: 'visible', timeout: 2000 })
   })
 })
