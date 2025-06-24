@@ -6,11 +6,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.5.0] - [0.5.77] - 2025-01-28
+## [0.5.0] - [0.5.78] - 2025-06-24
 
 ### Added
 
 - Add support to Nubank notes. [See more](https://github.com/planetsLightningArrester/parser-de-notas-de-corretagem/releases/tag/v0.12.0).
+
+### Fixed
+
+- Fix NuBank notes without stock type in the code name. [See more](https://github.com/planetsLightningArrester/parser-de-notas-de-corretagem/releases/tag/v0.14.53)
+- Fix auto-update workflow
 
 ### Changed
 
