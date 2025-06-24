@@ -1,14 +1,10 @@
-# Release workflow
 name: 🎁 Create release
 
-# Controls when the workflow will run
-on: 
-  # Triggers the workflow on push with tags
-  push:
-    tags:
-      - 'v*' # Push events matching v*, i.e. v1.0, v20.15.10
+defaults:
+  run:
+    shell: bash
 
-  # Also can be triggered by other workflows, such as auto-update
+on: 
   workflow_call:
     inputs:
       release_version:
@@ -16,44 +12,37 @@ on:
         description: 'Release version formatted as "vMM.mm.pp"'
         required: true
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+  workflow_dispatch:
+    inputs:
+      release_version:
+        type: string
+        description: 'Release version formatted as "vMM.mm.pp"'
+        required: true
+
 jobs:
-
-  ci-check:
-    uses: ./.github/workflows/ci.yml
-    secrets: inherit
-
   calculate-release-version:
     name: 🧮 Calculate release version
-    needs: ci-check
     runs-on: ubuntu-22.04
     outputs:
-      RELEASE_VERSION: ${{ steps.result.outputs.RELEASE_VERSION }}
+      release_version: ${{ steps.result.outputs.release_version }}
     steps:
-      - name: 📥 Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
       - name: 🧮 Calculate version
         shell: bash
         id: result
         run: |
-          RELEASE_VERSION=${{ inputs.release_version }}
-          if [[ -n $RELEASE_VERSION ]] && [[ $RELEASE_VERSION =~ v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+ ]]; then
-            echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_OUTPUT;
+          release_version=${{ inputs.release_version }}
+          if [[ -n "${release_version}" ]] && [[ "${release_version}" =~ v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+ ]]; then
+            echo "release_version=${release_version}" >> $GITHUB_OUTPUT;
+            echo "[INFO] Release version: ${release_version}"
           else
-            echo "[$(date +"%T")] [DEBUG] Calculating new version from the tag $(git describe --tags)";
-            RELEASE_VERSION=v$(git describe --tags | sed -r -n 's/v([[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+).*/\1/p');
-            echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_OUTPUT;
+            echo "[ERROR] release_version '${release_version}' is invalid"
+            exit 1
           fi
-
-          echo "[INFO] Release version: $RELEASE_VERSION"
 
   create-release:
     name: 🎁 Create release
-    needs: calculate-release-version
     runs-on: ubuntu-22.04
+    needs: calculate-release-version
     permissions:
       contents: write
     steps:
@@ -61,7 +50,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: ${{ needs.calculate-release-version.outputs.RELEASE_VERSION }}
+          ref: ${{ needs.calculate-release-version.outputs.release_version }}
 
       - name: 📰 Generate RELEASE.md
         run: |
@@ -74,7 +63,7 @@ jobs:
         id: create_release
         uses: ncipollo/release-action@v1.14.0
         with:
-          tag: ${{ needs.calculate-release-version.outputs.RELEASE_VERSION }}
+          tag: ${{ needs.calculate-release-version.outputs.release_version }}
           bodyFile: ./RELEASE.md
 
   upload-artifacts:
@@ -92,7 +81,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: ${{ needs.calculate-release-version.outputs.RELEASE_VERSION }}
+          ref: ${{ needs.calculate-release-version.outputs.release_version }}
 
       - name: 🛠️ NodeJS setup
         uses: actions/setup-node@v4
@@ -109,7 +98,7 @@ jobs:
         id: create_release
         uses: ncipollo/release-action@v1.14.0
         with:
-          tag: ${{ needs.calculate-release-version.outputs.RELEASE_VERSION }}
+          tag: ${{ needs.calculate-release-version.outputs.release_version }}
           allowUpdates: true
           omitBodyDuringUpdate: true
           omitDraftDuringUpdate: true

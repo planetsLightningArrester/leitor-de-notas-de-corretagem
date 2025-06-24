@@ -7,16 +7,10 @@ defaults:
 
 # Controls when the workflow will run
 on:
-  pull_request: 
-    paths: 
-      - .github/workflows/ci.yml
-      - backend/**/*
-      - frontend/**/*
-      - package.json
-      - tsconfig.json
-
   push:
     branches: ['main']
+
+  pull_request: 
     paths: 
       - .github/workflows/ci.yml
       - backend/**/*
@@ -140,16 +134,16 @@ jobs:
       fail-fast: false
       matrix:
         os: [
-          { version: ubuntu-22.04, script: ../scripts/force_update.sh },
-          { version: windows-latest, script: ../scripts/force_update.ps1 },
-          { version: macOS-latest, script: ../scripts/force_update.sh }
+          { name: linux, version: ubuntu-22.04, script: ../scripts/force_update.sh },
+          { name: windows, version: windows-latest, script: ../scripts/force_update.ps1 },
+          { name: mac, version: macOS-latest, script: ../scripts/force_update.sh }
           ]
     name: "🧪 Test (${{ matrix.os.version }})"
     runs-on: ${{ matrix.os.version }}
     outputs:
-      ubuntu-latest-success: ${{ steps.result.outputs.ubuntu-latest-success }}
-      windows-latest-success: ${{ steps.result.outputs.windows-latest-success }}
-      macOS-latest-success: ${{ steps.result.outputs.macOS-latest-success }}
+      linux-success: ${{ steps.result.outputs.linux-success }}
+      windows-success: ${{ steps.result.outputs.windows-success }}
+      mac-success: ${{ steps.result.outputs.macOS-latest-success }}
 
     steps:
       - name: 📥 Checkout code
@@ -216,23 +210,23 @@ jobs:
           [[ "${{ steps.install-latest-parser.outputs.success }}" != "false" ]] && \
           [[ "${{ steps.install-deps.outputs.success }}" != "false" ]] && \
           [[ "${{ steps.test.outputs.success }}" != "false" ]] && \
-          echo "${{ matrix.os.version }}-success=true" >> $GITHUB_OUTPUT || echo "${{ matrix.os.version }}-success=false" >> $GITHUB_OUTPUT
+          echo "${{ matrix.os.name }}-success=true" >> $GITHUB_OUTPUT || echo "${{ matrix.os.name }}-success=false" >> $GITHUB_OUTPUT
 
   build:
     strategy:
       fail-fast: false
       matrix:
         os: [
-          { version: ubuntu-22.04, script: ../scripts/force_update.sh },
-          { version: windows-latest, script: ../scripts/force_update.ps1 },
-          { version: macOS-latest, script: ../scripts/force_update.sh }
+          { name: linux, version: ubuntu-22.04, script: ../scripts/force_update.sh },
+          { name: windows, version: windows-latest, script: ../scripts/force_update.ps1 },
+          { name: mac, version: macOS-latest, script: ../scripts/force_update.sh }
           ]
     name: "📦 Build (${{ matrix.os.version }})"
     runs-on: ${{ matrix.os.version }}
     outputs:
-      ubuntu-latest-success: ${{ steps.result.outputs.ubuntu-latest-success }}
-      windows-latest-success: ${{ steps.result.outputs.windows-latest-success }}
-      macOS-latest-success: ${{ steps.result.outputs.macOS-latest-success }}
+      linux-success: ${{ steps.result.outputs.linux-success }}
+      windows-success: ${{ steps.result.outputs.windows-success }}
+      mac-success: ${{ steps.result.outputs.mac-success }}
 
     steps:
       - name: 📥 Checkout code
@@ -299,7 +293,7 @@ jobs:
           [[ "${{ steps.install-latest-parser.outputs.success }}" != "false" ]] && \
           [[ "${{ steps.install-deps.outputs.success }}" != "false" ]] && \
           [[ "${{ steps.build.outputs.success }}" != "false" ]] && \
-          echo "${{ matrix.os.version }}-success=true" >> $GITHUB_OUTPUT || echo "${{ matrix.os.version }}-success=false" >> $GITHUB_OUTPUT
+          echo "${{ matrix.os.name }}-success=true" >> $GITHUB_OUTPUT || echo "${{ matrix.os.name }}-success=false" >> $GITHUB_OUTPUT
 
   set_success_output:
     name: 🎯 Set success output
@@ -314,16 +308,46 @@ jobs:
         run: |
           success_result=''
           [[ "${{ needs.sanitize.outputs.success }}" != "false" ]] && \
-            [[ "${{ needs.test.outputs.ubuntu-latest-success }}" != "false" ]] && \
-            [[ "${{ needs.test.outputs.windows-latest-success }}" != "false" ]] && \
-            [[ "${{ needs.test.outputs.macOS-latest-success }}" != "false" ]] && \
-            [[ "${{ needs.build.outputs.ubuntu-latest-success }}" != "false" ]] && \
-            [[ "${{ needs.build.outputs.windows-latest-success }}" != "false" ]] && \
-            [[ "${{ needs.build.outputs.macOS-latest-success }}" != "false" ]] && \
+            [[ "${{ needs.test.outputs.linux-success }}" != "false" ]] && \
+            [[ "${{ needs.test.outputs.windows-success }}" != "false" ]] && \
+            [[ "${{ needs.test.outputs.mac-success }}" != "false" ]] && \
+            [[ "${{ needs.build.outputs.linux-success }}" != "false" ]] && \
+            [[ "${{ needs.build.outputs.windows-success }}" != "false" ]] && \
+            [[ "${{ needs.build.outputs.mac-success }}" != "false" ]] && \
             success_result='true'|| success_result='false'
 
           echo "[INFO] success result: ${success_result}"
           echo "success=${success_result}" >> $GITHUB_OUTPUT || echo "success=${success_result}" >> $GITHUB_OUTPUT
+
+  check_if_ci_is_new_release:
+    name: 🔍 Check if it's a new release
+    runs-on: ubuntu-22.04
+    needs: set_success_output
+    if: github.event_name == 'push'
+    outputs:
+      release_version: ${{ steps.result.outputs.release_version }}
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: 🔍 Check if the commit has a tag associated to it
+        id: result
+        run: |
+          tag="$(git tag --points-at ${{ github.sha }})"
+          if [[ -n "${tag}" ]] && [[ "${tag}" =~ v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+ ]]; then
+            echo "release_version=${tag}" >> "$GITHUB_OUTPUT";
+          fi
+
+  make_release:
+    name: 💫 Create a new release
+    needs: check_if_ci_is_new_release
+    if: ${{ github.event_name == 'push' && needs.check_if_ci_is_new_release.outputs.release_version }}
+    uses: ./.github/workflows/release.yml
+    secrets: inherit
+    with:
+      release_version: ${{ needs.check_if_ci_is_new_release.outputs.release_version }}
 
 # EOF
 

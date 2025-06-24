@@ -1,4 +1,3 @@
-# Auto-update workflow
 name: 📡 Auto-update
 
 defaults:
@@ -42,7 +41,7 @@ jobs:
     if: ${{ always() && (contains(needs.ci_check_latest_deps.outputs.success, 'true') || contains(needs.ci_check_latest_parser.outputs.success, 'true')) }}
     runs-on: ubuntu-22.04
     outputs:
-      RELEASE_VERSION: ${{ steps.push.outputs.RELEASE_VERSION }}
+      release_version: ${{ steps.push.outputs.release_version }}
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
@@ -92,15 +91,17 @@ jobs:
             # Calculate new tag version
             echo "[$(date +"%T")] [DEBUG] Calculating new version from the tag $(git describe --tags)";
             last_version=$(git describe --tags | sed -r -n 's/v([[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+).*/\1/p');
-            minor="${last_version##*.}";
-            major="${last_version%.*}";
-            new_version="$major.$((minor + 1))";
-            echo "[$(date +"%T")] [DEBUG] New version - v$new_version";
+            patch="${last_version##*.}";
+            major_and_minor="${last_version%.*}";
+            new_version="${major_and_minor}.$((patch + 1))";
+            echo "[$(date +"%T")] [DEBUG] New version - v${new_version}";
 
             # Update backend/package.json
             echo "[$(date +"%T")] [DEBUG] Updating backend/package.json";
-            package_json_content=$(sed -r "s/$last_version/$new_version/" < backend/package.json);
-            echo "$package_json_content" > backend/package.json;
+            (
+              cd backend
+              npm version patch --git-tag-version false
+            )
             git diff backend/package.json;
 
             # Update CHANGELOG.md
@@ -142,11 +143,11 @@ jobs:
             else
               git commit -m "chore: update dependencies";
             fi
-            git tag "v$new_version";
+            git tag "v${new_version}";
             git push -u origin main --tags;
 
             # Set flag to trigger the release
-            echo "RELEASE_VERSION=v$new_version" >> $GITHUB_OUTPUT;
+            echo "release_version=v${new_version}" >> $GITHUB_OUTPUT;
 
           else
             echo "[$(date +"%T")] [DEBUG] No changes detected";
@@ -158,10 +159,10 @@ jobs:
   # This is required because submits done by bot won't trigger workflows
   make_release:
     needs: update_all_deps
-    if: ${{ always() && needs.update_all_deps.outputs.RELEASE_VERSION }}
+    if: ${{ always() && needs.update_all_deps.outputs.release_version }}
     uses: ./.github/workflows/release.yml
     secrets: inherit
     with:
-      release_version: ${{ needs.update_all_deps.outputs.RELEASE_VERSION }}
+      release_version: ${{ needs.update_all_deps.outputs.release_version }}
 
 # EOF
