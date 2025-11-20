@@ -22,7 +22,7 @@
     "eslint": "^8.57.0",
     "eslint-config-standard-with-typescript": "^43.0.1",
     "eslint-plugin-svelte": "^2.35.1",
-    "parser-de-notas-de-corretagem": "^0.14.162",
+    "parser-de-notas-de-corretagem": "^0.14.164",
     "rimraf": "^5.0.5",
     "run-script-os": "^1.1.6",
     "sass": "^1.74.1",
