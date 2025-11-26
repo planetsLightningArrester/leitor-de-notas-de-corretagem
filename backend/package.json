@@ -1,7 +1,7 @@
 {
   "name": "leitor-de-notas-de-corretagem",
   "displayName": "Leitor de Notas de Corretagem",
-  "version": "0.5.182",
+  "version": "0.5.183",
   "description": "Electron app for the backend of the leitor de notas de corretagem",
   "main": "dist/main.js",
   "author": "Planet's Lightning Arrester",
@@ -80,7 +80,7 @@
     "typescript": "^5.4.4"
   },
   "dependencies": {
-    "parser-de-notas-de-corretagem": "^0.14.166",
+    "parser-de-notas-de-corretagem": "^0.14.167",
     "printaeu": "^0.1.12"
   },
   "lint-staged": {
