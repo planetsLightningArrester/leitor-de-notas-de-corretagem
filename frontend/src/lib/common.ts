@@ -1,4 +1,4 @@
-import { type Deal } from 'parser-de-notas-de-corretagem'
+import type { Deal } from 'parser-de-notas-de-corretagem'
 
 /** Table possible headers */
 export type TableHeader = 'code' | 'cnpj' | 'date' | 'type' | 'quantity' | 'price'

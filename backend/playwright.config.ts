@@ -5,7 +5,7 @@ const development = process.env.NODE_ENV === 'development'
 
 // Set mode to development, so we can run electron tests with the Playwright extension
 const webSever =
-  development ? undefined : { command: 'cd ../frontend && npm run dev', url: 'http://localhost:5173/', reuseExistingServer: false, }
+  development ? undefined : { command: 'cd ../frontend && npm run dev', url: 'http://localhost:5173/', reuseExistingServer: true, }
 
 /**
  * See https://playwright.dev/docs/test-configuration.

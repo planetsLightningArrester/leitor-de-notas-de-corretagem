@@ -1,7 +1,7 @@
 <script lang="ts">
   import { _ } from 'svelte-i18n'
   import Find, { clearMatches } from './Find.svelte'
-  import { type NegotiationNote, type Deal } from 'parser-de-notas-de-corretagem'
+  import type { NegotiationNote, Deal } from 'parser-de-notas-de-corretagem'
   import { type TableHeader, noTypeCheck, sortDeals, formatMoneyToDisplay } from './common'
   import { Container, Table, TabContent, TabPane, Icon, Row, Col, Button } from '@sveltestrap/sveltestrap'
 

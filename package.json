@@ -1,6 +1,9 @@
 {
   "engines": {
-    "node": ">=20"
+    "node": ">=24"
+  },
+  "overrides": {
+    "yauzl": "^3.2.1"
   },
   "scripts": {
     "clean": "rimraf dist && cd backend && npm run clean && cd ../frontend && npm run clean",
@@ -29,11 +32,11 @@
   },
   "homepage": "https://github.com/planetsLightningArrester/leitor-de-notas-de-corretagem#readme",
   "devDependencies": {
-    "@commitlint/cli": "^19.0.3",
-    "@commitlint/config-conventional": "^19.0.3",
-    "concurrently": "^8.2.2",
-    "husky": "^9.0.11",
-    "lint-staged": "^15.2.0",
-    "rimraf": "^5.0.5"
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "concurrently": "^9.2.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.5.2",
+    "rimraf": "^5.0.10"
   }
 }

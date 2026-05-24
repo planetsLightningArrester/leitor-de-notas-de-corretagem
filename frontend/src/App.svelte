@@ -10,7 +10,7 @@
   import LocaleSwitches from './lib/LocaleSwitches.svelte'
   import ClearNotesModal from './lib/ClearNotesModal.svelte'
   import UnknownAssetModal from './lib/UnknownAssetModal.svelte'
-  import { type NegotiationNote, type Deal, type UnknownAsset, type WrongPassword } from 'parser-de-notas-de-corretagem'
+  import type { NegotiationNote, Deal, UnknownAsset, WrongPassword } from 'parser-de-notas-de-corretagem'
   import { formatMoneyToDisplay, resolveImgPath, sortDeals } from './lib/common'
   import { Button, Carousel, CarouselItem, Col, Container, Icon, Row, Styles } from '@sveltestrap/sveltestrap'
 

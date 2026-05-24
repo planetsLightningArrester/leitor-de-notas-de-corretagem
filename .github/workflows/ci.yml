@@ -64,12 +64,12 @@ jobs:
       success: ${{ steps.result.outputs.success }}
     steps:
       - name: 📥 Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: 🛠️ NodeJS setup
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 24
 
       - name: 🔧 Install latest dependencies
         if: ${{ always() && contains(inputs.latest_deps, 'true') }}
@@ -147,12 +147,12 @@ jobs:
 
     steps:
       - name: 📥 Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: 🛠️ NodeJS setup
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 24
 
       - name: 🔧 Install latest dependencies
         if: ${{ always() && contains(inputs.latest_deps, 'true') }}
@@ -230,12 +230,12 @@ jobs:
 
     steps:
       - name: 📥 Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: 🛠️ NodeJS setup
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 24
 
       - name: 🔧 Install latest dependencies
         if: ${{ always() && contains(inputs.latest_deps, 'true') }}
@@ -328,7 +328,7 @@ jobs:
       release_version: ${{ steps.result.outputs.release_version }}
     steps:
       - name: 📥 Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
       

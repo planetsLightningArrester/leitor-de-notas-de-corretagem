@@ -44,14 +44,14 @@ jobs:
       release_version: ${{ steps.push.outputs.release_version }}
     steps:
       - name: 📥 Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
       - name: 🛠️ NodeJS setup
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 24
 
       - name: 📡 Install latest dependencies
         if: ${{ always() && contains(needs.ci_check_latest_deps.outputs.success, 'true') }}
